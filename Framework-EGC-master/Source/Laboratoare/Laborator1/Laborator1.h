@@ -11,9 +11,18 @@ class Laborator1 : public SimpleScene
 		void Init() override;
 
 	private:
+		GLfloat red, green, blue, posX = 1, posY = 0.5f, posZ = 0;
+		std::string obiectNou;
+		glm::vec3 scalaObj;
+
+		GLfloat degrees;
+
 		void FrameStart() override;
 		void Update(float deltaTimeSeconds) override;
 		void FrameEnd() override;
+
+		void changeColor(int nr);
+		void changeObj(int nr);
 
 		void OnInputUpdate(float deltaTime, int mods) override;
 		void OnKeyPress(int key, int mods) override;
