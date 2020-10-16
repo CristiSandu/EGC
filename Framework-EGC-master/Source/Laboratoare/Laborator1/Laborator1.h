@@ -11,11 +11,13 @@ class Laborator1 : public SimpleScene
 		void Init() override;
 
 	private:
-		GLfloat red, green, blue, posX = 1, posY = 0.5f, posZ = 0;
 		std::string obiectNou;
 		glm::vec3 scalaObj;
-
+		int randomObj;
+		glm::vec3 color;
 		GLfloat degrees;
+		
+		glm::vec3 objects_pos;
 
 		void FrameStart() override;
 		void Update(float deltaTimeSeconds) override;

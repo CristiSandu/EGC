@@ -11,19 +11,19 @@ using namespace std;
 // Order of function calling can be seen in "Source/Core/World.cpp::LoopUpdate()"
 // https://github.com/UPB-Graphics/Framework-EGC/blob/master/Source/Core/World.cpp
 
-struct Triple
-{
-	GLfloat x, y, z;
-};
 
-struct obiect 
+struct obiect
 {
 	string Nume;
 	glm::vec3 scala;
 };
 
+
 Laborator1::Laborator1()
 {
+	//intializare color 
+	color = glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0);
+	
 }
 
 Laborator1::~Laborator1()
@@ -53,7 +53,12 @@ void Laborator1::Init()
 		Mesh* mesh5 = new Mesh("screen_quad");
 		mesh5->LoadMesh(RESOURCE_PATH::MODELS + "Primitives", "screen_quad.obj");
 		meshes[mesh5->GetMeshID()] = mesh5;
+	}
 
+	{
+		Mesh* mesh = new Mesh("Archer");
+		mesh->LoadMesh(RESOURCE_PATH::MODELS + "Characters/Archer", "Archer.fbx");
+		meshes[mesh->GetMeshID()] = mesh;
 	}
 }
 
@@ -67,7 +72,7 @@ void Laborator1::Update(float deltaTimeSeconds)
 	glm::ivec2 resolution = window->props.resolution;
 
 	// sets the clear color for the color buffer
-	glClearColor(red, green, blue, 1);
+	glClearColor(color.x, color.y, color.z, 1);
 
 	// clears the color buffer (using the previously set color) and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -76,14 +81,15 @@ void Laborator1::Update(float deltaTimeSeconds)
 	glViewport(0, 0, resolution.x, resolution.y);
 
 	// render the object
-	//RenderMesh(meshes["box"], glm::vec3(1, 0.5f, 0), glm::vec3(0.5f));
-//RenderMesh(meshes["quad"], glm::vec3(1, 0.75f, 0), glm::vec3(0.75f));
-   
+	RenderMesh(meshes["box"], glm::vec3(1, 0.5f, 0), glm::vec3(0.5f));
+    //RenderMesh(meshes["quad"], glm::vec3(2, 0.75f, 1), glm::vec3(0.75f));
+	
+	RenderMesh(meshes["Archer"], glm::vec3(2, 0.5f, 1), glm::vec3(0.01f));
 	// render the object again but with different properties
-	//RenderMesh(meshes["box"], glm::vec3(-1, 0.5f, 0));
-	//RenderMesh(meshes["quad"], glm::vec3(-1, 0.5f, 0));
+	RenderMesh(meshes["box"], glm::vec3(-1, 0.5f, 0));
+	RenderMesh(meshes["quad"], glm::vec3(-1, 0.5f, 0));
 
-	RenderMesh(meshes[obiectNou],glm::vec3(posX,posY,posZ) ,scalaObj);
+	RenderMesh(meshes[obiectNou],objects_pos ,scalaObj);
 
 }
 
@@ -99,52 +105,53 @@ void Laborator1::OnInputUpdate(float deltaTime, int mods)
 {
 	// treat continuous update based on input
 	
-	/*if (window->KeyHold(GLFW_KEY_R))
-	{
-		degrees += 2.f * deltaTime;
-		if (degrees > 360.f)
-		{
-			degrees = 0.f;
-		}
-
-		posX += .02f * cos(degrees);
-		posY += .02f * sin(degrees);
-		posZ += .02f * tanhl(degrees);
-
-	}*/
 	if (!window->MouseHold(GLFW_MOUSE_BUTTON_RIGHT)) {
-
-		
 
 		if (window->KeyHold(GLFW_KEY_W))
 		{
-			posY += deltaTime * 2.f;
+			objects_pos.y += deltaTime * 2.f;
 		}
 
 		if (window->KeyHold(GLFW_KEY_S))
 		{
-			posY -= deltaTime * 2.f;
+			objects_pos.y -= deltaTime * 2.f;
 		}
 
 		if (window->KeyHold(GLFW_KEY_A))
 		{
-			posX -= deltaTime * 2.f;
+			objects_pos.x -= deltaTime * 2.f;
 		}
 
 		if (window->KeyHold(GLFW_KEY_D))
 		{
-			posX += deltaTime * 2.f;
+			objects_pos.x += deltaTime * 2.f;
 		}
 
 		if (window->KeyHold(GLFW_KEY_Q))
 		{
-			posZ -= deltaTime * 2.f;
+			objects_pos.z -= deltaTime * 2.f;
 		}
 
 		if (window->KeyHold(GLFW_KEY_E))
 		{
-			posZ += deltaTime * 2.f;
-		}
+			objects_pos.z += deltaTime * 2.f;
+		}		
+	}
+
+	if (window->KeyHold(GLFW_KEY_Z))
+	{
+		degrees += deltaTime * 2.f;
+		objects_pos.x += .02f * cos(degrees);
+		objects_pos.y += .02f * sin(degrees);
+		objects_pos.z += .02f * tanhl(degrees);
+	}
+
+	if (window->KeyHold(GLFW_KEY_H))
+	{
+		degrees += deltaTime * 2.f;
+		objects_pos.x -= .02f * cos(degrees);
+		objects_pos.y -= .02f * sin(degrees);
+		objects_pos.z -= .02f * tanhl(degrees);
 	}
 };
 
@@ -152,12 +159,11 @@ void Laborator1::OnKeyPress(int key, int mods)
 {
 	// add key press event
 	if (key == GLFW_KEY_F) {
-		int randomColor = rand() % 5 ;
-		changeColor(randomColor	);
+		 color = glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0);
 	}
 
 	if (key == GLFW_KEY_C) {
-		int randomObj = rand() % 5;
+		randomObj = rand() % 5;
 		changeObj(randomObj);
 
 	}
@@ -165,40 +171,21 @@ void Laborator1::OnKeyPress(int key, int mods)
 
 void Laborator1::changeColor(int nr)
 {
-	vector<Triple> vect;
-	Triple ast, agf, atf;
-	ast.x = 0.174f;
-	ast.y = 1.074f;
-	ast.z = 0.774f;
-	vect.push_back(ast);
-	agf.x = 2.174f;
-	agf.y = 1.574f;
-	agf.z = 1.754f;
-	vect.push_back(agf);
-	atf.x = 1.074f;
-	atf.y = 1.500f;
-	atf.z = 0.704f;
-	vect.push_back(atf);
-	vect.push_back({ 1.074f ,1.074f ,1.074f });
-	vect.push_back({ 1.070f ,0.054f ,1.174f });
-	
-	Triple out = vect.at(nr);
-	red = out.x;
-	green = out.y;
-	blue = out.z;
-
 }
 
 void Laborator1::changeObj(int nr)
 {
 	vector<obiect> obj;
-	obj.push_back({ "quad",glm::vec3(0.5f) });
-	obj.push_back({ "sphere",glm::vec3(0.5f) });
-	obj.push_back({ "teapot",glm::vec3(0.5f) });
-	obj.push_back({ "screen_quad",glm::vec3(0.5f) });
-	obj.push_back({ "plane50",glm::vec3(0.5f) });
+
+	obj.push_back({ "quad",glm::vec3(0.5f)});
+	obj.push_back({ "sphere",glm::vec3(0.5f)});
+	obj.push_back({ "Archer",glm::vec3(0.01f)});
+	obj.push_back({ "teapot",glm::vec3(0.5f)});
+	obj.push_back({ "screen_quad",glm::vec3(0.5f)});
+	obj.push_back({ "plane50",glm::vec3(0.5f)});
 
 	obiect out;
+
 	if( (nr >=0)||(nr <= 4))
 		out = obj.at(nr);
 	else 
