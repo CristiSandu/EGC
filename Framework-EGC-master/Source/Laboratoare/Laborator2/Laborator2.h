@@ -13,7 +13,7 @@ class Laborator2 : public SimpleScene
 
 	private:
 		Mesh* CreateMesh(const char *name, const std::vector<VertexFormat>& vertices, const std::vector<unsigned short>& indices);
-
+		int tip = 0;
 		void FrameStart() override;
 		void Update(float deltaTimeSeconds) override;
 		void FrameEnd() override;

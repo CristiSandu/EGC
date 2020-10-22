@@ -23,7 +23,6 @@ Laborator1::Laborator1()
 {
 	//intializare color 
 	color = glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0);
-	
 }
 
 Laborator1::~Laborator1()
