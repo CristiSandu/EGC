@@ -30,16 +30,24 @@ void Laborator2::Init()
 
 	// Create a mesh box using custom data
 	{
+		GLfloat rand1, rand2, rand3, rand11, rand22, rand33;
+		rand1 = (rand() % 100) / 100.0;
+		rand2 = (rand() % 100) / 100.0;
+		rand3 = (rand() % 100) / 100.0;
+		rand11 = (rand() % 100) / 100.0;
+		rand22 = (rand() % 100) / 100.0;
+		rand33 = (rand() % 100) / 100.0;
+
 		vector<VertexFormat> vertices
 		{
-			VertexFormat(glm::vec3(0, 0, 4), glm::vec3(0, 1, 1)),
-			VertexFormat(glm::vec3(4, 0, 4), glm::vec3(0, 1, 1)),
-			VertexFormat(glm::vec3(0, 4, 4), glm::vec3(1, 1, 1)),
-			VertexFormat(glm::vec3(4, 4, 4), glm::vec3(2, 1, 1)),
-			VertexFormat(glm::vec3(0, 0, 0), glm::vec3(0, 1, 1)),
-			VertexFormat(glm::vec3(4, 0, 0), glm::vec3(4, 1, 2)),
-			VertexFormat(glm::vec3(0, 4, 0), glm::vec3(0, 1, 1)),
-			VertexFormat(glm::vec3(4, 4, 0), glm::vec3(3, 2, 1)),
+			VertexFormat(glm::vec3(0, 0, 4), glm::vec3(rand1, rand2, rand3)),
+			VertexFormat(glm::vec3(4, 0, 4), glm::vec3(rand1, rand2, rand3)),
+			VertexFormat(glm::vec3(0, 4, 4), glm::vec3(rand1, rand2, rand3)),
+			VertexFormat(glm::vec3(4, 4, 4), glm::vec3(rand1, rand2, rand3)),
+			VertexFormat(glm::vec3(0, 0, 0), glm::vec3(rand11, rand22, rand33)),
+			VertexFormat(glm::vec3(4, 0, 0), glm::vec3(rand11, rand22, rand33)),
+			VertexFormat(glm::vec3(0, 4, 0), glm::vec3(rand11, rand22, rand33)),
+			VertexFormat(glm::vec3(4, 4, 0), glm::vec3(rand11, rand22, rand33)),
 			// TODO: Complete the information for the cube
 		};
 
@@ -74,23 +82,23 @@ void Laborator2::Init()
 		vector<VertexFormat> vertices
 		{
 
-			VertexFormat(glm::vec3(0, 0, 0), glm::vec3(2, 1, 1)),
-			VertexFormat(glm::vec3(4, 0, 0), glm::vec3(0, 1, 1)),
-			VertexFormat(glm::vec3(4, 0, 4), glm::vec3(1, 1, 1)),
-			VertexFormat(glm::vec3(0, 0, 4), glm::vec3(0, 1, 1)),
-			VertexFormat(glm::vec3(2, 4, 2), glm::vec3(0, 1, 1)),
+			VertexFormat(glm::vec3(0, 0, 0), glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0)),
+			VertexFormat(glm::vec3(4, 0, 0), glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0)),
+			VertexFormat(glm::vec3(4, 0, 4), glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0)),
+			VertexFormat(glm::vec3(0, 0, 4), glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0)),
+			VertexFormat(glm::vec3(2, 4, 2), glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0)),
 
 			// TODO: Complete the information for the cube
 		};
 
 		vector<unsigned short> indices =
 		{
-			0, 1, 2,	// indices for second triangle
-			0, 2, 3,
-			0, 3, 4,	// indices for first triangle
-			0, 1, 4,
+			2, 1, 0,	// indices for second triangle
+			0, 3, 2,
+			4, 3, 0,	// indices for first triangle
+			4, 0, 1,
 			2, 3, 4,
-			1, 2, 4
+			4, 1, 2,
 
 			// TODO: Complete indices data
 
@@ -105,10 +113,10 @@ void Laborator2::Init()
 		vector<VertexFormat> vertices
 		{
 
-			VertexFormat(glm::vec3(0, 0, 0), glm::vec3(2, 1, 1)),
-			VertexFormat(glm::vec3(4, 0, 0), glm::vec3(0, 1, 1)),
-			VertexFormat(glm::vec3(0, 4, 0), glm::vec3(1, 1, 1)),
-			VertexFormat(glm::vec3(0, 0, 4), glm::vec3(0, 1, 1)),
+			VertexFormat(glm::vec3(0, 0, 0), glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0)),
+			VertexFormat(glm::vec3(4, 0, 0), glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0)),
+			VertexFormat(glm::vec3(0, 4, 0), glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0)),
+			VertexFormat(glm::vec3(0, 0, 4), glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0)),
 
 			// TODO: Complete the information for the cube
 		};
@@ -117,8 +125,8 @@ void Laborator2::Init()
 		{
 			0, 1, 2,	// indices for second triangle
 			0, 2, 3,
-			0, 3, 1,	// indices for first triangle
-			1, 3, 2
+			3, 1, 0,	// indices for first triangle
+			2, 1, 3, 
 
 			// TODO: Complete indices data
 
@@ -153,6 +161,34 @@ void Laborator2::Init()
 		};
 		Mesh* patrat = CreateMesh("patrat", vertices, indices);
 		meshes[patrat->GetMeshID()] = patrat;
+	}
+
+	{
+
+		vector<VertexFormat> vertices
+		{
+			VertexFormat(glm::vec3(0, 0, 0), glm::vec3(2, 1, 1)),
+			
+		};
+		vector<unsigned short> indices;
+		
+
+		GLfloat degree;
+
+		for (int i = 0; i < 10; i++)
+		{
+			degree = 6.28318531f * i / 10;
+			vertices.emplace_back(glm::vec3(cos(degree), sin(degree), 0), glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0));
+			indices.push_back(i);
+		}
+
+		indices.push_back(10);
+		indices.push_back(1);
+
+		Mesh* circle = CreateMesh("circle", vertices, indices);
+		
+		meshes[circle->GetMeshID()] = circle;
+		meshes["circle"]->SetDrawMode(GL_TRIANGLE_FAN);
 	}
 }
 
@@ -233,6 +269,7 @@ void Laborator2::Update(float deltaTimeSeconds)
 	glEnable(GL_CULL_FACE);
 
 	// TODO: Set face custom culling. Use the "cullFace" variable
+	//glCullFace(GL_BACK);
 
 	// render an object using face normals for color
 	RenderMesh(meshes["box"], shaders["VertexNormal"], glm::vec3(0, 0.5f, -1.5f), glm::vec3(0.75f));
@@ -243,6 +280,7 @@ void Laborator2::Update(float deltaTimeSeconds)
 	RenderMesh(meshes["tetraedru"], shaders["VertexColor"], glm::vec3(1.0f, 0.4f, 2.0f), glm::vec3(0.25f));
 	RenderMesh(meshes["piramida"], shaders["VertexColor"], glm::vec3(-1.0f, 0.4f, 2.0f), glm::vec3(0.25f));
 	RenderMesh(meshes["patrat"], shaders["VertexColor"], glm::vec3(-1.0f, 0.4f, -3.0f), glm::vec3(0.25f));
+	RenderMesh(meshes["circle"], shaders["VertexColor"], glm::vec3(-1.0f, 0.4f, -5.0f), glm::vec3(0.25f));
 
 
 	

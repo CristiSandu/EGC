@@ -72,7 +72,46 @@ void Laborator3::Update(float deltaTimeSeconds)
 	// TODO: update steps for translation, rotation, scale, in order to create animations
 	
 	modelMatrix = glm::mat3(1);
-	modelMatrix *= Transform2D::Translate(150, 250);
+	modelMatrix *= Transform2D::Translate(150, 250) ;
+	
+	if ((tx >= 1280) || (ty >= 420))
+	{
+		ok = 1;
+	}
+	else if ((tx <= -50) || (ty <= -250))
+	{
+		ok = 0;
+	}
+
+	if (ok == 1)
+	{
+		tx -= deltaTimeSeconds * 150;
+		ty -= deltaTimeSeconds * 550;
+	}
+	else
+	{
+		tx += deltaTimeSeconds * 150;
+		ty += deltaTimeSeconds * 550;
+	}
+
+
+	modelMatrix *= Transform2D::Translate(tx, ty);
+
+	//modelMatrix *= Transform2D::Translate(tx, ty);
+
+	//modelMatrix *= Transform2D::Scale(2, 2) ;
+	
+	//modelMatrix *= Transform2D::Translate(0, 0);
+	/*
+	modelMatrix *= Transform2D::Rotate(deltaTimeSeconds * 25);
+	modelMatrix *= Transform2D::Scale(2, 2);
+	modelMatrix *= Transform2D::Rotate(deltaTimeSeconds * 25);
+	modelMatrix *= Transform2D::Scale(1, 1);*/
+	/*modelMatrix *= Transform2D::Rotate(deltaTimeSeconds*25);
+	modelMatrix *= Transform2D::Rotate(deltaTimeSeconds * 25);
+	modelMatrix *= Transform2D::Rotate(deltaTimeSeconds * 25);*/
+
+
 	// TODO: create animations by multiplying current transform matrix with matrices from Transform 2D
 
 	RenderMesh2D(meshes["square1"], shaders["VertexColor"], modelMatrix);
@@ -80,11 +119,44 @@ void Laborator3::Update(float deltaTimeSeconds)
 	modelMatrix = glm::mat3(1);
 	modelMatrix *= Transform2D::Translate(400, 250);
 	//TODO create animations by multiplying current transform matrix with matrices from Transform 2D
+	if (tx2 >= 4)
+	{
+		ok2 = 1;
+	}
+	else if (tx2 <= 1)
+	{
+		ok2 = 0;
+	}
+
+	if (ok2 == 1)
+	{
+		tx2 -= deltaTimeSeconds * 2;
+		ty2 -= deltaTimeSeconds * 2;
+	}
+	else
+	{
+		tx2 += deltaTimeSeconds * 2;
+		ty2 += deltaTimeSeconds * 2;
+	}
+
 	
+	modelMatrix *= Transform2D::Translate(squer_l / 2.f, squer_l / 2.f);
+	modelMatrix *= Transform2D::Scale(tx2,ty2);
+	modelMatrix *= Transform2D::Translate(-squer_l / 2.f, -squer_l / 2.f);
+
+
+	//modelMatrix *= Transform2D::Scale(tx2, ty2);
+
 	RenderMesh2D(meshes["square2"], shaders["VertexColor"], modelMatrix);
 
 	modelMatrix = glm::mat3(1);
 	modelMatrix *= Transform2D::Translate(650, 250);
+
+	rad += deltaTimeSeconds;
+	modelMatrix *= Transform2D::Translate(squer_l / 2.f, squer_l / 2.f);
+	modelMatrix *= Transform2D::Rotate(rad);
+	modelMatrix *= Transform2D::Translate(-squer_l / 2.f, -squer_l / 2.f);
+
 
 	//TODO create animations by multiplying current transform matrix with matrices from Transform 2D
 	RenderMesh2D(meshes["square3"], shaders["VertexColor"], modelMatrix);
