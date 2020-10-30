@@ -54,6 +54,10 @@ void Laborator3::Init()
 
 	Mesh* square3 = Object2D::CreateSquare("square3", corner, squareSide, glm::vec3(0, 0, 1));
 	AddMeshToList(square3);
+
+	Mesh* square4 = Object2D::CreateSquare("square4", corner, squareSide, glm::vec3(1, 0, 1));
+	AddMeshToList(square4);
+
 }
 
 void Laborator3::FrameStart()
@@ -160,6 +164,43 @@ void Laborator3::Update(float deltaTimeSeconds)
 
 	//TODO create animations by multiplying current transform matrix with matrices from Transform 2D
 	RenderMesh2D(meshes["square3"], shaders["VertexColor"], modelMatrix);
+
+
+	modelMatrix = glm::mat3(1);
+	modelMatrix *= Transform2D::Translate(10, 10);
+
+	rad += 0.1f * deltaTimeSeconds;
+
+	
+
+	if (speedy * speedy >= 0)
+	{
+		ok3 = 0;
+	}
+	else if (speedy * speedy >= 300)
+	{
+		ok3 = 1;
+	}
+
+	if (ok3 == 1)
+	{
+		speedy += 500 * deltaTimeSeconds;
+		speedx += 100 * deltaTimeSeconds;
+	}
+	else {
+		speedy -= 500 * deltaTimeSeconds;
+		speedx -= 100 * deltaTimeSeconds;
+	}
+
+	modelMatrix *= Transform2D::Translate(squer_l / 2.f, squer_l / 2.f);
+	modelMatrix *= Transform2D::Translate(speedx,speedy* speedy);
+
+	modelMatrix *= Transform2D::Rotate(rad);
+	modelMatrix *= Transform2D::Translate(-squer_l / 2.f, -squer_l / 2.f);
+
+
+	//TODO create animations by multiplying current transform matrix with matrices from Transform 2D
+	RenderMesh2D(meshes["square4"], shaders["VertexColor"], modelMatrix);
 }
 
 void Laborator3::FrameEnd()
@@ -204,3 +245,7 @@ void Laborator3::OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY)
 void Laborator3::OnWindowResize(int width, int height)
 {
 }
+
+
+
+// un patrat -> o saritura in dreapta ai sa cada pe pamant cu muchia de sus
