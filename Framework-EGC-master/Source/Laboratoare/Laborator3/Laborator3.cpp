@@ -167,33 +167,47 @@ void Laborator3::Update(float deltaTimeSeconds)
 
 
 	modelMatrix = glm::mat3(1);
-	modelMatrix *= Transform2D::Translate(10, 10);
+	modelMatrix *= Transform2D::Translate(100, 10);
 
 	rad += 0.1f * deltaTimeSeconds;
 
-	
 
-	if (speedy * speedy >= 0)
+	degreess += deltaTimeSeconds * .02f;
+
+	if (degreess > 360.)
+	{
+		degreess = 0;
+	}
+	
+/*
+	if (ybon <= 0)
 	{
 		ok3 = 0;
 	}
-	else if (speedy * speedy >= 300)
+	else if (ybon >= 300)
 	{
 		ok3 = 1;
 	}
 
-	if (ok3 == 1)
+	if (ok3 == 0)
 	{
-		speedy += 500 * deltaTimeSeconds;
-		speedx += 100 * deltaTimeSeconds;
+		
 	}
 	else {
-		speedy -= 500 * deltaTimeSeconds;
-		speedx -= 100 * deltaTimeSeconds;
+		xbon += 426 * cos(degreess);
 	}
 
+	
+	if (ybon >= 30)
+	{
+		ybon -= 100 * sin(degreess);
+	}
+	*/
+	xbon += 213 * cos(degreess);
+	ybon += 213 * sin(degreess);
+
 	modelMatrix *= Transform2D::Translate(squer_l / 2.f, squer_l / 2.f);
-	modelMatrix *= Transform2D::Translate(speedx,speedy* speedy);
+	modelMatrix *= Transform2D::Translate(xbon,ybon);
 
 	modelMatrix *= Transform2D::Rotate(rad);
 	modelMatrix *= Transform2D::Translate(-squer_l / 2.f, -squer_l / 2.f);

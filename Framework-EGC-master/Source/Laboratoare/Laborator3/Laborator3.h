@@ -11,7 +11,7 @@ class Laborator3 : public SimpleScene
 		~Laborator3();
 
 		void Init() override;
-		GLfloat squer_l = 100.f;
+		GLfloat squer_l = 100.f, degreess =0, xbon,ybon;
 		float tx, ty, tx2 = 1, ty2 = 1,rad = 1, speedx = 10, speedy = 10;
 		int ok = 0, ok2 =0, ok3 = 0;
 
