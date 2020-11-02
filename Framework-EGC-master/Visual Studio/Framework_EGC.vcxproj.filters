@@ -61,6 +61,9 @@
     <Filter Include="Laboratoare\Laborator9\Shaders">
       <UniqueIdentifier>{a7995ec9-7a24-4990-8d42-92088d9a6dfb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Laboratoare\Tema1">
+      <UniqueIdentifier>{3b8afdea-edf6-4c65-8eb5-0b111243a59a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\Core\Engine.cpp">
@@ -138,6 +141,12 @@
     </ClCompile>
     <ClCompile Include="..\Source\Laboratoare\Laborator9\Laborator9.cpp">
       <Filter>Laboratoare\Laborator9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Laboratoare\Tema1\Tema1.cpp">
+      <Filter>Laboratoare\Tema1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Laboratoare\Tema1\RanderItems.cpp">
+      <Filter>Laboratoare\Tema1</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -239,6 +248,15 @@
     </ClInclude>
     <ClInclude Include="..\Source\Laboratoare\Laborator9\Laborator9.h">
       <Filter>Laboratoare\Laborator9</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Laboratoare\Tema1\Tema1.h">
+      <Filter>Laboratoare\Tema1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Laboratoare\Tema1\RanderItems.h">
+      <Filter>Laboratoare\Tema1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Laboratoare\Tema1\Transform2D.h">
+      <Filter>Laboratoare\Tema1</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
