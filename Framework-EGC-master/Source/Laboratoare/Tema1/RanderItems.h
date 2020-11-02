@@ -15,5 +15,7 @@ namespace RanderItems
 
 	Mesh* CreateShuriken(std::string name, glm::vec3 leftBottomCorner, float length, glm::vec3 color, bool fill, int spaceBow, int scale);
 
+	Mesh* CreateBalloon(std::string name, glm::vec3 leftBottomCorner, float x, float y, glm::vec3 color, bool fill, int spaceBow, int scale);
+
 }
 

@@ -13,6 +13,9 @@ class Tema1 : public SimpleScene
 	void Init() override;
 	int spaceBow = 100;
 	int scale = 75;
+	GLfloat degre,arrowSpeed = 0 ,translationx = 25,translationy = 250, arrowX = 100,squer_l = 100;
+	void ArrowRelese(GLfloat relese);
+
 private:
 	void FrameStart() override;
 	void Update(float deltaTimeSeconds) override;
@@ -26,7 +29,6 @@ private:
 	void OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods) override;
 	void OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY) override;
 	void OnWindowResize(int width, int height) override;
-
 protected:
 	glm::mat3 modelMatrix;
 	float translateX, translateY;
