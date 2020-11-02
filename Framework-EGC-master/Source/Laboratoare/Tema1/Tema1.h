@@ -11,7 +11,8 @@ class Tema1 : public SimpleScene
 		~Tema1();
 
 	void Init() override;
-
+	int spaceBow = 100;
+	int scale = 75;
 private:
 	void FrameStart() override;
 	void Update(float deltaTimeSeconds) override;
@@ -31,4 +32,6 @@ protected:
 	float translateX, translateY;
 	float scaleX, scaleY;
 	float angularStep;
+	GLenum polygonMode;
+
 };

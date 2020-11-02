@@ -45,8 +45,10 @@ void Tema1::Init()
 	// initialize angularStep
 	angularStep = 0;
 
-	Mesh* arrow = RanderItems::CreateArrow("arrow", corner, squareSide, glm::vec3(1, 0, 0), true);
+	Mesh* arrow = RanderItems::CreateArrow("arrow", corner, squareSide, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), true);
 	AddMeshToList(arrow);
+	Mesh* bow = RanderItems::CreateBow("bow", corner, squareSide, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), false, spaceBow, scale);
+	AddMeshToList(bow);
 	
 	/*
 
@@ -75,14 +77,25 @@ void Tema1::FrameStart()
 
 void Tema1::Update(float deltaTimeSeconds)
 {
+
+	glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
+
 	modelMatrix = glm::mat3(1);
 
-	modelMatrix *= Transform2D::Translate(150, 250);
-
+	modelMatrix *= Transform2D::Translate(100, 250);
 	//modelMatrix *= Transform2D::Scale(8, 8);
 	modelMatrix *= Transform2D::Scale(2, 2);
 
 	RenderMesh2D(meshes["arrow"], shaders["VertexColor"], modelMatrix);
+
+	modelMatrix = glm::mat3(1);
+	modelMatrix *= Transform2D::Translate(25, 250);
+	modelMatrix *= Transform2D::Scale(1, 1);
+	//modelMatrix *= Transform2D::Scale(2, 2);
+	modelMatrix *= Transform2D::Rotate(-1.5708);
+
+
+	RenderMesh2D(meshes["bow"], shaders["VertexColor"], modelMatrix);
 
 
 
@@ -98,6 +111,22 @@ void Tema1::OnInputUpdate(float deltaTime, int mods)
 
 void Tema1::OnKeyPress(int key, int mods)
 {
+
+	if (key == GLFW_KEY_SPACE)
+	{
+		switch (polygonMode)
+		{
+		case GL_POINT:
+			polygonMode = GL_FILL;
+			break;
+		case GL_LINE:
+			polygonMode = GL_POINT;
+			break;
+		default:
+			polygonMode = GL_LINE;
+			break;
+		}
+	}
 }
 
 void Tema1::OnKeyRelease(int key, int mods)
