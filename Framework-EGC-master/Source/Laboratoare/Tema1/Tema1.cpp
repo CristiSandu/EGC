@@ -121,7 +121,6 @@ void Tema1::Update(float deltaTimeSeconds)
 	
 	RenderMesh2D(meshes["Shuriken"], shaders["VertexColor"], modelMatrix);
 
-
 	modelMatrix = glm::mat3(1);
 	modelMatrix *= Transform2D::Translate(950, 150);
 	modelMatrix *= Transform2D::Scale(1, 1);
