@@ -47,29 +47,16 @@ void Tema1::Init()
 
 	Mesh* arrow = RanderItems::CreateArrow("arrow", corner, squareSide, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), true);
 	AddMeshToList(arrow);
-	
+
 	Mesh* bow = RanderItems::CreateBow("bow", corner, squareSide, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), false, spaceBow, scale);
 	AddMeshToList(bow);
-	
-	Mesh* Shuriken = RanderItems::CreateShuriken("Shuriken", corner, squareSide/2, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), false, spaceBow, scale);
+
+	Mesh* Shuriken = RanderItems::CreateShuriken("Shuriken", corner, squareSide / 2, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), false, spaceBow, scale);
 	AddMeshToList(Shuriken);
 
-	Mesh* Balloon = RanderItems::CreateBalloon("Balloon", corner, squareSide/2, squareSide/4, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), false, 360, scale);
+	Mesh* Balloon = RanderItems::CreateBalloon("Balloon", corner, squareSide / 2, squareSide / 4, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), false, 360, scale);
 	AddMeshToList(Balloon);
-	
-	/*
 
-	
-
-	Mesh* square2 = Object2D::CreateSquare("square2", corner, squareSide, glm::vec3(0, 1, 0));
-	AddMeshToList(square2);
-
-	Mesh* square3 = Object2D::CreateSquare("square3", corner, squareSide, glm::vec3(0, 0, 1));
-	AddMeshToList(square3);
-
-	Mesh* square4 = Object2D::CreateSquare("square4", corner, squareSide, glm::vec3(1, 0, 1));
-	AddMeshToList(square4);
-	*/
 }
 
 void Tema1::FrameStart()
@@ -78,7 +65,6 @@ void Tema1::FrameStart()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glm::ivec2 resolution = window->GetResolution();
-	// sets the screen area where to draw
 	glViewport(0, 0, resolution.x, resolution.y);
 }
 
@@ -87,27 +73,35 @@ void Tema1::Update(float deltaTimeSeconds)
 
 	glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
 
+	if (verify == 1) {
+		arrowX += 100 * deltaTimeSeconds;
+	}
 
+	if (arrowX > 1280)
+	{
+		verify = 0;
+		arrowX = 100;
+		translationyArrow = translationy;
+	}
 
-
+	//arrow Transaltion / Render
 	modelMatrix = glm::mat3(1);
-
-	modelMatrix *= Transform2D::Translate(arrowX, translationy);
+	modelMatrix *= Transform2D::Translate(arrowX, translationyArrow);
 	//modelMatrix *= Transform2D::Scale(8, 8);
 	modelMatrix *= Transform2D::Scale(2, 2);
-
 	RenderMesh2D(meshes["arrow"], shaders["VertexColor"], modelMatrix);
 
+
+	//Bow Transaltion / Render
 	modelMatrix = glm::mat3(1);
-
-
 	modelMatrix *= Transform2D::Translate(translationx, translationy);
 	modelMatrix *= Transform2D::Scale(1, 1);
 	//modelMatrix *= Transform2D::Scale(2, 2);
 	modelMatrix *= Transform2D::Rotate(-1.5708);
-
 	RenderMesh2D(meshes["bow"], shaders["VertexColor"], modelMatrix);
 	
+
+	//Shuriken Transaltion / Render
 	modelMatrix = glm::mat3(1);
 	modelMatrix *= Transform2D::Translate(650, 250);
 	modelMatrix *= Transform2D::Scale(1, 1);
@@ -116,17 +110,14 @@ void Tema1::Update(float deltaTimeSeconds)
 	modelMatrix *= Transform2D::Translate(squer_l / 4.f, squer_l / 4.f);
 	modelMatrix *= Transform2D::Rotate(degre);
 	modelMatrix *= Transform2D::Translate(-squer_l / 4.f, -squer_l / 4.f);
-	//glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
-
-	
 	RenderMesh2D(meshes["Shuriken"], shaders["VertexColor"], modelMatrix);
 
+
+	//balloon Transaltion / Render
 	modelMatrix = glm::mat3(1);
 	modelMatrix *= Transform2D::Translate(950, 150);
 	modelMatrix *= Transform2D::Scale(1, 1);
 	RenderMesh2D(meshes["Balloon"], shaders["VertexNormal"], modelMatrix);
-
-
 }
 
 void Tema1::FrameEnd()
@@ -138,14 +129,30 @@ void Tema1::OnInputUpdate(float deltaTime, int mods)
 
 	if (window->KeyHold(GLFW_KEY_W))
 	{
+		if (verify == 0) {
+			translationyArrow += 150 * deltaTime;
+			translationy += 150 * deltaTime;
 
-		translationy += 150 * deltaTime;
+		}
+		else
+		{
+			translationy += 150 * deltaTime;
+
+		}
 	}
 
 	if (window->KeyHold(GLFW_KEY_S))
 	{
+		if (verify == 0) {
+			translationyArrow -= 150 * deltaTime;
+			translationy -= 150 * deltaTime;
 
-		translationy -= 150 * deltaTime;
+		}
+		else
+		{
+			translationy -= 150 * deltaTime;
+
+		}
 	}
 
 	if (window->MouseHold(GLFW_MOUSE_BUTTON_RIGHT))
@@ -186,17 +193,18 @@ void Tema1::OnKeyPress(int key, int mods)
 			break;
 		}
 	}
+
+	if (GLFW_KEY_K == key)
+	{
+		verify = 1;
+	}
+
 }
 
 void Tema1::OnKeyRelease(int key, int mods)
 {
 
-	if (GLFW_KEY_K == key)
-	{
-		ArrowRelese(arrowSpeed);
-		arrowSpeed = 0;
-
-	}
+	
 }
 
 void Tema1::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY)
@@ -209,6 +217,10 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
 
 void Tema1::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)
 {
+	if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+		ArrowRelese(arrowSpeed);
+		arrowSpeed = 0;
+	}
 }
 
 void Tema1::OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY)

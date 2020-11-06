@@ -13,7 +13,8 @@ class Tema1 : public SimpleScene
 	void Init() override;
 	int spaceBow = 100;
 	int scale = 75;
-	GLfloat degre,arrowSpeed = 0 ,translationx = 25,translationy = 250, arrowX = 100,squer_l = 100;
+	GLfloat degre,arrowSpeed = 0 ,translationx = 25,translationy = 250, translationyArrow = 250, arrowX = 100,squer_l = 100;
+	int verify = 0;
 	void ArrowRelese(GLfloat relese);
 
 private:

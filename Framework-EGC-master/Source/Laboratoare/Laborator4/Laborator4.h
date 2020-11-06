@@ -8,6 +8,7 @@ class Laborator4 : public SimpleScene
 		~Laborator4();
 
 		void Init() override;
+		GLfloat posSunX = 0, posSunY = 0, SQUARE_SIDE=10, SQUARES_DISTANCE = 1;
 
 	private:
 		void FrameStart() override;
