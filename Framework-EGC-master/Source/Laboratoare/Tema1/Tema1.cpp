@@ -203,12 +203,12 @@ void Tema1::OnKeyPress(int key, int mods)
 
 void Tema1::OnKeyRelease(int key, int mods)
 {
-
 	
 }
 
 void Tema1::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY)
 {
+	
 }
 
 void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
