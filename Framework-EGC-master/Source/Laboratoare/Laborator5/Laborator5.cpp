@@ -74,6 +74,23 @@ void Laborator5::Update(float deltaTimeSeconds)
 		RenderMesh(meshes["box"], shaders["Simple"], modelMatrix);
 	}
 
+
+	{
+		glm::mat4 modelMatrix = glm::mat4(1);
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(2.f, 2.5f, 0));
+		modelMatrix = glm::rotate(modelMatrix, RADIANS(90.f), glm::vec3(1.f, 1.f, 0));
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(1.f, .5f, .3f));
+		RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
+	}
+
+	{
+		glm::mat4 modelMatrix = glm::mat4(1);
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(2.f, 2.5f, 3.f));
+		modelMatrix = glm::rotate(modelMatrix, RADIANS(180.f), glm::vec3(0.8f, 0, 0.5f));
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(.8f, 1.f, .9f));
+		RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
+	}
+
 	// Render the camera target. Useful for understanding where is the rotation point in Third-person camera movement
 	if (renderCameraTarget)
 	{
@@ -109,32 +126,60 @@ void Laborator5::RenderMesh(Mesh * mesh, Shader * shader, const glm::mat4 & mode
 void Laborator5::OnInputUpdate(float deltaTime, int mods)
 {
 	// move the camera only if MOUSE_RIGHT button is pressed
+	float cameraSpeed = 2.0f;
+
 	if (window->MouseHold(GLFW_MOUSE_BUTTON_RIGHT))
 	{
-		float cameraSpeed = 2.0f;
 
 		if (window->KeyHold(GLFW_KEY_W)) {
 			// TODO : translate the camera forward
+			camera->TranslateForward(deltaTime * cameraSpeed);
 		}
 
 		if (window->KeyHold(GLFW_KEY_A)) {
 			// TODO : translate the camera to the left
+			camera->TranslateRight(-deltaTime * cameraSpeed);
 		}
 
 		if (window->KeyHold(GLFW_KEY_S)) {
 			// TODO : translate the camera backwards
+			camera->TranslateForward(-deltaTime * cameraSpeed);
 		}
 
 		if (window->KeyHold(GLFW_KEY_D)) {
 			// TODO : translate the camera to the right
+			camera->TranslateRight(deltaTime * cameraSpeed);
 		}
 
 		if (window->KeyHold(GLFW_KEY_Q)) {
 			// TODO : translate the camera down
+			camera->TranslateUpword(-deltaTime * cameraSpeed);
 		}
 
 		if (window->KeyHold(GLFW_KEY_E)) {
 			// TODO : translate the camera up
+			camera->TranslateUpword(deltaTime * cameraSpeed);
+		}
+
+	}
+
+
+	if (window->KeyHold(GLFW_KEY_F))
+	{
+		fov += deltaTime * cameraSpeed;
+
+		if (projectionType)
+		{
+			projectionMatrix = glm::perspective(RADIANS(fov), window->props.aspectRatio, Z_NEAR, Z_FAR);
+		}
+	}
+	if (window->KeyHold(GLFW_KEY_G))
+	{
+		fov -= deltaTime * cameraSpeed;
+
+		if (projectionType)
+		{
+			projectionMatrix = glm::perspective(RADIANS(fov), window->props.aspectRatio, Z_NEAR, Z_FAR);
 		}
 	}
 }
@@ -145,6 +190,17 @@ void Laborator5::OnKeyPress(int key, int mods)
 	if (key == GLFW_KEY_T)
 	{
 		renderCameraTarget = !renderCameraTarget;
+	}
+
+	if (key == GLFW_KEY_O)
+	{
+		projectionType = false;
+		projectionMatrix = glm::ortho(left, right, bottom, top, Z_NEAR, Z_FAR);
+	}
+	if (key == GLFW_KEY_P)
+	{
+		projectionType = true;
+		projectionMatrix = glm::perspective(RADIANS(fov), window->props.aspectRatio, Z_NEAR, Z_FAR);
 	}
 }
 
@@ -166,12 +222,16 @@ void Laborator5::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY)
 			renderCameraTarget = false;
 			// TODO : rotate the camera in First-person mode around OX and OY using deltaX and deltaY
 			// use the sensitivity variables for setting up the rotation speed
+			camera->RotateFirstPerson_OX(sensivityOX * -deltaY);
+			camera->RotateFirstPerson_OY(sensivityOY * -deltaX);
 		}
 
 		if (window->GetSpecialKeyState() && GLFW_MOD_CONTROL) {
 			renderCameraTarget = true;
 			// TODO : rotate the camera in Third-person mode around OX and OY using deltaX and deltaY
 			// use the sensitivity variables for setting up the rotation speed
+			camera->RotateThirdPerson_OX(sensivityOX * -deltaY);
+			camera->RotateThirdPerson_OY(sensivityOY * -deltaX);
 		}
 
 	}
