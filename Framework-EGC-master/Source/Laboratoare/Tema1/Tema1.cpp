@@ -45,8 +45,8 @@ void Tema1::Init()
 	// initialize angularStep
 	angularStep = 0;
 
-	Mesh* arrow = RanderItems::CreateArrow("arrow", corner, squareSide, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), true);
-	AddMeshToList(arrow);
+	//Mesh* arrow = RanderItems::CreateArrow("arrow", corner, squareSide, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), true);
+	//AddMeshToList(arrow);
 
 	Mesh* bow = RanderItems::CreateBow("bow", corner, squareSide, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), false, spaceBow, scale);
 	AddMeshToList(bow);
@@ -85,12 +85,8 @@ void Tema1::Update(float deltaTimeSeconds)
 	}
 
 	//arrow Transaltion / Render
-	modelMatrix = glm::mat3(1);
-	modelMatrix *= Transform2D::Translate(arrowX, translationyArrow);
-	//modelMatrix *= Transform2D::Scale(8, 8);
-	modelMatrix *= Transform2D::Scale(2, 2);
-	RenderMesh2D(meshes["arrow"], shaders["VertexColor"], modelMatrix);
-
+	
+	RanderElements();
 
 	//Bow Transaltion / Render
 	modelMatrix = glm::mat3(1);
@@ -122,6 +118,16 @@ void Tema1::Update(float deltaTimeSeconds)
 
 void Tema1::FrameEnd()
 {
+}
+
+void Tema1::RanderElements() {
+
+	modelMatrix = glm::mat3(1);
+	modelMatrix *= Transform2D::Translate(arrowX, translationyArrow);
+	//modelMatrix *= Transform2D::Scale(8, 8);
+	modelMatrix *= Transform2D::Scale(2, 2);
+	Mesh* mes = arrow->arrowM;
+	RenderMesh2D(mes, shaders["VertexColor"], modelMatrix);
 }
 
 void Tema1::OnInputUpdate(float deltaTime, int mods)

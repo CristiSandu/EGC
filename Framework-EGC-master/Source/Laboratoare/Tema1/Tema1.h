@@ -3,6 +3,7 @@
 #include <Component/SimpleScene.h>
 #include <string>
 #include <Core/Engine.h>
+#include "Arrow.h"
 
 class Tema1 : public SimpleScene
 {
@@ -22,6 +23,8 @@ private:
 	void Update(float deltaTimeSeconds) override;
 	void FrameEnd() override;
 
+	void RanderElements();
+
 	void OnInputUpdate(float deltaTime, int mods) override;
 	void OnKeyPress(int key, int mods) override;
 	void OnKeyRelease(int key, int mods) override;
@@ -31,6 +34,8 @@ private:
 	void OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY) override;
 	void OnWindowResize(int width, int height) override;
 protected:
+	Arrow* arrow;
+	
 	glm::mat3 modelMatrix;
 	float translateX, translateY;
 	float scaleX, scaleY;

@@ -148,6 +148,9 @@
     <ClCompile Include="..\Source\Laboratoare\Tema1\RanderItems.cpp">
       <Filter>Laboratoare\Tema1</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Laboratoare\Tema1\Arrow.cpp">
+      <Filter>Laboratoare\Tema1</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Core\World.h">
@@ -256,6 +259,9 @@
       <Filter>Laboratoare\Tema1</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\Laboratoare\Tema1\Transform2D.h">
+      <Filter>Laboratoare\Tema1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Laboratoare\Tema1\Arrow.h">
       <Filter>Laboratoare\Tema1</Filter>
     </ClInclude>
   </ItemGroup>
