@@ -4,6 +4,11 @@
 #include <string>
 #include <Core/Engine.h>
 #include "Arrow.h"
+#include "Bow.h"
+#include "Shuriken.h"
+#include "Balloon.h"
+#include <vector>
+
 
 class Tema1 : public SimpleScene
 {
@@ -14,14 +19,36 @@ class Tema1 : public SimpleScene
 	void Init() override;
 	int spaceBow = 100;
 	int scale = 75;
+	
 	GLfloat degre,arrowSpeed = 0 ,translationx = 25,translationy = 250, translationyArrow = 250, arrowX = 100,squer_l = 100;
 	int verify = 0;
+	std::vector<glm::vec2> arrowsCoord;
 	void ArrowRelese(GLfloat relese);
 
 private:
 	void FrameStart() override;
 	void Update(float deltaTimeSeconds) override;
 	void FrameEnd() override;
+
+	void RanderScene();
+
+	void RanderScene(float deltaTimeSeconds);
+
+	void RanderArrow(glm::vec2 positionCursor, float deltaTimeSeconds);
+
+	void RanderArrow(glm::vec2 positionCursor);
+
+	void RanderArrow();
+
+	
+	void RanderBow();
+
+	void RanderShuricken(float deltaTimeSeconds);
+
+	void RanderBalloon();
+
+	
+	void RanderShuricken();
 
 	void RanderElements();
 
@@ -35,6 +62,10 @@ private:
 	void OnWindowResize(int width, int height) override;
 protected:
 	Arrow* arrow;
+	Bow* bow;
+	Shuriken* shuriken;
+	Balloon* balloon;
+
 	
 	glm::mat3 modelMatrix;
 	float translateX, translateY;

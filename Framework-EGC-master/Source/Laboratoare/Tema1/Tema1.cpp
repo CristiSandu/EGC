@@ -29,6 +29,10 @@ void Tema1::Init()
 
 	glm::vec3 corner = glm::vec3(0, 0, 0);
 	float squareSide = 100;
+	arrow = new Arrow();
+	bow = new Bow();
+	shuriken = new Shuriken();
+	balloon = new Balloon();
 
 	// compute coordinates of square center
 	float cx = corner.x + squareSide / 2;
@@ -48,14 +52,14 @@ void Tema1::Init()
 	//Mesh* arrow = RanderItems::CreateArrow("arrow", corner, squareSide, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), true);
 	//AddMeshToList(arrow);
 
-	Mesh* bow = RanderItems::CreateBow("bow", corner, squareSide, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), false, spaceBow, scale);
-	AddMeshToList(bow);
+	//Mesh* bow = RanderItems::CreateBow("bow", corner, squareSide, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), false, spaceBow, scale);
+	//AddMeshToList(bow);
 
-	Mesh* Shuriken = RanderItems::CreateShuriken("Shuriken", corner, squareSide / 2, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), false, spaceBow, scale);
-	AddMeshToList(Shuriken);
+	///Mesh* Shuriken = RanderItems::CreateShuriken("Shuriken", corner, squareSide / 2, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), false, spaceBow, scale);
+	//AddMeshToList(Shuriken);
 
-	Mesh* Balloon = RanderItems::CreateBalloon("Balloon", corner, squareSide / 2, squareSide / 4, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), false, 360, scale);
-	AddMeshToList(Balloon);
+	//Mesh* Balloon = RanderItems::CreateBalloon("Balloon", corner, squareSide / 2, squareSide / 4, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), false, 360, scale);
+	//AddMeshToList(Balloon);
 
 }
 
@@ -84,20 +88,56 @@ void Tema1::Update(float deltaTimeSeconds)
 		translationyArrow = translationy;
 	}
 
+	RanderScene(deltaTimeSeconds);
+}
+
+void Tema1::FrameEnd()
+{
+}
+
+
+void Tema1::RanderScene(float deltaTimeSeconds) {
 	//arrow Transaltion / Render
-	
-	RanderElements();
+	glm::vec2 positionCursor = window->GetCursorPosition();
+
+	RanderArrow(positionCursor, deltaTimeSeconds);
 
 	//Bow Transaltion / Render
+	RanderBow();
+
+	//Shuriken Transaltion / Render
+	RanderShuricken(deltaTimeSeconds);
+
+	//balloon Transaltion / Render
+	RanderBalloon();
+}
+
+void Tema1::RanderArrow(glm::vec2 positionCursor, float deltaTimeSeconds) {
+
+	for (int i = 0; i < arrowsCoord.size(); i++)
+	{
+		
+		modelMatrix = glm::mat3(1);
+		arrowsCoord[i].x += 250 * deltaTimeSeconds;
+		modelMatrix *= Transform2D::Translate(arrowsCoord[i].x, translationy );
+		//modelMatrix *= Transform2D::Scale(8, 8);
+
+		modelMatrix *= Transform2D::Scale(2, 2);
+		Mesh* mes = arrow->GetArrow();
+		RenderMesh2D(mes, shaders["VertexColor"], modelMatrix);
+	}
+}
+
+void Tema1::RanderBow() {
 	modelMatrix = glm::mat3(1);
 	modelMatrix *= Transform2D::Translate(translationx, translationy);
 	modelMatrix *= Transform2D::Scale(1, 1);
 	//modelMatrix *= Transform2D::Scale(2, 2);
 	modelMatrix *= Transform2D::Rotate(-1.5708);
-	RenderMesh2D(meshes["bow"], shaders["VertexColor"], modelMatrix);
-	
+	RenderMesh2D(bow->GetBow(), shaders["VertexColor"], modelMatrix);
+}
 
-	//Shuriken Transaltion / Render
+void Tema1::RanderShuricken(float deltaTimeSeconds) {
 	modelMatrix = glm::mat3(1);
 	modelMatrix *= Transform2D::Translate(650, 250);
 	modelMatrix *= Transform2D::Scale(1, 1);
@@ -106,28 +146,15 @@ void Tema1::Update(float deltaTimeSeconds)
 	modelMatrix *= Transform2D::Translate(squer_l / 4.f, squer_l / 4.f);
 	modelMatrix *= Transform2D::Rotate(degre);
 	modelMatrix *= Transform2D::Translate(-squer_l / 4.f, -squer_l / 4.f);
-	RenderMesh2D(meshes["Shuriken"], shaders["VertexColor"], modelMatrix);
+	RenderMesh2D(shuriken->GetShuriken(), shaders["VertexColor"], modelMatrix);
 
+}
 
-	//balloon Transaltion / Render
+void Tema1::RanderBalloon() {
 	modelMatrix = glm::mat3(1);
 	modelMatrix *= Transform2D::Translate(950, 150);
 	modelMatrix *= Transform2D::Scale(1, 1);
-	RenderMesh2D(meshes["Balloon"], shaders["VertexNormal"], modelMatrix);
-}
-
-void Tema1::FrameEnd()
-{
-}
-
-void Tema1::RanderElements() {
-
-	modelMatrix = glm::mat3(1);
-	modelMatrix *= Transform2D::Translate(arrowX, translationyArrow);
-	//modelMatrix *= Transform2D::Scale(8, 8);
-	modelMatrix *= Transform2D::Scale(2, 2);
-	Mesh* mes = arrow->arrowM;
-	RenderMesh2D(mes, shaders["VertexColor"], modelMatrix);
+	RenderMesh2D(balloon->GetBalloon(), shaders["VertexNormal"], modelMatrix);
 }
 
 void Tema1::OnInputUpdate(float deltaTime, int mods)
@@ -138,12 +165,10 @@ void Tema1::OnInputUpdate(float deltaTime, int mods)
 		if (verify == 0) {
 			translationyArrow += 150 * deltaTime;
 			translationy += 150 * deltaTime;
-
 		}
 		else
 		{
 			translationy += 150 * deltaTime;
-
 		}
 	}
 
@@ -152,12 +177,10 @@ void Tema1::OnInputUpdate(float deltaTime, int mods)
 		if (verify == 0) {
 			translationyArrow -= 150 * deltaTime;
 			translationy -= 150 * deltaTime;
-
 		}
 		else
 		{
 			translationy -= 150 * deltaTime;
-
 		}
 	}
 
@@ -167,7 +190,6 @@ void Tema1::OnInputUpdate(float deltaTime, int mods)
 	}
 	if (window->MouseHold(GLFW_MOUSE_BUTTON_LEFT))
 	{
-
 		arrowX -= 150 * deltaTime;
 	}
 }
@@ -175,10 +197,7 @@ void Tema1::OnInputUpdate(float deltaTime, int mods)
 
 void Tema1::ArrowRelese(GLfloat relese)
 {
-	for (GLfloat i = 0; i < relese; i++)
-	{
-		arrowX += i;
-	}
+	
 }
 
 void Tema1::OnKeyPress(int key, int mods)
@@ -202,7 +221,8 @@ void Tema1::OnKeyPress(int key, int mods)
 
 	if (GLFW_KEY_K == key)
 	{
-		verify = 1;
+		
+		arrowsCoord.push_back(glm::vec2(0,0));
 	}
 
 }

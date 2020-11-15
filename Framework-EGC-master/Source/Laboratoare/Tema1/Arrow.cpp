@@ -33,11 +33,11 @@ Arrow::Arrow() {
 			4,7,3,
 			3,6,4
 		};
-		indices.push_back(0);
-		indices.push_back(2);
+		//indices.push_back(0);
+		//indices.push_back(2);
 
 		arrowM->InitFromData(vertices, indices);
-		arrowM->SetDrawMode(GL_TRIANGLE_FAN);
+		//arrowM->SetDrawMode(GL_TRIANGLE_FAN);
 
 	}
 }
@@ -47,12 +47,5 @@ Arrow::~Arrow() {
 }
 
 Mesh* Arrow::GetArrow() {
-	try
-	{
 		return arrowM;
-	}
-	catch (int e)
-	{
-		//cout << "An exception occurred. Exception Nr. " << e << '\n';
-	}
 }

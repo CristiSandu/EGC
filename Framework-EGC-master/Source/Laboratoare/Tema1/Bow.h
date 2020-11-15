@@ -2,18 +2,17 @@
 #include <Component\SimpleScene.h>
 #include <Core/Engine.h>
 
-class Arrow {
-public:
-	Arrow();
-	~Arrow();
 
-	Mesh* GetArrow();
+class Bow {
+public :
+	Bow();
+	~Bow();
+	Mesh* GetBow();
 	glm::vec3 corner = glm::vec3(0, 0, 0);
 	float squareSide = 100;
-	Mesh* arrowM;
 	glm::vec3  color = glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0);
-	
-private:
-
+	int spaceBow = 100;
+	int scale = 75;
+	Mesh* bow;
 
 };

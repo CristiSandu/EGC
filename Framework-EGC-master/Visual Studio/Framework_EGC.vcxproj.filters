@@ -151,6 +151,15 @@
     <ClCompile Include="..\Source\Laboratoare\Tema1\Arrow.cpp">
       <Filter>Laboratoare\Tema1</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Laboratoare\Tema1\Bow.cpp">
+      <Filter>Laboratoare\Tema1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Laboratoare\Tema1\Shuriken.cpp">
+      <Filter>Laboratoare\Tema1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Laboratoare\Tema1\Balloon.cpp">
+      <Filter>Laboratoare\Tema1</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Core\World.h">
@@ -262,6 +271,15 @@
       <Filter>Laboratoare\Tema1</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\Laboratoare\Tema1\Arrow.h">
+      <Filter>Laboratoare\Tema1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Laboratoare\Tema1\Bow.h">
+      <Filter>Laboratoare\Tema1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Laboratoare\Tema1\Shuriken.h">
+      <Filter>Laboratoare\Tema1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Laboratoare\Tema1\Balloon.h">
       <Filter>Laboratoare\Tema1</Filter>
     </ClInclude>
   </ItemGroup>

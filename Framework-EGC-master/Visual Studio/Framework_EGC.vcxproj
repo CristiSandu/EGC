@@ -45,7 +45,10 @@
     <ClCompile Include="..\Source\Laboratoare\Laborator8\Laborator8.cpp" />
     <ClCompile Include="..\Source\Laboratoare\Laborator9\Laborator9.cpp" />
     <ClCompile Include="..\Source\Laboratoare\Tema1\Arrow.cpp" />
+    <ClCompile Include="..\Source\Laboratoare\Tema1\Balloon.cpp" />
+    <ClCompile Include="..\Source\Laboratoare\Tema1\Bow.cpp" />
     <ClCompile Include="..\Source\Laboratoare\Tema1\RanderItems.cpp" />
+    <ClCompile Include="..\Source\Laboratoare\Tema1\Shuriken.cpp" />
     <ClCompile Include="..\Source\Laboratoare\Tema1\Tema1.cpp" />
     <ClCompile Include="..\Source\Main.cpp" />
   </ItemGroup>
@@ -84,7 +87,10 @@
     <ClInclude Include="..\Source\Laboratoare\Laborator8\Laborator8.h" />
     <ClInclude Include="..\Source\Laboratoare\Laborator9\Laborator9.h" />
     <ClInclude Include="..\Source\Laboratoare\Tema1\Arrow.h" />
+    <ClInclude Include="..\Source\Laboratoare\Tema1\Balloon.h" />
+    <ClInclude Include="..\Source\Laboratoare\Tema1\Bow.h" />
     <ClInclude Include="..\Source\Laboratoare\Tema1\RanderItems.h" />
+    <ClInclude Include="..\Source\Laboratoare\Tema1\Shuriken.h" />
     <ClInclude Include="..\Source\Laboratoare\Tema1\Tema1.h" />
     <ClInclude Include="..\Source\Laboratoare\Tema1\Transform2D.h" />
   </ItemGroup>
