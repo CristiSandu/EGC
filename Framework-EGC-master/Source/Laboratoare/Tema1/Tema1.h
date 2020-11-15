@@ -8,6 +8,8 @@
 #include "Shuriken.h"
 #include "Balloon.h"
 #include <vector>
+#include <cstdio>
+#include <ctime>
 
 
 class Tema1 : public SimpleScene
@@ -19,10 +21,16 @@ class Tema1 : public SimpleScene
 	void Init() override;
 	int spaceBow = 100;
 	int scale = 75;
-	
+	glm::ivec2 resolution;
 	GLfloat degre,arrowSpeed = 0 ,translationx = 25,translationy = 250, translationyArrow = 250, arrowX = 100,squer_l = 100;
 	int verify = 0;
-	std::vector<glm::vec2> arrowsCoord;
+	std::clock_t start,startArrow, startShuriken;
+	std::vector<glm::vec3> arrowsCoord;
+	std::vector<glm::vec3> baloonsCoord;
+	std::vector<glm::vec3> shurikenCoord;
+
+	GLfloat baloonX = 0, balloonY = 0;
+
 	void ArrowRelese(GLfloat relese);
 
 private:
@@ -34,6 +42,9 @@ private:
 
 	void RanderScene(float deltaTimeSeconds);
 
+	
+	void RanderArrow(float deltaTimeSeconds);
+
 	void RanderArrow(glm::vec2 positionCursor, float deltaTimeSeconds);
 
 	void RanderArrow(glm::vec2 positionCursor);
@@ -44,6 +55,8 @@ private:
 	void RanderBow();
 
 	void RanderShuricken(float deltaTimeSeconds);
+
+	void RanderBalloon(float deltaTimeSeconds);
 
 	void RanderBalloon();
 
