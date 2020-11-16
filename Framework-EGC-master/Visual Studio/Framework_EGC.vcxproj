@@ -47,6 +47,7 @@
     <ClCompile Include="..\Source\Laboratoare\Tema1\Arrow.cpp" />
     <ClCompile Include="..\Source\Laboratoare\Tema1\Balloon.cpp" />
     <ClCompile Include="..\Source\Laboratoare\Tema1\Bow.cpp" />
+    <ClCompile Include="..\Source\Laboratoare\Tema1\PowerBar.cpp" />
     <ClCompile Include="..\Source\Laboratoare\Tema1\RanderItems.cpp" />
     <ClCompile Include="..\Source\Laboratoare\Tema1\Shuriken.cpp" />
     <ClCompile Include="..\Source\Laboratoare\Tema1\Tema1.cpp" />
@@ -89,6 +90,7 @@
     <ClInclude Include="..\Source\Laboratoare\Tema1\Arrow.h" />
     <ClInclude Include="..\Source\Laboratoare\Tema1\Balloon.h" />
     <ClInclude Include="..\Source\Laboratoare\Tema1\Bow.h" />
+    <ClInclude Include="..\Source\Laboratoare\Tema1\PowerBar.h" />
     <ClInclude Include="..\Source\Laboratoare\Tema1\RanderItems.h" />
     <ClInclude Include="..\Source\Laboratoare\Tema1\Shuriken.h" />
     <ClInclude Include="..\Source\Laboratoare\Tema1\Tema1.h" />

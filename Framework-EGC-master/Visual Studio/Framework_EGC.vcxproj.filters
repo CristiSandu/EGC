@@ -160,6 +160,9 @@
     <ClCompile Include="..\Source\Laboratoare\Tema1\Balloon.cpp">
       <Filter>Laboratoare\Tema1</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Laboratoare\Tema1\PowerBar.cpp">
+      <Filter>Laboratoare\Tema1</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Core\World.h">
@@ -280,6 +283,9 @@
       <Filter>Laboratoare\Tema1</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\Laboratoare\Tema1\Balloon.h">
+      <Filter>Laboratoare\Tema1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Laboratoare\Tema1\PowerBar.h">
       <Filter>Laboratoare\Tema1</Filter>
     </ClInclude>
   </ItemGroup>
