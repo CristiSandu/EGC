@@ -198,7 +198,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <OutDir>.</OutDir>
     <IntDir>obj\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
     <IncludePath>..\Source;..\libs\;..\libs\Engine\;$(IncludePath)</IncludePath>
   </PropertyGroup>
