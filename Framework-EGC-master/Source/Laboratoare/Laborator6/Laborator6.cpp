@@ -240,3 +240,10 @@ void Laborator6::OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY)
 void Laborator6::OnWindowResize(int width, int height)
 {
 }
+// compute gl_Position
+	//vec4 vec_final_position = Model * vec4(v_position, 1.f) + vec4(0.f, tan(Time), 0.f, 0.f) * 2.f;
+	//gl_Position	= Projection * View * Model *  vec4(v_position, 1.0) ;
+
+// TODO: write pixel out color
+	//out_color = vec4(1);
+	//out_color	= vec4(frag_color, 1.f);
