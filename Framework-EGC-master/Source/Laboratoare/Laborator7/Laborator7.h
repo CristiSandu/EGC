@@ -10,6 +10,8 @@ class Laborator7 : public SimpleScene
 		~Laborator7();
 
 		void Init() override;
+		glm::vec3 sphearRandColor = glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0);
+		glm::vec3 planeRandColor = glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0);
 
 	private:
 		void FrameStart() override;
