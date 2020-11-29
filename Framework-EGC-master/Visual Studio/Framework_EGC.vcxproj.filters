@@ -64,6 +64,9 @@
     <Filter Include="Laboratoare\Tema1">
       <UniqueIdentifier>{3b8afdea-edf6-4c65-8eb5-0b111243a59a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Laboratoare\Tema2">
+      <UniqueIdentifier>{478439e9-80d5-457e-8b54-99b5917703c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\Core\Engine.cpp">
