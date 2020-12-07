@@ -51,6 +51,9 @@
     <ClCompile Include="..\Source\Laboratoare\Tema1\RanderItems.cpp" />
     <ClCompile Include="..\Source\Laboratoare\Tema1\Shuriken.cpp" />
     <ClCompile Include="..\Source\Laboratoare\Tema1\Tema1.cpp" />
+    <ClCompile Include="..\Source\Laboratoare\Tema2\Platform.cpp" />
+    <ClCompile Include="..\Source\Laboratoare\Tema2\Player.cpp" />
+    <ClCompile Include="..\Source\Laboratoare\Tema2\Tema2.cpp" />
     <ClCompile Include="..\Source\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +98,11 @@
     <ClInclude Include="..\Source\Laboratoare\Tema1\Shuriken.h" />
     <ClInclude Include="..\Source\Laboratoare\Tema1\Tema1.h" />
     <ClInclude Include="..\Source\Laboratoare\Tema1\Transform2D.h" />
+    <ClInclude Include="..\Source\Laboratoare\Tema2\LabCamera.h" />
+    <ClInclude Include="..\Source\Laboratoare\Tema2\Platform.h" />
+    <ClInclude Include="..\Source\Laboratoare\Tema2\Player.h" />
+    <ClInclude Include="..\Source\Laboratoare\Tema2\Tema2.h" />
+    <ClInclude Include="..\Source\Laboratoare\Tema2\Transform3D.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Source\Laboratoare\Laborator6\Shaders\FragmentShader.glsl" />
