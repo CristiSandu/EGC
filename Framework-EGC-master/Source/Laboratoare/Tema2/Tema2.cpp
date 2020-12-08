@@ -25,7 +25,9 @@ void Tema2::Init()
 	startL = std::clock();
 	startM = std::clock();
 	startR = std::clock();
-
+	platformCoord.push_back(glm::vec4(0, 2, -4, 7));
+	platformCoord.push_back(glm::vec4(2, 2, -4, 7));
+	platformCoord.push_back(glm::vec4(4, 2, -4, 7));
 	projectionMatrix = glm::perspective(RADIANS(60), window->props.aspectRatio, 0.01f, 200.0f);
 }
 
@@ -50,9 +52,9 @@ void Tema2::Update(float deltaTimeSeconds)
 
 
 
-	int w = (rand() % 5) / 2;
+	int w = (rand() % 5 + 2) / 1;
 	double durationL = (std::clock() - startL) / (double)CLOCKS_PER_SEC;
-	if (durationL >= 0.2) {
+	if (durationL >= 0.35) {
 		platformCoord.push_back(glm::vec4(0, 2, -15, w));
 		startL = std::clock();
 	}
@@ -70,7 +72,26 @@ void Tema2::Update(float deltaTimeSeconds)
 	}
 
 	RanderScene(deltaTimeSeconds);
-	RanderPlayer(deltaTimeSeconds);
+	if (IntersectionCheck()==false)
+		RanderPlayer(deltaTimeSeconds);
+
+
+
+}
+inline float squared(float v) { return v * v; }
+bool Tema2::IntersectionCheck() {
+	for (int i = 0; i < platformCoord.size(); i++)
+	{
+		float dist_squared = 0.5 * 0.5;
+		/* assume C1 and C2 are element-wise sorted, if not, do that now */
+		if (playerCoord.x -0.5 < (platformCoord[i].x - 0.5)) dist_squared -= squared(playerCoord.x - 0.5 - (platformCoord[i].x - 0.5));
+		else if (playerCoord.x - 0.5 > (platformCoord[i].x + 0.5)) dist_squared -= squared(playerCoord.x - 0.5 - (platformCoord[i].x + 0.5));
+		if (playerCoord.y - 0.5 < (platformCoord[i].y - (0.5 * .1f))) dist_squared -= squared(playerCoord.y - 0.5 - (platformCoord[i].y - (0.5 * .1f)));
+		else if (playerCoord.y - 0.5 > (platformCoord[i].y + (0.5 * .1f))) dist_squared -= squared(playerCoord.y - 0.5 - (platformCoord[i].y + (0.5 * .1f)));
+		if (playerCoord.z - 0.5 < (platformCoord[i].z - (0.5 * platformCoord[i].w))) dist_squared -= squared(playerCoord.z - 0.5 - (platformCoord[i].z - (0.5 * platformCoord[i].w)));
+		else if (playerCoord.z - 0.5 > (platformCoord[i].z + (0.5 * platformCoord[i].w))) dist_squared -= squared(playerCoord.z - 0.5 - (platformCoord[i].z + (0.5 * platformCoord[i].w)));
+		return dist_squared > 0;
+	}
 
 }
 
@@ -78,7 +99,7 @@ void Tema2::Update(float deltaTimeSeconds)
 void Tema2::RanderScene(float deltaTimeSeconds) {
 	for (int i = 0; i < platformCoord.size(); i++)
 	{
-		platformCoord[i].z += deltaTimeSeconds * 10;
+		platformCoord[i].z += deltaTimeSeconds * speed;
 		modelMatrix = glm::mat4(1);
 		modelMatrix *= Transform3D::Translate(platformCoord[i].x, platformCoord[i].y, platformCoord[i].z);
 		modelMatrix *= Transform3D::Scale(1, .1f, platformCoord[i].w);
@@ -87,10 +108,43 @@ void Tema2::RanderScene(float deltaTimeSeconds) {
 }
 
 void Tema2::RanderPlayer(float deltaTimeSeconds) {
+
+	if (playerCoord.w == 1)
+	{
+		if (playerCoord.y < 5)
+		{
+			playerCoord.y += deltaTimeSeconds * (speed - 2);
+		}
+		else
+		{
+			playerCoord.w = 0;
+		}
+	}
+
+	if (playerCoord.w == 0)
+	{
+		if (playerCoord.y > 2.5)
+		{
+			playerCoord.y -= deltaTimeSeconds * (speed - 2);
+		}
+	}
 	modelMatrix = glm::mat4(1);
+	rotateAngle -= deltaTimeSeconds * speed;
 	modelMatrix *= Transform3D::Translate(playerCoord.x, playerCoord.y, playerCoord.z);
 	modelMatrix *= Transform3D::Scale(1, 1, 1);
+	modelMatrix *= Transform3D::RotateOX(rotateAngle);
+
 	RenderMesh(player->GetPlayer(), shaders["VertexNormal"], modelMatrix);
+/*
+	midPos = (startPos + endPos) * 0.5f;
+
+	modelMatrix = glm::mat4(1);
+	modelMatrix *= Transform3D::Translate(midPos[0], midPos[1], midPos[2]);
+	modelMatrix *= Transform3D::RotateOZ(angleJump);
+	modelMatrix *= Transform3D::Translate(startPos[0] - midPos[0], startPos[1] - midPos[1], startPos[2] - midPos[2]);
+
+	RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
+	*/
 }
 
 void Tema2::FrameEnd()
@@ -194,11 +248,50 @@ void Tema2::OnKeyPress(int key, int mods)
 		projectionType = true;
 		projectionMatrix = glm::perspective(RADIANS(fov), window->props.aspectRatio, Z_NEAR, Z_FAR);
 	}
-
-	if (key == GLFW_KEY_A)
+	if (!window->MouseHold(GLFW_MOUSE_BUTTON_RIGHT))
 	{
+		if (key == GLFW_KEY_A)
+		{
+			if (playerCoord.x == 2)
+			{
+				playerCoord.x = 0;
+			}
+			else if (playerCoord.x == 4)
+			{
+				playerCoord.x = 2;
+			}
+		}
 
+		if (key == GLFW_KEY_D)
+		{
+			if (playerCoord.x == 0)
+			{
+				playerCoord.x = 2;
+			}
+			else if (playerCoord.x == 2)
+			{
+				playerCoord.x = 4;
+			}
+		}
+
+		if (key == GLFW_KEY_W)
+		{
+			if (speed <= 10)
+				speed += 1;
+		}
+
+		if (key == GLFW_KEY_S)
+		{
+			if (speed >= .02f)
+				speed -= 1;
+		}
+
+		if (key == GLFW_KEY_SPACE)
+		{
+			playerCoord.w = 1;
+		}
 	}
+	
 }
 
 void Tema2::OnKeyRelease(int key, int mods)

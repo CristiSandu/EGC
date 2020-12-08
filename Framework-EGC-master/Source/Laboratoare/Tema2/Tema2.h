@@ -22,14 +22,16 @@ public:
 	~Tema2();
 	void Init();
 	std::vector<glm::vec4> platformCoord;
-	glm::vec4 playerCoord = glm::vec4(2, 3, 0,0);
-
+	glm::vec4 playerCoord = glm::vec4(2, 2.5, 0,0);
+	GLfloat speed = .01f;
+	float rotateAngle = .00f;
 	std::clock_t startL, startM, startR;
 
 
 private:
 	void FrameStart();
 	void Update(float deltaTimeSeconds);
+	bool IntersectionCheck();
 	void RanderScene(float deltaTimeSeconds);
 	void RanderPlayer(float deltaTimeSeconds);
 	void FrameEnd();
