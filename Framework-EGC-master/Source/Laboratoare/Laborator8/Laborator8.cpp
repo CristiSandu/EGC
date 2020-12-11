@@ -38,7 +38,7 @@ void Laborator8::Init()
 
 	// Create a shader program for drawing face polygon with the color of the normal
 	{
-		Shader *shader = new Shader("ShaderLab8");
+		Shader* shader = new Shader("ShaderLab8");
 		shader->AddShader("Source/Laboratoare/Laborator8/Shaders/VertexShader.glsl", GL_VERTEX_SHADER);
 		shader->AddShader("Source/Laboratoare/Laborator8/Shaders/FragmentShader.glsl", GL_FRAGMENT_SHADER);
 		shader->CreateAndLink();
@@ -63,7 +63,7 @@ void Laborator8::FrameStart()
 
 	glm::ivec2 resolution = window->GetResolution();
 	// sets the screen area where to draw
-	glViewport(0, 0, resolution.x, resolution.y);	
+	glViewport(0, 0, resolution.x, resolution.y);
 }
 
 void Laborator8::Update(float deltaTimeSeconds)
@@ -111,7 +111,7 @@ void Laborator8::FrameEnd()
 	DrawCoordinatSystem();
 }
 
-void Laborator8::RenderSimpleMesh(Mesh *mesh, Shader *shader, const glm::mat4 & modelMatrix, const glm::vec3 &color)
+void Laborator8::RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix, const glm::vec3& color)
 {
 	if (!mesh || !shader || !shader->GetProgramID())
 		return;
@@ -159,6 +159,12 @@ void Laborator8::RenderSimpleMesh(Mesh *mesh, Shader *shader, const glm::mat4 & 
 	int loc_projection_matrix = glGetUniformLocation(shader->program, "Projection");
 	glUniformMatrix4fv(loc_projection_matrix, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
+	GLint type = glGetUniformLocation(shader->program, "type_of_light");
+	glUniform1i(type, typeOfLight);
+
+	GLint cut_off_angle = glGetUniformLocation(shader->program, "cut_off_angle");
+	glUniform1f(cut_off_angle, cutoffAngle);
+
 	// Draw the object
 	glBindVertexArray(mesh->GetBuffers()->VAO);
 	glDrawElements(mesh->GetDrawMode(), static_cast<int>(mesh->indices.size()), GL_UNSIGNED_SHORT, 0);
@@ -185,12 +191,54 @@ void Laborator8::OnInputUpdate(float deltaTime, int mods)
 		if (window->KeyHold(GLFW_KEY_D)) lightPosition += right * deltaTime * speed;
 		if (window->KeyHold(GLFW_KEY_E)) lightPosition += up * deltaTime * speed;
 		if (window->KeyHold(GLFW_KEY_Q)) lightPosition -= up * deltaTime * speed;
+	
+		if (window->KeyHold(GLFW_KEY_UP))
+		{
+			angleOX += deltaTime * speed;
+		}
+		if (window->KeyHold(GLFW_KEY_DOWN))
+		{
+			angleOX -= deltaTime * speed;
+		}
+		if (window->KeyHold(GLFW_KEY_LEFT))
+		{
+			angleOY += deltaTime * speed;
+		}
+		if (window->KeyHold(GLFW_KEY_RIGHT))
+		{
+			angleOY -= deltaTime * speed;
+		}
+
+		if (window->KeyHold(GLFW_KEY_R))
+		{
+			cutoffAngle += deltaTime * ANGLE_SPEEDUP;
+			cutoffAngle = cutoffAngle > 360.f ? 360.f : cutoffAngle;
+		}
+		if (window->KeyHold(GLFW_KEY_T))
+		{
+			cutoffAngle -= deltaTime * ANGLE_SPEEDUP;
+			cutoffAngle = cutoffAngle < 0.f ? 0.f : cutoffAngle;
+		}
+
+		glm::mat4 turn = glm::mat4(1);
+		turn = glm::rotate(turn, angleOY, glm::vec3(0, 1, 0));
+		turn = glm::rotate(turn, angleOX, glm::vec3(1, 0, 0));
+
+		lightDirection = glm::vec3(0, -1, 0);
+		lightDirection = glm::vec3(turn * glm::vec4(lightDirection, 0));
 	}
 }
 
 void Laborator8::OnKeyPress(int key, int mods)
 {
 	// add key press event
+	if (key == GLFW_KEY_F)
+	{
+		if (typeOfLight == 0)
+			typeOfLight = 1;
+		else
+			typeOfLight = 0;
+	}
 }
 
 void Laborator8::OnKeyRelease(int key, int mods)
