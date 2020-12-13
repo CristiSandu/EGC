@@ -24,6 +24,8 @@ public:
 	std::vector<glm::vec4> platformCoord;
 	glm::vec4 playerCoord = glm::vec4(2, 2.5, 0,0);
 	GLfloat speed = .01f;
+	int firstLook = 1;
+	int start;
 	float rotateAngle = .00f;
 	std::clock_t startL, startM, startR;
 

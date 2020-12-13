@@ -19,7 +19,7 @@ void Tema2::Init()
 	renderCameraTarget = false;
 
 	camera = new CameraTema::Camera();
-	camera->Set(glm::vec3(0, 2, 3.5f), glm::vec3(0, 1, 0), glm::vec3(0, 1, 0));
+	camera->Set(glm::vec3(2, 4, 3), glm::vec3(2, 1, -2), glm::vec3(0, 1, 0));
 	player = new Player();
 	platform = new Platform();
 	startL = std::clock();
@@ -50,8 +50,6 @@ void Tema2::Update(float deltaTimeSeconds)
 	glPointSize(5);
 	glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
 
-
-
 	int w = (rand() % 5 + 2) / 1;
 	double durationL = (std::clock() - startL) / (double)CLOCKS_PER_SEC;
 	if (durationL >= 0.35) {
@@ -72,7 +70,7 @@ void Tema2::Update(float deltaTimeSeconds)
 	}
 
 	RanderScene(deltaTimeSeconds);
-	if (IntersectionCheck()==false)
+	if (IntersectionCheck() == false)
 		RanderPlayer(deltaTimeSeconds);
 
 
@@ -84,7 +82,7 @@ bool Tema2::IntersectionCheck() {
 	{
 		float dist_squared = 0.5 * 0.5;
 		/* assume C1 and C2 are element-wise sorted, if not, do that now */
-		if (playerCoord.x -0.5 < (platformCoord[i].x - 0.5)) dist_squared -= squared(playerCoord.x - 0.5 - (platformCoord[i].x - 0.5));
+		if (playerCoord.x - 0.5 < (platformCoord[i].x - 0.5)) dist_squared -= squared(playerCoord.x - 0.5 - (platformCoord[i].x - 0.5));
 		else if (playerCoord.x - 0.5 > (platformCoord[i].x + 0.5)) dist_squared -= squared(playerCoord.x - 0.5 - (platformCoord[i].x + 0.5));
 		if (playerCoord.y - 0.5 < (platformCoord[i].y - (0.5 * .1f))) dist_squared -= squared(playerCoord.y - 0.5 - (platformCoord[i].y - (0.5 * .1f)));
 		else if (playerCoord.y - 0.5 > (platformCoord[i].y + (0.5 * .1f))) dist_squared -= squared(playerCoord.y - 0.5 - (platformCoord[i].y + (0.5 * .1f)));
@@ -103,7 +101,14 @@ void Tema2::RanderScene(float deltaTimeSeconds) {
 		modelMatrix = glm::mat4(1);
 		modelMatrix *= Transform3D::Translate(platformCoord[i].x, platformCoord[i].y, platformCoord[i].z);
 		modelMatrix *= Transform3D::Scale(1, .1f, platformCoord[i].w);
-		RenderMesh(platform->GetPlatform(), shaders["VertexNormal"], modelMatrix);
+		if (platformCoord[i].z < 25)
+		{
+			RenderMesh(platform->GetPlatform(), shaders["VertexNormal"], modelMatrix);
+		}
+		else
+		{
+			start = i - 1;
+		}
 	}
 }
 
@@ -135,16 +140,16 @@ void Tema2::RanderPlayer(float deltaTimeSeconds) {
 	modelMatrix *= Transform3D::RotateOX(rotateAngle);
 
 	RenderMesh(player->GetPlayer(), shaders["VertexNormal"], modelMatrix);
-/*
-	midPos = (startPos + endPos) * 0.5f;
+	/*
+		midPos = (startPos + endPos) * 0.5f;
 
-	modelMatrix = glm::mat4(1);
-	modelMatrix *= Transform3D::Translate(midPos[0], midPos[1], midPos[2]);
-	modelMatrix *= Transform3D::RotateOZ(angleJump);
-	modelMatrix *= Transform3D::Translate(startPos[0] - midPos[0], startPos[1] - midPos[1], startPos[2] - midPos[2]);
+		modelMatrix = glm::mat4(1);
+		modelMatrix *= Transform3D::Translate(midPos[0], midPos[1], midPos[2]);
+		modelMatrix *= Transform3D::RotateOZ(angleJump);
+		modelMatrix *= Transform3D::Translate(startPos[0] - midPos[0], startPos[1] - midPos[1], startPos[2] - midPos[2]);
 
-	RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
-	*/
+		RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
+		*/
 }
 
 void Tema2::FrameEnd()
@@ -291,7 +296,21 @@ void Tema2::OnKeyPress(int key, int mods)
 			playerCoord.w = 1;
 		}
 	}
-	
+	if (key == GLFW_KEY_V)
+	{
+		if (firstLook == 1)
+		{
+			camera->Set(glm::vec3(5, 4, 3), glm::vec3(0, 1, -2), glm::vec3(0, 1, 0));
+			firstLook = 0;
+		}
+		else
+		{
+			camera->Set(glm::vec3(2, 4, 3), glm::vec3(2, 1, -2), glm::vec3(0, 1, 0));
+			firstLook = 1;
+
+		}
+	}
+
 }
 
 void Tema2::OnKeyRelease(int key, int mods)
