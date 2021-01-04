@@ -9,7 +9,10 @@
 #include <cstdio>
 #include <ctime>
 #include "Player.h"
+#include <cmath>
 #include "Platform.h"
+
+
 
 
 #define Z_FAR		(200.f)
@@ -33,6 +36,7 @@ public:
 private:
 	void FrameStart();
 	void Update(float deltaTimeSeconds);
+	GLfloat max_min(GLfloat a, GLfloat b, int c);
 	bool IntersectionCheck();
 	void RanderScene(float deltaTimeSeconds);
 	void RanderPlayer(float deltaTimeSeconds);

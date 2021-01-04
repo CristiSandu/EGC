@@ -77,20 +77,65 @@ void Tema2::Update(float deltaTimeSeconds)
 
 }
 inline float squared(float v) { return v * v; }
+
+GLfloat Tema2::max_min(GLfloat a, GLfloat b, int c)
+{
+	if (c == 1) {
+		if (a > b)
+			return a;
+		else
+			return b;
+	}
+	else
+	{
+		if (a > b)
+			return b;
+		else
+			return a;
+	}
+
+}
+
 bool Tema2::IntersectionCheck() {
 	for (int i = 0; i < platformCoord.size(); i++)
 	{
 		float dist_squared = 0.5 * 0.5;
 		/* assume C1 and C2 are element-wise sorted, if not, do that now */
-		if (playerCoord.x - 0.5 < (platformCoord[i].x - 0.5)) dist_squared -= squared(playerCoord.x - 0.5 - (platformCoord[i].x - 0.5));
+		/*if (playerCoord.x - 0.5 < (platformCoord[i].x - 0.5)) dist_squared -= squared(playerCoord.x - 0.5 - (platformCoord[i].x - 0.5));
 		else if (playerCoord.x - 0.5 > (platformCoord[i].x + 0.5)) dist_squared -= squared(playerCoord.x - 0.5 - (platformCoord[i].x + 0.5));
 		if (playerCoord.y - 0.5 < (platformCoord[i].y - (0.5 * .1f))) dist_squared -= squared(playerCoord.y - 0.5 - (platformCoord[i].y - (0.5 * .1f)));
 		else if (playerCoord.y - 0.5 > (platformCoord[i].y + (0.5 * .1f))) dist_squared -= squared(playerCoord.y - 0.5 - (platformCoord[i].y + (0.5 * .1f)));
 		if (playerCoord.z - 0.5 < (platformCoord[i].z - (0.5 * platformCoord[i].w))) dist_squared -= squared(playerCoord.z - 0.5 - (platformCoord[i].z - (0.5 * platformCoord[i].w)));
 		else if (playerCoord.z - 0.5 > (platformCoord[i].z + (0.5 * platformCoord[i].w))) dist_squared -= squared(playerCoord.z - 0.5 - (platformCoord[i].z + (0.5 * platformCoord[i].w)));
-		return dist_squared > 0;
-	}
+		*/
+		GLfloat x = max_min(platformCoord[i].x - 0.5, max_min(playerCoord.x, platformCoord[i].x + 0.5,0),1);
+		GLfloat y = max_min(platformCoord[i].x - 0.5 * .1, max_min(playerCoord.y, platformCoord[i].x + 0.5 * .1,0),1);
+		GLfloat z = max_min(platformCoord[i].x - platformCoord[i].w * 0.5 , max_min(playerCoord.z, platformCoord[i].x + platformCoord[i].w * 0.5,0),1);
 
+		// this is the same as isPointInsideSphere
+		GLfloat distance = sqrt((x - playerCoord.x) * (x - playerCoord.x) +
+			(y - playerCoord.y) * (y - playerCoord.y) +
+			(z - playerCoord.z) * (z - playerCoord.z));
+			
+
+		/*if (playerCoord.x >= platformCoord[i].x - 1.0f  &&
+			playerCoord.x <= platformCoord[i].x + 1.0f  &&
+			playerCoord.z >= platformCoord[i].z - platformCoord[i].w  &&
+			playerCoord.z <= platformCoord[i].z + platformCoord[i].w  &&
+			playerCoord.y <= 2.5 + 0.01 &&
+			playerCoord.y >= 2.5 - 0.01
+			)
+		{
+
+			return true;
+		}
+
+		
+		*/
+		//return dist_squared > 0;
+		return distance < 2.9;
+	}
+	
 }
 
 

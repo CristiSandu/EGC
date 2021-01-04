@@ -67,6 +67,9 @@
     <Filter Include="Laboratoare\Tema2">
       <UniqueIdentifier>{478439e9-80d5-457e-8b54-99b5917703c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Laboratoare\Tema2\Shaders">
+      <UniqueIdentifier>{d1389463-bc5f-4a29-8a8e-6fa607ad9f86}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\Core\Engine.cpp">
@@ -342,5 +345,11 @@
       <Filter>Laboratoare\Laborator9\Shaders</Filter>
     </None>
     <None Include="ClassDiagram.cd" />
+    <None Include="..\Source\Laboratoare\Tema2\Shaders\FragmentShader.glsl">
+      <Filter>Laboratoare\Tema2\Shaders</Filter>
+    </None>
+    <None Include="..\Source\Laboratoare\Tema2\Shaders\VertexShader.glsl">
+      <Filter>Laboratoare\Tema2\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
