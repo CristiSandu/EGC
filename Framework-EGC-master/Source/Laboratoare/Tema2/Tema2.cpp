@@ -1,7 +1,4 @@
 #include "Tema2.h"
-#include <vector>
-#include <string>
-#include <iostream>
 #include <Core/Engine.h>
 
 using namespace std;
@@ -22,18 +19,27 @@ void Tema2::Init()
 	camera->Set(glm::vec3(2, 4, 3), glm::vec3(2, 1, -2), glm::vec3(0, 1, 0));
 	player = new Player();
 	platform = new Platform();
+	combustibilBar = new CombustibilBar();
 	startL = std::clock();
 	startM = std::clock();
 	startR = std::clock();
-	platformCoord.push_back(glm::vec4(2, 2, 1, 7));
-	platformCoord.push_back(glm::vec4(0, 2, -4, 7));
-	platformCoord.push_back(glm::vec4(2, 2, -4, 7));
-	platformCoord.push_back(glm::vec4(4, 2, -4, 7));
 
-	platformColors.push_back(glm::vec3(200, 4, 29)); //rosu
-	platformColors.push_back(glm::vec3(199, 199, 5)); //galben 
-	platformColors.push_back(glm::vec3(200, 117, 4)); //portocaliu
-	platformColors.push_back(glm::vec3(4, 200, 10)); //verde 
+	platformColors.push_back(glm::vec3(0.9, .04, .29)); //rosu
+	platformColors.push_back(glm::vec3(.9, .9, .5)); //galben 
+	platformColors.push_back(glm::vec3(.9, .11, .4)); //portocaliu
+	platformColors.push_back(glm::vec3(.4, .9, .10)); //verde 
+	platformColors.push_back(glm::vec3(0, 0, .9)); //blue 
+
+
+	platformCoord.push_back(glm::vec4(0, 2, 1, 7));
+	platformsColors.push_back(platformColors[4]);
+
+	platformCoord.push_back(glm::vec4(2, 2, 1, 7));
+	platformsColors.push_back(platformColors[4]);
+
+	platformCoord.push_back(glm::vec4(4, 2, 1, 7));
+	platformsColors.push_back(platformColors[4]);
+
 
 
 	projectionMatrix = glm::perspective(RADIANS(60), window->props.aspectRatio, 0.01f, 200.0f);
@@ -44,6 +50,7 @@ void Tema2::Init()
 		shader->CreateAndLink();
 		shaders[shader->GetName()] = shader;
 	}
+
 }
 
 
@@ -64,32 +71,33 @@ void Tema2::Update(float deltaTimeSeconds)
 	glPointSize(5);
 	glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
 
+	int colorIndex = rand() % 5;
 	int w = (rand() % 5 + 2) / 1;
-	double durationL = (std::clock() - startL) / (double)CLOCKS_PER_SEC;
-	if (durationL >= 0.35) {
-		platformCoord.push_back(glm::vec4(0, 2, -15, w));
-		startL = std::clock();
+
+	if (platformCoord[platformCoord.size() - 3].z >= -200) {
+
+		platformCoord.push_back(glm::vec4(0, 2, platformCoord[platformCoord.size() - 3].z - (0.5 * platformCoord[platformCoord.size() - 3].w) - (colorIndex + 3), w));
+		platformsColors.push_back(platformColors[colorIndex]);
+
+
+		colorIndex = rand() % 5;
+		platformCoord.push_back(glm::vec4(2, 2, platformCoord[platformCoord.size() - 3].z - (0.5 * platformCoord[platformCoord.size() - 3].w) - (colorIndex + 3), w));
+		platformsColors.push_back(platformColors[colorIndex]);
+
+
+		colorIndex = rand() % 5;
+		platformCoord.push_back(glm::vec4(4, 2, platformCoord[platformCoord.size() - 3].z - (0.5 * platformCoord[platformCoord.size() - 3].w) - (colorIndex + 4), w));
+		platformsColors.push_back(platformColors[colorIndex]);
 	}
 
-	double durationM = (std::clock() - startM) / (double)CLOCKS_PER_SEC;
-	if (durationM >= 0.4) {
-		platformCoord.push_back(glm::vec4(2, 2, -15, w));
-		startM = std::clock();
-	}
-
-	double durationR = (std::clock() - startR) / (double)CLOCKS_PER_SEC;
-	if (durationR >= 0.6) {
-		platformCoord.push_back(glm::vec4(4, 2, -15, w));
-		startR = std::clock();
-	}
 
 	RanderScene(deltaTimeSeconds);
 	if (IntersectionCheck() == true || isBack == 0)
 		RanderPlayer(deltaTimeSeconds);
 	else
-	{ 
+	{
 		playerCoord.y -= deltaTimeSeconds * 3;
-	RanderPlayer(deltaTimeSeconds);
+		RanderPlayer(deltaTimeSeconds);
 	}
 
 }
@@ -99,70 +107,110 @@ bool Tema2::IntersectionCheck() {
 	for (int i = 0; i < platformCoord.size(); i++)
 	{
 		float dist_squared = 0.5 * 0.5;
-	  
+
 		if (((playerCoord.x - 0.5) <= platformCoord[i].x + 0.5 && (playerCoord.x + 0.5) >= platformCoord[i].x - 0.5) &&
 			((playerCoord.y - 0.5) <= platformCoord[i].y + (0.5 * .1) && (playerCoord.y + 0.5) >= platformCoord[i].y - (0.5 * .1)) &&
 			((playerCoord.z - 0.5) <= platformCoord[i].z + (0.5 * platformCoord[i].w) && (playerCoord.z + 0.5) >= platformCoord[i].z - (0.5 * platformCoord[i].w)))
+		{
 			isColide = 1;
+			colorposition = i;
+		}
 	}
 
-	if (isColide == 1)
+	if (isColide == 1) {
+		if (platformsColors[colorposition] == RED) // red
+		{
+			speed = 0;
+		}
+		else if (platformsColors[colorposition] == YELLOW)// yellow
+		{
+			platformsColors[colorposition] = VIOLET;
+		}
+		else if (platformsColors[colorposition] == ORANGE)// orange
+		{
+			platformsColors[colorposition] = VIOLET;
+		}
+		else if (platformsColors[colorposition] == GREEN)// green 
+		{
+			platformsColors[colorposition] = VIOLET;
+		}
+		else if (platformsColors[colorposition] == BLUE)// blue 
+		{
+			platformsColors[colorposition] = VIOLET;
+		}
+
 		return true;
+	}
 	else
 		return false;
 }
 
 void Tema2::RanderScene(float deltaTimeSeconds) {
+
 	for (int i = 0; i < platformCoord.size(); i++)
 	{
-		int colorIndex = rand() % 4;
 		platformCoord[i].z += deltaTimeSeconds * speed;
 		modelMatrix = glm::mat4(1);
 		modelMatrix *= Transform3D::Translate(platformCoord[i].x, platformCoord[i].y, platformCoord[i].z);
 		modelMatrix *= Transform3D::Scale(1, .1f, platformCoord[i].w);
 		if (platformCoord[i].z < 25)
 		{
-			RenderMesh(platform->GetPlatform(), shaders["ShaderTema2"], modelMatrix,platformColors[colorIndex]);
+			RenderMesh(platform->GetPlatform(), 0, shaders["ShaderTema2"], modelMatrix, platformsColors[i]);
 		}
 		else
 		{
 			start = i - 1;
 		}
 	}
+
+	modelMatrix = glm::mat4(1);
+	modelMatrix *= Transform3D::Translate(combustibilPos.x, combustibilPos.y, combustibilPos.z);
+	if (combustibilPos.w == 15)
+		modelMatrix *= Transform3D::RotateOX(combustibilPos.w);
+	else {
+		modelMatrix *= Transform3D::RotateOX(15);
+		modelMatrix *= Transform3D::RotateOY(10);
+
+	}
+	modelMatrix *= Transform3D::Scale(.01, .01, .01);
+	RenderMesh(combustibilBar->GetCombustibilBar(), 1, shaders["ShaderTema2"], modelMatrix, GREEN);
+	RenderMesh(combustibilBar->GetPowerLine(), 1, shaders["ShaderTema2"], modelMatrix, RED);
+
+
 }
 
 void Tema2::RanderPlayer(float deltaTimeSeconds) {
+	if (ENDGAME == 0) {
+		if (playerCoord.w == 1)
+		{
+			if (playerCoord.y < 5)
+			{
+				playerCoord.y += deltaTimeSeconds * (speed - 2);
+			}
+			else
+			{
+				playerCoord.w = 0;
+			}
+		}
 
-	if (playerCoord.w == 1)
-	{
-		if (playerCoord.y < 5)
+		if (playerCoord.w == 0)
 		{
-			playerCoord.y += deltaTimeSeconds * (speed - 2);
+			if (playerCoord.y > 2.5)
+			{
+				playerCoord.y -= deltaTimeSeconds * (speed - 2);
+			}
+			else {
+				isBack = 1;
+			}
 		}
-		else
-		{
-			playerCoord.w = 0;
-		}
+
+		modelMatrix = glm::mat4(1);
+		rotateAngle -= deltaTimeSeconds * speed;
+		modelMatrix *= Transform3D::Translate(playerCoord.x, playerCoord.y, playerCoord.z);
+		modelMatrix *= Transform3D::RotateOX(rotateAngle);
+
+		RenderMesh(player->GetPlayer(), 0, shaders["ShaderTema2"], modelMatrix, glm::vec3(1, 0, 0));
 	}
-
-	if (playerCoord.w == 0)
-	{
-		if (playerCoord.y > 2.5)
-		{
-			playerCoord.y -= deltaTimeSeconds * (speed - 2);
-		}
-		else {
-			isBack = 1;
-		}
-	}
-
-	modelMatrix = glm::mat4(1);
-	rotateAngle -= deltaTimeSeconds * speed;
-	modelMatrix *= Transform3D::Translate(playerCoord.x, playerCoord.y, playerCoord.z);
-	modelMatrix *= Transform3D::RotateOX(rotateAngle);
-
-	RenderMesh(player->GetPlayer(), shaders["ShaderTema2"], modelMatrix, glm::vec3(1,0,0));
-	
 }
 
 void Tema2::FrameEnd()
@@ -170,34 +218,99 @@ void Tema2::FrameEnd()
 	DrawCoordinatSystem(camera->GetViewMatrix(), projectionMatrix);
 }
 
-void Tema2::RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix,const glm::vec3& color)
+Mesh* Tema2::CreateMesh(const char* name, const std::vector<VertexFormat>& vertices, const std::vector<unsigned short>& indices)
 {
-	if (!mesh || !shader || !shader->program)
+	unsigned int VAO = 0;
+	// TODO: Create the VAO and bind it
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+
+	// TODO: Create the VBO and bind it
+	unsigned int VBO;
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+	// TODO: Send vertices data into the VBO buffer
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
+
+	// TODO: Crete the IBO and bind it
+	unsigned int IBO;
+	glGenBuffers(1, &IBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+
+	// TODO: Send indices data into the IBO buffer
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices[0]) * indices.size(), &indices[0], GL_STATIC_DRAW);
+
+	// ========================================================================
+	// This section describes how the GPU Shader Vertex Shader program receives data
+
+	// set vertex position attribute
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), 0);
+
+	// set vertex normal attribute
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), (void*)(sizeof(glm::vec3)));
+
+	// set texture coordinate attribute
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), (void*)(2 * sizeof(glm::vec3)));
+
+	// set vertex color attribute
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), (void*)(2 * sizeof(glm::vec3) + sizeof(glm::vec2)));
+	// ========================================================================
+
+	// Unbind the VAO
+	glBindVertexArray(0);
+
+	// Check for OpenGL errors
+	CheckOpenGLError();
+
+	// Mesh information is saved into a Mesh object
+	meshes[name] = new Mesh(name);
+	meshes[name]->InitFromBuffer(VAO, static_cast<unsigned short>(indices.size()));
+	meshes[name]->vertices = vertices;
+	meshes[name]->indices = indices;
+	return meshes[name];
+}
+
+void Tema2::RenderMesh(Mesh* mesh, int name_mesh, Shader* shader, const glm::mat4& modelMatrix, const glm::vec3& color)
+{
+	if (!mesh || !shader || !shader->GetProgramID())
 		return;
 
-	// render an object using the specified shader and the specified position
-	shader->Use();
-	//glUseProgram(shader->program);
+	glUseProgram(shader->program);
 
-	/*glUniformMatrix4fv(shader->loc_view_matrix, 1, GL_FALSE, glm::value_ptr(camera->GetViewMatrix()));
-	glUniformMatrix4fv(shader->loc_projection_matrix, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-	glUniformMatrix4fv(shader->loc_model_matrix, 1, GL_FALSE, glm::value_ptr(modelMatrix));*/
-	glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(color));
 
-	GLint modelLocation = shader->GetUniformLocation("Model");
+	GLint modelLocation = glGetUniformLocation(shader->GetProgramID(), "Model");
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 
-	// get shader location for uniform mat4 "View"
-	GLint viewLocation = shader->GetUniformLocation("View");
+	GLint viewLocation = glGetUniformLocation(shader->GetProgramID(), "View");
 	glm::mat4 viewMatrix = camera->GetViewMatrix();
 	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
-	//  get shader location for uniform mat4 "Projection"
-	GLint projectionLocation = shader->GetUniformLocation("Projection");
+	GLint projLocation = glGetUniformLocation(shader->GetProgramID(), "Projection");
+	glm::mat4 projectionMatrix = GetSceneCamera()->GetProjectionMatrix();
+	glUniformMatrix4fv(projLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
-	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-	
-	mesh->Render();
+	glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(color));
+
+	GLint timeLocation = glGetUniformLocation(shader->GetProgramID(), "Time");
+	glUniform1f(timeLocation, (GLfloat)Engine::GetElapsedTime());
+
+	if (name_mesh == 1)
+	{
+		GLint combustibilBool = glGetUniformLocation(shader->GetProgramID(), "combustibilBool");
+		glUniform1f(combustibilBool, 1);
+	}
+	else {
+		GLint combustibilBool = glGetUniformLocation(shader->GetProgramID(), "combustibilBool");
+		glUniform1f(combustibilBool, 0);
+	}
+	glBindVertexArray(mesh->GetBuffers()->VAO);
+	glDrawElements(mesh->GetDrawMode(), static_cast<int>(mesh->indices.size()), GL_UNSIGNED_SHORT, 0);
+
 }
 
 // Documentation for the input functions can be found in: "/Source/Core/Window/InputController.h" or
@@ -210,7 +323,6 @@ void Tema2::OnInputUpdate(float deltaTime, int mods)
 
 	if (window->MouseHold(GLFW_MOUSE_BUTTON_RIGHT))
 	{
-
 		if (window->KeyHold(GLFW_KEY_W)) {
 			// TODO : translate the camera forward
 			camera->TranslateForward(deltaTime * cameraSpeed);
@@ -240,7 +352,6 @@ void Tema2::OnInputUpdate(float deltaTime, int mods)
 			// TODO : translate the camera up
 			camera->TranslateUpword(deltaTime * cameraSpeed);
 		}
-
 	}
 
 
@@ -326,17 +437,20 @@ void Tema2::OnKeyPress(int key, int mods)
 			isBack = 0;
 		}
 	}
-	if (key == GLFW_KEY_V)
+	if (key == GLFW_KEY_C)
 	{
 		if (firstLook == 1)
 		{
 			camera->Set(glm::vec3(5, 4, 3), glm::vec3(0, 1, -2), glm::vec3(0, 1, 0));
 			firstLook = 0;
+			combustibilPos = glm::vec4(5, 3, 2.1, 20);
+
 		}
 		else
 		{
 			camera->Set(glm::vec3(2, 4, 3), glm::vec3(2, 1, -2), glm::vec3(0, 1, 0));
 			firstLook = 1;
+			combustibilPos = glm::vec4(1.05, 3, 2.1, 15);
 
 		}
 	}
@@ -361,6 +475,9 @@ void Tema2::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY)
 			renderCameraTarget = false;
 			// TODO : rotate the camera in First-person mode around OX and OY using deltaX and deltaY
 			// use the sensitivity variables for setting up the rotation speed
+			xCameraCoord = sensivityOX * -deltaY;
+			yCameraCoord = sensivityOY * -deltaX;
+
 			camera->RotateFirstPerson_OX(sensivityOX * -deltaY);
 			camera->RotateFirstPerson_OY(sensivityOY * -deltaX);
 		}

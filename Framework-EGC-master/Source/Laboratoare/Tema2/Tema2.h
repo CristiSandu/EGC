@@ -11,6 +11,12 @@
 #include "Player.h"
 #include <cmath>
 #include "Platform.h"
+#include <Component/SimpleScene.h>
+#include <Core/GPU/Mesh.h>
+#include <string>
+
+#include "CombustibilBar.h"
+
 
 
 
@@ -26,13 +32,25 @@ public:
 	void Init();
 	std::vector<glm::vec4> platformCoord;
 	std::vector<glm::vec3> platformColors;
+	std::vector<glm::vec3> platformsColors;
 
+	glm::vec3 RED = glm::vec3(0.9, .04, .29); //red
+	glm::vec3 YELLOW = glm::vec3(.9, .9, .5); //yellow
+	glm::vec3 ORANGE = glm::vec3(.9, .11, .4); //orange
+	glm::vec3 GREEN = glm::vec3(.4, .9, .10); //green
+	glm::vec3 BLUE = glm::vec3(0, 0, .9); //blue
+	glm::vec3 VIOLET = glm::vec3(.25, .01, .5); //violet 
+	glm::vec4 combustibilPos = glm::vec4(1.05, 3, 2.1,15);
+
+	GLfloat xCameraCoord = 0, yCameraCoord = 0;
 	glm::vec4 playerCoord = glm::vec4(2, 2.5, 0,0);
 	GLfloat speed = .01f;
 	int firstLook = 1;
 	int start;
 	int isBack = 1;
 	int isColide = 0;
+	int ENDGAME = 0;
+	int colorposition = -5;
 	float rotateAngle = .00f;
 	std::clock_t startL, startM, startR;
 
@@ -45,7 +63,10 @@ private:
 	void RanderScene(float deltaTimeSeconds);
 	void RanderPlayer(float deltaTimeSeconds);
 	void FrameEnd();
-	void RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix, const glm::vec3& color);
+	Mesh* CreateMesh(const char* name, const std::vector<VertexFormat>& vertices, const std::vector<unsigned short>& indices);
+	void RenderMesh(Mesh* mesh, int name_mesh, Shader* shader, const glm::mat4& modelMatrix, const glm::vec3& color);
+	//void RenderMesh(Mesh* mesh, string name_mesh, Shader* shader, const glm::mat4& modelMatrix, const glm::vec3& color);
+	//void RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix, const glm::vec3& color);
 	void OnInputUpdate(float deltaTime, int mods);
 	void OnKeyPress(int key, int mods);
 	void OnKeyRelease(int key, int mods);
@@ -69,6 +90,6 @@ protected:
 	GLenum polygonMode;
 	Player* player;
 	Platform* platform;
-
+	CombustibilBar* combustibilBar;
 
 };

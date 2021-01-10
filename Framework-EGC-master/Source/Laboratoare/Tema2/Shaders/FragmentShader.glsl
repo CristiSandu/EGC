@@ -15,51 +15,20 @@ const int swirlIterations = 6;
 
 varying vec2 vUv;
 */
-in vec4 color;
+/*in vec3 color;
+layout(location = 0) out vec4 out_color;*/
+in vec3 frag_position;
+in vec3 frag_normal;
+in vec2 frag_texture;
+in vec3 frag_color;
+
 layout(location = 0) out vec4 out_color;
+layout(location = 1) out vec4 out_normal;
+layout(location = 2) out vec3 out_texture;
 
 void main() {
-    out_color = color;
-   /* 
-    vec2 uv = vUv - 0.5;
 
-    float t = speed * time * 0.1 + (
-        ( 0.25 + 0.05 * sin( time * speed * 0.1 ) ) / ( length( uv.xy ) + ( 1.0  - swirl ) )
-    ) * 2.2;
-    float sine = sin( t * distortion );
-    float cose = cos( t * 1.0 / distortion );
-    mat2 matrix = mat2( -cose, sine, sine, cose );
-    
-    float c;
-    float v1 = 0.0;
-    float v2 = 0.0;
-    vec3 uv3 = vec3( uv, 0.0 );
-    
-    for( int i = 0; i < iterations; i++ ) {
-        float s = float( i ) * 0.035;
-        vec3 p = s * uv3;
-        p.xy *= matrix;
-        p += vec3( .22,.3, s - 1.5 - sin( t * 0.13 ) * 0.1 );
-
-        for( int i = 0; i < swirlIterations; i++ ) {
-            p = abs( p ) / dot( p, p ) - 0.659;
-        }
-
-        v1 += dot( p,p ) * 0.0015 * green * ( 1.8 + sin( length( uv.xy * 13.0 ) + 0.5 - t * 0.2 ) );
-        v2 += dot( p,p ) * 0.0015 * blue * ( 1.5 + sin( length( uv.xy * 13.5 ) + 2.2 - t * 0.3 ) );
-        c = length( p.xy * 0.5 ) * 0.35 * red;
-
-    }
-    
-    float len = length( uv );
-    v1 *= smoothstep( 0.7, 0.0, len );
-    v2 *= smoothstep( 0.6, 0.0, len );
-    
-    float r = clamp( c, 0.0, 1.0 );
-    float g = clamp( ( v1 + c ) * 0.25, 0.0, 1.0 );
-    float b = clamp( v2, 0.0, 1.0 );
-    vec3 col = baseColor * vec3( r, g, b ) + smoothstep( 0.15, 0.0, len ) * 0.9;
-
-    gl_FragColor = vec4( col, 1.0 );*/
-
+    out_color = vec4(frag_color, 0.f);
+	out_normal = vec4(frag_normal, 1.f);
+	out_texture = vec3(frag_texture, 1.f);
 }
