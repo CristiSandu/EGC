@@ -1,4 +1,4 @@
-precision highp float;
+/*precision highp float;
 precision highp int;
 
 uniform float distortion;
@@ -14,9 +14,13 @@ const int iterations = 50;
 const int swirlIterations = 6;
 
 varying vec2 vUv;
+*/
+in vec4 color;
+layout(location = 0) out vec4 out_color;
 
 void main() {
-    
+    out_color = color;
+   /* 
     vec2 uv = vUv - 0.5;
 
     float t = speed * time * 0.1 + (
@@ -56,6 +60,6 @@ void main() {
     float b = clamp( v2, 0.0, 1.0 );
     vec3 col = baseColor * vec3( r, g, b ) + smoothstep( 0.15, 0.0, len ) * 0.9;
 
-    gl_FragColor = vec4( col, 1.0 );
+    gl_FragColor = vec4( col, 1.0 );*/
 
 }

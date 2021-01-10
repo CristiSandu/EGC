@@ -25,12 +25,26 @@ void Tema2::Init()
 	startL = std::clock();
 	startM = std::clock();
 	startR = std::clock();
+	platformCoord.push_back(glm::vec4(2, 2, 1, 7));
 	platformCoord.push_back(glm::vec4(0, 2, -4, 7));
 	platformCoord.push_back(glm::vec4(2, 2, -4, 7));
 	platformCoord.push_back(glm::vec4(4, 2, -4, 7));
-	projectionMatrix = glm::perspective(RADIANS(60), window->props.aspectRatio, 0.01f, 200.0f);
-}
 
+	platformColors.push_back(glm::vec3(200, 4, 29)); //rosu
+	platformColors.push_back(glm::vec3(199, 199, 5)); //galben 
+	platformColors.push_back(glm::vec3(200, 117, 4)); //portocaliu
+	platformColors.push_back(glm::vec3(4, 200, 10)); //verde 
+
+
+	projectionMatrix = glm::perspective(RADIANS(60), window->props.aspectRatio, 0.01f, 200.0f);
+	{
+		Shader* shader = new Shader("ShaderTema2");
+		shader->AddShader("Source/Laboratoare/Tema2/Shaders/VertexShader.glsl", GL_VERTEX_SHADER);
+		shader->AddShader("Source/Laboratoare/Tema2/Shaders/FragmentShader.glsl", GL_FRAGMENT_SHADER);
+		shader->CreateAndLink();
+		shaders[shader->GetName()] = shader;
+	}
+}
 
 
 void Tema2::FrameStart()
@@ -70,85 +84,45 @@ void Tema2::Update(float deltaTimeSeconds)
 	}
 
 	RanderScene(deltaTimeSeconds);
-	if (IntersectionCheck() == false)
+	if (IntersectionCheck() == true || isBack == 0)
 		RanderPlayer(deltaTimeSeconds);
-
-
-
-}
-inline float squared(float v) { return v * v; }
-
-GLfloat Tema2::max_min(GLfloat a, GLfloat b, int c)
-{
-	if (c == 1) {
-		if (a > b)
-			return a;
-		else
-			return b;
-	}
 	else
-	{
-		if (a > b)
-			return b;
-		else
-			return a;
+	{ 
+		playerCoord.y -= deltaTimeSeconds * 3;
+	RanderPlayer(deltaTimeSeconds);
 	}
 
 }
 
 bool Tema2::IntersectionCheck() {
+	isColide = 0;
 	for (int i = 0; i < platformCoord.size(); i++)
 	{
 		float dist_squared = 0.5 * 0.5;
-		/* assume C1 and C2 are element-wise sorted, if not, do that now */
-		/*if (playerCoord.x - 0.5 < (platformCoord[i].x - 0.5)) dist_squared -= squared(playerCoord.x - 0.5 - (platformCoord[i].x - 0.5));
-		else if (playerCoord.x - 0.5 > (platformCoord[i].x + 0.5)) dist_squared -= squared(playerCoord.x - 0.5 - (platformCoord[i].x + 0.5));
-		if (playerCoord.y - 0.5 < (platformCoord[i].y - (0.5 * .1f))) dist_squared -= squared(playerCoord.y - 0.5 - (platformCoord[i].y - (0.5 * .1f)));
-		else if (playerCoord.y - 0.5 > (platformCoord[i].y + (0.5 * .1f))) dist_squared -= squared(playerCoord.y - 0.5 - (platformCoord[i].y + (0.5 * .1f)));
-		if (playerCoord.z - 0.5 < (platformCoord[i].z - (0.5 * platformCoord[i].w))) dist_squared -= squared(playerCoord.z - 0.5 - (platformCoord[i].z - (0.5 * platformCoord[i].w)));
-		else if (playerCoord.z - 0.5 > (platformCoord[i].z + (0.5 * platformCoord[i].w))) dist_squared -= squared(playerCoord.z - 0.5 - (platformCoord[i].z + (0.5 * platformCoord[i].w)));
-		*/
-		GLfloat x = max_min(platformCoord[i].x - 0.5, max_min(playerCoord.x, platformCoord[i].x + 0.5,0),1);
-		GLfloat y = max_min(platformCoord[i].x - 0.5 * .1, max_min(playerCoord.y, platformCoord[i].x + 0.5 * .1,0),1);
-		GLfloat z = max_min(platformCoord[i].x - platformCoord[i].w * 0.5 , max_min(playerCoord.z, platformCoord[i].x + platformCoord[i].w * 0.5,0),1);
-
-		// this is the same as isPointInsideSphere
-		GLfloat distance = sqrt((x - playerCoord.x) * (x - playerCoord.x) +
-			(y - playerCoord.y) * (y - playerCoord.y) +
-			(z - playerCoord.z) * (z - playerCoord.z));
-			
-
-		/*if (playerCoord.x >= platformCoord[i].x - 1.0f  &&
-			playerCoord.x <= platformCoord[i].x + 1.0f  &&
-			playerCoord.z >= platformCoord[i].z - platformCoord[i].w  &&
-			playerCoord.z <= platformCoord[i].z + platformCoord[i].w  &&
-			playerCoord.y <= 2.5 + 0.01 &&
-			playerCoord.y >= 2.5 - 0.01
-			)
-		{
-
-			return true;
-		}
-
-		
-		*/
-		//return dist_squared > 0;
-		return distance < 2.9;
+	  
+		if (((playerCoord.x - 0.5) <= platformCoord[i].x + 0.5 && (playerCoord.x + 0.5) >= platformCoord[i].x - 0.5) &&
+			((playerCoord.y - 0.5) <= platformCoord[i].y + (0.5 * .1) && (playerCoord.y + 0.5) >= platformCoord[i].y - (0.5 * .1)) &&
+			((playerCoord.z - 0.5) <= platformCoord[i].z + (0.5 * platformCoord[i].w) && (playerCoord.z + 0.5) >= platformCoord[i].z - (0.5 * platformCoord[i].w)))
+			isColide = 1;
 	}
-	
-}
 
+	if (isColide == 1)
+		return true;
+	else
+		return false;
+}
 
 void Tema2::RanderScene(float deltaTimeSeconds) {
 	for (int i = 0; i < platformCoord.size(); i++)
 	{
+		int colorIndex = rand() % 4;
 		platformCoord[i].z += deltaTimeSeconds * speed;
 		modelMatrix = glm::mat4(1);
 		modelMatrix *= Transform3D::Translate(platformCoord[i].x, platformCoord[i].y, platformCoord[i].z);
 		modelMatrix *= Transform3D::Scale(1, .1f, platformCoord[i].w);
 		if (platformCoord[i].z < 25)
 		{
-			RenderMesh(platform->GetPlatform(), shaders["VertexNormal"], modelMatrix);
+			RenderMesh(platform->GetPlatform(), shaders["ShaderTema2"], modelMatrix,platformColors[colorIndex]);
 		}
 		else
 		{
@@ -177,24 +151,18 @@ void Tema2::RanderPlayer(float deltaTimeSeconds) {
 		{
 			playerCoord.y -= deltaTimeSeconds * (speed - 2);
 		}
+		else {
+			isBack = 1;
+		}
 	}
+
 	modelMatrix = glm::mat4(1);
 	rotateAngle -= deltaTimeSeconds * speed;
 	modelMatrix *= Transform3D::Translate(playerCoord.x, playerCoord.y, playerCoord.z);
-	modelMatrix *= Transform3D::Scale(1, 1, 1);
 	modelMatrix *= Transform3D::RotateOX(rotateAngle);
 
-	RenderMesh(player->GetPlayer(), shaders["VertexNormal"], modelMatrix);
-	/*
-		midPos = (startPos + endPos) * 0.5f;
-
-		modelMatrix = glm::mat4(1);
-		modelMatrix *= Transform3D::Translate(midPos[0], midPos[1], midPos[2]);
-		modelMatrix *= Transform3D::RotateOZ(angleJump);
-		modelMatrix *= Transform3D::Translate(startPos[0] - midPos[0], startPos[1] - midPos[1], startPos[2] - midPos[2]);
-
-		RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
-		*/
+	RenderMesh(player->GetPlayer(), shaders["ShaderTema2"], modelMatrix, glm::vec3(1,0,0));
+	
 }
 
 void Tema2::FrameEnd()
@@ -202,17 +170,33 @@ void Tema2::FrameEnd()
 	DrawCoordinatSystem(camera->GetViewMatrix(), projectionMatrix);
 }
 
-void Tema2::RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix)
+void Tema2::RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix,const glm::vec3& color)
 {
 	if (!mesh || !shader || !shader->program)
 		return;
 
 	// render an object using the specified shader and the specified position
 	shader->Use();
-	glUniformMatrix4fv(shader->loc_view_matrix, 1, GL_FALSE, glm::value_ptr(camera->GetViewMatrix()));
-	glUniformMatrix4fv(shader->loc_projection_matrix, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-	glUniformMatrix4fv(shader->loc_model_matrix, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+	//glUseProgram(shader->program);
 
+	/*glUniformMatrix4fv(shader->loc_view_matrix, 1, GL_FALSE, glm::value_ptr(camera->GetViewMatrix()));
+	glUniformMatrix4fv(shader->loc_projection_matrix, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+	glUniformMatrix4fv(shader->loc_model_matrix, 1, GL_FALSE, glm::value_ptr(modelMatrix));*/
+	glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(color));
+
+	GLint modelLocation = shader->GetUniformLocation("Model");
+	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+
+	// get shader location for uniform mat4 "View"
+	GLint viewLocation = shader->GetUniformLocation("View");
+	glm::mat4 viewMatrix = camera->GetViewMatrix();
+	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+
+	//  get shader location for uniform mat4 "Projection"
+	GLint projectionLocation = shader->GetUniformLocation("Projection");
+
+	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+	
 	mesh->Render();
 }
 
@@ -339,6 +323,7 @@ void Tema2::OnKeyPress(int key, int mods)
 		if (key == GLFW_KEY_SPACE)
 		{
 			playerCoord.w = 1;
+			isBack = 0;
 		}
 	}
 	if (key == GLFW_KEY_V)

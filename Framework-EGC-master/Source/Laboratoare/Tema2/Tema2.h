@@ -25,10 +25,14 @@ public:
 	~Tema2();
 	void Init();
 	std::vector<glm::vec4> platformCoord;
+	std::vector<glm::vec3> platformColors;
+
 	glm::vec4 playerCoord = glm::vec4(2, 2.5, 0,0);
 	GLfloat speed = .01f;
 	int firstLook = 1;
 	int start;
+	int isBack = 1;
+	int isColide = 0;
 	float rotateAngle = .00f;
 	std::clock_t startL, startM, startR;
 
@@ -41,7 +45,7 @@ private:
 	void RanderScene(float deltaTimeSeconds);
 	void RanderPlayer(float deltaTimeSeconds);
 	void FrameEnd();
-	void RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix);
+	void RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix, const glm::vec3& color);
 	void OnInputUpdate(float deltaTime, int mods);
 	void OnKeyPress(int key, int mods);
 	void OnKeyRelease(int key, int mods);
