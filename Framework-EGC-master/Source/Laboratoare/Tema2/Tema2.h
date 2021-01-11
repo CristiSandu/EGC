@@ -36,22 +36,27 @@ public:
 
 	glm::vec3 RED = glm::vec3(0.9, .04, .29); //red
 	glm::vec3 YELLOW = glm::vec3(.9, .9, .5); //yellow
-	glm::vec3 ORANGE = glm::vec3(.9, .11, .4); //orange
+	glm::vec3 ORANGE = glm::vec3(1, .56, .3); //orange
 	glm::vec3 GREEN = glm::vec3(.4, .9, .10); //green
 	glm::vec3 BLUE = glm::vec3(0, 0, .9); //blue
 	glm::vec3 VIOLET = glm::vec3(.25, .01, .5); //violet 
+	glm::vec3 GREY = glm::vec3(.5, .5, .5); //grey
+
 	glm::vec4 combustibilPos = glm::vec4(1.05, 3, 2.1,15);
 
 	GLfloat xCameraCoord = 0, yCameraCoord = 0;
 	glm::vec4 playerCoord = glm::vec4(2, 2.5, 0,0);
 	GLfloat speed = .01f;
+	int blockOrange = 0;
 	int firstLook = 1;
 	int start;
 	int isBack = 1;
 	int isColide = 0;
 	int ENDGAME = 0;
 	int colorposition = -5;
+	GLfloat gasVall = 37.5;
 	float rotateAngle = .00f;
+	double duration = 0;
 	std::clock_t startL, startM, startR;
 
 

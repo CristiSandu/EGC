@@ -24,11 +24,11 @@ void Tema2::Init()
 	startM = std::clock();
 	startR = std::clock();
 
-	platformColors.push_back(glm::vec3(0.9, .04, .29)); //rosu
-	platformColors.push_back(glm::vec3(.9, .9, .5)); //galben 
-	platformColors.push_back(glm::vec3(.9, .11, .4)); //portocaliu
-	platformColors.push_back(glm::vec3(.4, .9, .10)); //verde 
-	platformColors.push_back(glm::vec3(0, 0, .9)); //blue 
+	platformColors.push_back(RED); //rosu
+	platformColors.push_back(YELLOW); //galben 
+	platformColors.push_back(ORANGE); //portocaliu
+	platformColors.push_back(GREEN); //verde 
+	platformColors.push_back(BLUE); //blue 
 
 
 	platformCoord.push_back(glm::vec4(0, 2, 1, 7));
@@ -90,6 +90,12 @@ void Tema2::Update(float deltaTimeSeconds)
 		platformsColors.push_back(platformColors[colorIndex]);
 	}
 
+	duration = (std::clock() - startL) / (double)CLOCKS_PER_SEC;
+	if (duration >= 3 && blockOrange == 1)
+	{
+		speed = 7;
+		blockOrange = 0;
+	}
 
 	RanderScene(deltaTimeSeconds);
 	if (IntersectionCheck() == true || isBack == 0)
@@ -120,19 +126,29 @@ bool Tema2::IntersectionCheck() {
 	if (isColide == 1) {
 		if (platformsColors[colorposition] == RED) // red
 		{
+			platformsColors[colorposition] = VIOLET;
 			speed = 0;
 		}
 		else if (platformsColors[colorposition] == YELLOW)// yellow
 		{
 			platformsColors[colorposition] = VIOLET;
+			gasVall -= (25.0 / 100.0) * gasVall;
 		}
 		else if (platformsColors[colorposition] == ORANGE)// orange
 		{
 			platformsColors[colorposition] = VIOLET;
+			blockOrange = 1;
+			speed = 17;
+			startL = std::clock();
 		}
 		else if (platformsColors[colorposition] == GREEN)// green 
 		{
 			platformsColors[colorposition] = VIOLET;
+			gasVall += (25.0 / 100.0) * 37.5;
+
+			if (gasVall > 37.5) {
+				gasVall = 37.5;
+			}
 		}
 		else if (platformsColors[colorposition] == BLUE)// blue 
 		{
@@ -149,6 +165,7 @@ void Tema2::RanderScene(float deltaTimeSeconds) {
 
 	for (int i = 0; i < platformCoord.size(); i++)
 	{
+		
 		platformCoord[i].z += deltaTimeSeconds * speed;
 		modelMatrix = glm::mat4(1);
 		modelMatrix *= Transform3D::Translate(platformCoord[i].x, platformCoord[i].y, platformCoord[i].z);
@@ -161,21 +178,38 @@ void Tema2::RanderScene(float deltaTimeSeconds) {
 		{
 			start = i - 1;
 		}
+
 	}
 
 	modelMatrix = glm::mat4(1);
-	modelMatrix *= Transform3D::Translate(combustibilPos.x, combustibilPos.y, combustibilPos.z);
-	if (combustibilPos.w == 15)
+	gasVall -= deltaTimeSeconds * speed / 20;
+	if (gasVall <= 0)
+	{
+		gasVall = 0;
+	}
+
+	if (combustibilPos.w == 15) {
+		modelMatrix *= Transform3D::Translate(combustibilPos.x, combustibilPos.y, combustibilPos.z);
 		modelMatrix *= Transform3D::RotateOX(combustibilPos.w);
+		modelMatrix *= Transform3D::Scale(.01, .01, .01);
+		RenderMesh(combustibilBar->GetCombustibilBar(), 1, shaders["ShaderTema2"], modelMatrix, GREEN);
+
+		modelMatrix *= Transform3D::Scale(gasVall, 1, 1);
+		RenderMesh(combustibilBar->GetPowerLine(), 1, shaders["ShaderTema2"], modelMatrix, GREY);
+	}
 	else {
-		modelMatrix *= Transform3D::RotateOX(15);
-		modelMatrix *= Transform3D::RotateOY(10);
+		modelMatrix *= Transform3D::Translate(4, 3.32, 3.12);
+		//modelMatrix *= Transform3D::RotateOX(15);
+		modelMatrix *= Transform3D::RotateOY(45);
+		modelMatrix *= Transform3D::RotateOX(3);
+		modelMatrix *= Transform3D::Scale(.01, .01, .01);
+
+		RenderMesh(combustibilBar->GetCombustibilBar(), 1, shaders["ShaderTema2"], modelMatrix, GREEN);
+		modelMatrix *= Transform3D::Scale(gasVall, 1, 1);
+
+		RenderMesh(combustibilBar->GetPowerLine(), 1, shaders["ShaderTema2"], modelMatrix, GREY);
 
 	}
-	modelMatrix *= Transform3D::Scale(.01, .01, .01);
-	RenderMesh(combustibilBar->GetCombustibilBar(), 1, shaders["ShaderTema2"], modelMatrix, GREEN);
-	RenderMesh(combustibilBar->GetPowerLine(), 1, shaders["ShaderTema2"], modelMatrix, RED);
-
 
 }
 
@@ -209,7 +243,7 @@ void Tema2::RanderPlayer(float deltaTimeSeconds) {
 		modelMatrix *= Transform3D::Translate(playerCoord.x, playerCoord.y, playerCoord.z);
 		modelMatrix *= Transform3D::RotateOX(rotateAngle);
 
-		RenderMesh(player->GetPlayer(), 0, shaders["ShaderTema2"], modelMatrix, glm::vec3(1, 0, 0));
+		RenderMesh(player->GetPlayer(), 0, shaders["VertexNormal"], modelMatrix, glm::vec3(1, 0, 0));
 	}
 }
 
@@ -280,37 +314,47 @@ void Tema2::RenderMesh(Mesh* mesh, int name_mesh, Shader* shader, const glm::mat
 	if (!mesh || !shader || !shader->GetProgramID())
 		return;
 
-	glUseProgram(shader->program);
 
+	if (name_mesh == 2) {
+		shader->Use();
+		glUniformMatrix4fv(shader->loc_view_matrix, 1, GL_FALSE, glm::value_ptr(camera->GetViewMatrix()));
+		glUniformMatrix4fv(shader->loc_projection_matrix, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+		glUniformMatrix4fv(shader->loc_model_matrix, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 
-	GLint modelLocation = glGetUniformLocation(shader->GetProgramID(), "Model");
-	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-
-	GLint viewLocation = glGetUniformLocation(shader->GetProgramID(), "View");
-	glm::mat4 viewMatrix = camera->GetViewMatrix();
-	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-
-	GLint projLocation = glGetUniformLocation(shader->GetProgramID(), "Projection");
-	glm::mat4 projectionMatrix = GetSceneCamera()->GetProjectionMatrix();
-	glUniformMatrix4fv(projLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-
-	glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(color));
-
-	GLint timeLocation = glGetUniformLocation(shader->GetProgramID(), "Time");
-	glUniform1f(timeLocation, (GLfloat)Engine::GetElapsedTime());
-
-	if (name_mesh == 1)
-	{
-		GLint combustibilBool = glGetUniformLocation(shader->GetProgramID(), "combustibilBool");
-		glUniform1f(combustibilBool, 1);
+		mesh->Render();
 	}
 	else {
-		GLint combustibilBool = glGetUniformLocation(shader->GetProgramID(), "combustibilBool");
-		glUniform1f(combustibilBool, 0);
-	}
-	glBindVertexArray(mesh->GetBuffers()->VAO);
-	glDrawElements(mesh->GetDrawMode(), static_cast<int>(mesh->indices.size()), GL_UNSIGNED_SHORT, 0);
 
+		glUseProgram(shader->program);
+
+		GLint modelLocation = glGetUniformLocation(shader->GetProgramID(), "Model");
+		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+
+		GLint viewLocation = glGetUniformLocation(shader->GetProgramID(), "View");
+		glm::mat4 viewMatrix = camera->GetViewMatrix();
+		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+
+		GLint projLocation = glGetUniformLocation(shader->GetProgramID(), "Projection");
+		glm::mat4 projectionMatrix = GetSceneCamera()->GetProjectionMatrix();
+		glUniformMatrix4fv(projLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+
+		glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(color));
+
+		GLint timeLocation = glGetUniformLocation(shader->GetProgramID(), "Time");
+		glUniform1f(timeLocation, (GLfloat)Engine::GetElapsedTime());
+
+		if (name_mesh == 1)
+		{
+			GLint combustibilBool = glGetUniformLocation(shader->GetProgramID(), "combustibilBool");
+			glUniform1f(combustibilBool, 1);
+		}
+		else {
+			GLint combustibilBool = glGetUniformLocation(shader->GetProgramID(), "combustibilBool");
+			glUniform1f(combustibilBool, 0);
+		}
+		glBindVertexArray(mesh->GetBuffers()->VAO);
+		glDrawElements(mesh->GetDrawMode(), static_cast<int>(mesh->indices.size()), GL_UNSIGNED_SHORT, 0);
+	}
 }
 
 // Documentation for the input functions can be found in: "/Source/Core/Window/InputController.h" or
@@ -395,6 +439,7 @@ void Tema2::OnKeyPress(int key, int mods)
 	}
 	if (!window->MouseHold(GLFW_MOUSE_BUTTON_RIGHT))
 	{
+
 		if (key == GLFW_KEY_A)
 		{
 			if (playerCoord.x == 2)
@@ -419,17 +464,19 @@ void Tema2::OnKeyPress(int key, int mods)
 			}
 		}
 
+
 		if (key == GLFW_KEY_W)
 		{
-			if (speed <= 10)
+			if (speed <= 10 && blockOrange == 0)
 				speed += 1;
 		}
 
 		if (key == GLFW_KEY_S)
 		{
-			if (speed >= .02f)
+			if (speed >= .02f && blockOrange == 0)
 				speed -= 1;
 		}
+
 
 		if (key == GLFW_KEY_SPACE)
 		{
