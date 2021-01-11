@@ -128,18 +128,22 @@ bool Tema2::IntersectionCheck() {
 		{
 			platformsColors[colorposition] = VIOLET;
 			speed = 0;
+			controlDeformationVar = 1;
+			onRedPort = 1;
 		}
 		else if (platformsColors[colorposition] == YELLOW)// yellow
 		{
 			platformsColors[colorposition] = VIOLET;
 			gasVall -= (25.0 / 100.0) * gasVall;
+			controlDeformationVar = 1;
 		}
 		else if (platformsColors[colorposition] == ORANGE)// orange
 		{
 			platformsColors[colorposition] = VIOLET;
 			blockOrange = 1;
-			speed = 17;
+			speed = 10;
 			startL = std::clock();
+			controlDeformationVar = 1;
 		}
 		else if (platformsColors[colorposition] == GREEN)// green 
 		{
@@ -149,23 +153,28 @@ bool Tema2::IntersectionCheck() {
 			if (gasVall > 37.5) {
 				gasVall = 37.5;
 			}
+			controlDeformationVar = 1;
 		}
 		else if (platformsColors[colorposition] == BLUE)// blue 
 		{
 			platformsColors[colorposition] = VIOLET;
+			controlDeformationVar = 0;
 		}
 
 		return true;
 	}
 	else
+	{
+		controlDeformationVar = 0;
 		return false;
+	}
 }
 
 void Tema2::RanderScene(float deltaTimeSeconds) {
 
 	for (int i = 0; i < platformCoord.size(); i++)
 	{
-		
+
 		platformCoord[i].z += deltaTimeSeconds * speed;
 		modelMatrix = glm::mat4(1);
 		modelMatrix *= Transform3D::Translate(platformCoord[i].x, platformCoord[i].y, platformCoord[i].z);
@@ -186,6 +195,10 @@ void Tema2::RanderScene(float deltaTimeSeconds) {
 	if (gasVall <= 0)
 	{
 		gasVall = 0;
+	}
+	if (gasVall == 0)
+	{
+		speed = 0;
 	}
 
 	if (combustibilPos.w == 15) {
@@ -208,9 +221,7 @@ void Tema2::RanderScene(float deltaTimeSeconds) {
 		modelMatrix *= Transform3D::Scale(gasVall, 1, 1);
 
 		RenderMesh(combustibilBar->GetPowerLine(), 1, shaders["ShaderTema2"], modelMatrix, GREY);
-
 	}
-
 }
 
 void Tema2::RanderPlayer(float deltaTimeSeconds) {
@@ -237,19 +248,30 @@ void Tema2::RanderPlayer(float deltaTimeSeconds) {
 				isBack = 1;
 			}
 		}
+		if (playerCoord.y >= 2) {
 
-		modelMatrix = glm::mat4(1);
-		rotateAngle -= deltaTimeSeconds * speed;
-		modelMatrix *= Transform3D::Translate(playerCoord.x, playerCoord.y, playerCoord.z);
-		modelMatrix *= Transform3D::RotateOX(rotateAngle);
+			modelMatrix = glm::mat4(1);
+			rotateAngle -= deltaTimeSeconds * speed;
+			modelMatrix *= Transform3D::Translate(playerCoord.x, playerCoord.y, playerCoord.z);
+			modelMatrix *= Transform3D::RotateOX(rotateAngle);
 
-		RenderMesh(player->GetPlayer(), 0, shaders["VertexNormal"], modelMatrix, glm::vec3(1, 0, 0));
+			RenderMesh(player->GetPlayer(), 3, shaders["ShaderTema2"], modelMatrix, glm::vec3(1, 1, 0));
+		}
+		else {
+			modelMatrix = glm::mat4(1);
+			rotateAngle -= deltaTimeSeconds * speed;
+			modelMatrix *= Transform3D::Translate(playerCoord.x, playerCoord.y, playerCoord.z);
+			modelMatrix *= Transform3D::Scale(.1,.1,.1);
+			modelMatrix *= Transform3D::RotateOX(rotateAngle);
+
+			RenderMesh(player->GetPlayer(), 3, shaders["ShaderTema2"], modelMatrix, glm::vec3(1, 1, 0));
+		}
 	}
 }
 
 void Tema2::FrameEnd()
 {
-	DrawCoordinatSystem(camera->GetViewMatrix(), projectionMatrix);
+	//DrawCoordinatSystem(camera->GetViewMatrix(), projectionMatrix);
 }
 
 Mesh* Tema2::CreateMesh(const char* name, const std::vector<VertexFormat>& vertices, const std::vector<unsigned short>& indices)
@@ -326,7 +348,23 @@ void Tema2::RenderMesh(Mesh* mesh, int name_mesh, Shader* shader, const glm::mat
 	else {
 
 		glUseProgram(shader->program);
-
+		if (name_mesh == 3) {
+			if (controlDeformationVar == 1) {
+				GLint deformation = glGetUniformLocation(shader->GetProgramID(), "deformation");
+				glUniform1i(deformation, 1);
+				
+			}
+			else if (blockOrange == 1) {
+				GLint deformation = glGetUniformLocation(shader->GetProgramID(), "deformation");
+				glUniform1i(deformation, 1);
+			}
+			
+		}
+		else {
+			GLint deformation = glGetUniformLocation(shader->GetProgramID(), "deformation");
+			glUniform1i(deformation, 0);
+			glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(color));
+		}
 		GLint modelLocation = glGetUniformLocation(shader->GetProgramID(), "Model");
 		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 
@@ -338,7 +376,7 @@ void Tema2::RenderMesh(Mesh* mesh, int name_mesh, Shader* shader, const glm::mat
 		glm::mat4 projectionMatrix = GetSceneCamera()->GetProjectionMatrix();
 		glUniformMatrix4fv(projLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
-		glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(color));
+		
 
 		GLint timeLocation = glGetUniformLocation(shader->GetProgramID(), "Time");
 		glUniform1f(timeLocation, (GLfloat)Engine::GetElapsedTime());
@@ -352,6 +390,9 @@ void Tema2::RenderMesh(Mesh* mesh, int name_mesh, Shader* shader, const glm::mat
 			GLint combustibilBool = glGetUniformLocation(shader->GetProgramID(), "combustibilBool");
 			glUniform1f(combustibilBool, 0);
 		}
+
+
+
 		glBindVertexArray(mesh->GetBuffers()->VAO);
 		glDrawElements(mesh->GetDrawMode(), static_cast<int>(mesh->indices.size()), GL_UNSIGNED_SHORT, 0);
 	}
@@ -467,21 +508,27 @@ void Tema2::OnKeyPress(int key, int mods)
 
 		if (key == GLFW_KEY_W)
 		{
-			if (speed <= 10 && blockOrange == 0)
+			if (speed <= 10 && blockOrange == 0 && onRedPort == 0)
 				speed += 1;
 		}
 
 		if (key == GLFW_KEY_S)
 		{
-			if (speed >= .02f && blockOrange == 0)
+			if (speed >= .02f && blockOrange == 0 && onRedPort == 0)
 				speed -= 1;
 		}
 
-
-		if (key == GLFW_KEY_SPACE)
-		{
-			playerCoord.w = 1;
-			isBack = 0;
+		if (isBack == 1 ) {
+			if (playerCoord.y >= 2) {
+				if (key == GLFW_KEY_SPACE)
+				{
+					playerCoord.w = 1;
+					isBack = 0;
+				}
+			}
+			else {
+				speed = 0;
+			}
 		}
 	}
 	if (key == GLFW_KEY_C)

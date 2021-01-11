@@ -53,11 +53,14 @@ public:
 	int isBack = 1;
 	int isColide = 0;
 	int ENDGAME = 0;
-	int colorposition = -5;
+	int colorposition = -5, onRedPort = 0;
 	GLfloat gasVall = 37.5;
 	float rotateAngle = .00f;
 	double duration = 0;
 	std::clock_t startL, startM, startR;
+	
+
+	int controlDeformationVar = 0;
 
 
 private:
