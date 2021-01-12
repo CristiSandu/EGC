@@ -42,8 +42,9 @@ public:
 	glm::vec3 VIOLET = glm::vec3(.25, .01, .5); //violet 
 	glm::vec3 GREY = glm::vec3(.5, .5, .5); //grey
 
-	glm::vec4 combustibilPos = glm::vec4(1.05, 3, 2.1,15);
-
+	glm::vec4 combustibilPos = glm::vec4(1.05, 3, 2.1, 15);
+	///glm::vec4(1.05, 3, 2.1,15)
+	//glm::vec4(.01, .01, 2.1,15)
 	GLfloat xCameraCoord = 0, yCameraCoord = 0;
 	glm::vec4 playerCoord = glm::vec4(2, 2.5, 0,0);
 	GLfloat speed = .01f;
@@ -56,8 +57,9 @@ public:
 	int colorposition = -5, onRedPort = 0;
 	GLfloat gasVall = 37.5;
 	float rotateAngle = .00f;
-	double duration = 0;
+	double duration = 0,score =0;
 	std::clock_t startL, startM, startR;
+	
 	
 
 	int controlDeformationVar = 0;

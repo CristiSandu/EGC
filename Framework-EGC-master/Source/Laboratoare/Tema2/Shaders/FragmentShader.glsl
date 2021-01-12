@@ -29,7 +29,7 @@ layout(location = 2) out vec3 out_texture;
 
 void main() {
 	if (frag_ball == 1){
-		out_color = vec4(abs(frag_color), 1);
+		out_color = vec4(frag_color, 1);
 	} else {
 		out_color = vec4(frag_color, 1.f);
 	}

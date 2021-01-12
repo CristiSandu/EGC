@@ -80,7 +80,7 @@ void Tema2::Update(float deltaTimeSeconds)
 		platformsColors.push_back(platformColors[colorIndex]);
 
 
-		colorIndex = rand() % 5;
+		colorIndex = rand() % 5 ;
 		platformCoord.push_back(glm::vec4(2, 2, platformCoord[platformCoord.size() - 3].z - (0.5 * platformCoord[platformCoord.size() - 3].w) - (colorIndex + 3), w));
 		platformsColors.push_back(platformColors[colorIndex]);
 
@@ -95,6 +95,11 @@ void Tema2::Update(float deltaTimeSeconds)
 	{
 		speed = 7;
 		blockOrange = 0;
+	}
+	if (ENDGAME == 1)
+	{
+		score = (std::clock() - startR) / (double)CLOCKS_PER_SEC;
+		std::cout << "END GAME ! Score is :" << score * 10 << std::endl;
 	}
 
 	RanderScene(deltaTimeSeconds);
@@ -128,6 +133,7 @@ bool Tema2::IntersectionCheck() {
 		{
 			platformsColors[colorposition] = VIOLET;
 			speed = 0;
+			ENDGAME = 1;
 			controlDeformationVar = 1;
 			onRedPort = 1;
 		}
@@ -205,8 +211,8 @@ void Tema2::RanderScene(float deltaTimeSeconds) {
 		modelMatrix *= Transform3D::Translate(combustibilPos.x, combustibilPos.y, combustibilPos.z);
 		modelMatrix *= Transform3D::RotateOX(combustibilPos.w);
 		modelMatrix *= Transform3D::Scale(.01, .01, .01);
-		RenderMesh(combustibilBar->GetCombustibilBar(), 1, shaders["ShaderTema2"], modelMatrix, GREEN);
 
+		RenderMesh(combustibilBar->GetCombustibilBar(), 1, shaders["ShaderTema2"], modelMatrix, GREEN);
 		modelMatrix *= Transform3D::Scale(gasVall, 1, 1);
 		RenderMesh(combustibilBar->GetPowerLine(), 1, shaders["ShaderTema2"], modelMatrix, GREY);
 	}
@@ -225,7 +231,7 @@ void Tema2::RanderScene(float deltaTimeSeconds) {
 }
 
 void Tema2::RanderPlayer(float deltaTimeSeconds) {
-	if (ENDGAME == 0) {
+	
 		if (playerCoord.w == 1)
 		{
 			if (playerCoord.y < 5)
@@ -238,7 +244,7 @@ void Tema2::RanderPlayer(float deltaTimeSeconds) {
 			}
 		}
 
-		if (playerCoord.w == 0)
+		if (playerCoord.w == 0 )
 		{
 			if (playerCoord.y > 2.5)
 			{
@@ -265,8 +271,9 @@ void Tema2::RanderPlayer(float deltaTimeSeconds) {
 			modelMatrix *= Transform3D::RotateOX(rotateAngle);
 
 			RenderMesh(player->GetPlayer(), 3, shaders["ShaderTema2"], modelMatrix, glm::vec3(1, 1, 0));
+			ENDGAME = 1;
 		}
-	}
+	
 }
 
 void Tema2::FrameEnd()
@@ -508,22 +515,24 @@ void Tema2::OnKeyPress(int key, int mods)
 
 		if (key == GLFW_KEY_W)
 		{
-			if (speed <= 10 && blockOrange == 0 && onRedPort == 0)
+			if (speed <= 10 && blockOrange == 0 && ENDGAME == 0)
 				speed += 1;
 		}
 
 		if (key == GLFW_KEY_S)
 		{
-			if (speed >= .02f && blockOrange == 0 && onRedPort == 0)
+			if (speed >= .02f && blockOrange == 0 && ENDGAME == 0)
 				speed -= 1;
 		}
 
 		if (isBack == 1 ) {
-			if (playerCoord.y >= 2) {
-				if (key == GLFW_KEY_SPACE)
-				{
-					playerCoord.w = 1;
-					isBack = 0;
+			if (playerCoord.y >= 2 ) {
+				if (speed > .01f) {
+					if (key == GLFW_KEY_SPACE)
+					{
+						playerCoord.w = 1;
+						isBack = 0;
+					}
 				}
 			}
 			else {
