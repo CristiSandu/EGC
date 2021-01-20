@@ -135,7 +135,7 @@ void Laborator9::Update(float deltaTimeSeconds)
 		glm::mat4 modelMatrix = glm::mat4(1);
 		modelMatrix = glm::translate(modelMatrix, glm::vec3(1, 1, -3));
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(2));
-		RenderSimpleMesh(meshes["sphere"], shaders["ShaderLab9"], modelMatrix, mapTextures["earth"]);
+		RenderSimpleMesh(meshes["sphere"], shaders["ShaderLab9"], modelMatrix, mapTextures["earth"],nullptr);
 	}
 
 	{
@@ -143,7 +143,7 @@ void Laborator9::Update(float deltaTimeSeconds)
 		modelMatrix = glm::translate(modelMatrix, glm::vec3(2, 0.5f, 0));
 		modelMatrix = glm::rotate(modelMatrix, RADIANS(60.0f), glm::vec3(1, 0, 0));
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.75f));
-		RenderSimpleMesh(meshes["box"], shaders["ShaderLab9"], modelMatrix, mapTextures["crate"]);
+		RenderSimpleMesh(meshes["box"], shaders["ShaderLab9"], modelMatrix, mapTextures["crate"], nullptr);
 	}
 
 	{
@@ -151,21 +151,21 @@ void Laborator9::Update(float deltaTimeSeconds)
 		modelMatrix = glm::translate(modelMatrix, glm::vec3(-2, 0.5f, 0));
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.75f));
 		modelMatrix = glm::rotate(modelMatrix, RADIANS(75.0f), glm::vec3(1, 1, 0));
-		RenderSimpleMesh(meshes["box"], shaders["ShaderLab9"], modelMatrix, mapTextures["random"]);
+		RenderSimpleMesh(meshes["box"], shaders["ShaderLab9"], modelMatrix, mapTextures["random"], nullptr);
 	}
 
 	{
 		glm::mat4 modelMatrix = glm::mat4(1);
 		modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, 0.5f, 0.0f));
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5f));
-		RenderSimpleMesh(meshes["square"], shaders["ShaderLab9"], modelMatrix, mapTextures["grass"]);
+		RenderSimpleMesh(meshes["square"], shaders["ShaderLab9"], modelMatrix, mapTextures["grass"], nullptr);
 	}
 
 	{
 		glm::mat4 modelMatrix = glm::mat4(1);
 		modelMatrix = glm::translate(modelMatrix, glm::vec3(-2, -0.5f, -3));
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.1f));
-		RenderSimpleMesh(meshes["bamboo"], shaders["ShaderLab9"], modelMatrix, mapTextures["bamboo"]);
+		RenderSimpleMesh(meshes["bamboo"], shaders["ShaderLab9"], modelMatrix, mapTextures["bamboo"], nullptr);
 	}
 }
 

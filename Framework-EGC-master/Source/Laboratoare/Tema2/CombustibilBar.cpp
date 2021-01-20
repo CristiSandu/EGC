@@ -41,6 +41,43 @@ CombustibilBar::CombustibilBar() {
 			powerLine->InitFromData(vertices, indices);
 		}
 
+
+		{
+			combustibilBar2 = new Mesh("combustibilBar2");
+			glm::vec3  color = glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0);
+
+			std::vector<VertexFormat> vertices =
+			{
+				VertexFormat(corner, color),//0
+				VertexFormat(corner + glm::vec3(0.6, 0, 0), color),//1
+				VertexFormat(corner + glm::vec3(0.6, 0.1, 0), color),//3
+				VertexFormat(corner + glm::vec3(0, 0.1, 0), color),//2
+
+			};
+
+			std::vector<unsigned short> indices = { 0,1,2,3,0 };
+			combustibilBar2->SetDrawMode(GL_LINE_LOOP);
+			combustibilBar2->InitFromData(vertices, indices);
+		}
+
+		{
+			powerLine2 = new Mesh("powerLine2");
+			glm::vec3  color = glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0);
+
+			std::vector<VertexFormat> vertices =
+			{
+				VertexFormat(corner, color),//0
+				VertexFormat(corner + glm::vec3(0.1, 0, 0), color),//1
+				VertexFormat(corner + glm::vec3(0.1,  0.1, 0), color),//2
+				VertexFormat(corner + glm::vec3(0,  0.1, 0), color),//3
+			};
+
+			std::vector<unsigned short> indices = { 1,0,3,
+				3,2,1 };
+			//powerLine->SetDrawMode(GL_LINE_LOOP);
+			powerLine2->InitFromData(vertices, indices);
+		}
+
 	}
 }
 

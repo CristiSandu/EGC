@@ -9,9 +9,9 @@ namespace Transform3D
 	{
 		// TODO implement translate matrix
 		return glm::mat4(1, 0, 0, 0,
-			0, 1, 0, 0,
-			0, 0, 1, 0,
-			translateX, translateY, translateZ, 1);
+						 0, 1, 0, 0,
+						 0, 0, 1, 0,
+						 translateX, translateY, translateZ, 1);
 	}
 
 	// Scale matrix
@@ -19,9 +19,9 @@ namespace Transform3D
 	{
 		// TODO implement scale matrix
 		return glm::mat4(scaleX, 0, 0, 0,
-			0, scaleY, 0, 0,
-			0, 0, scaleZ, 0,
-			0, 0, 0, 1);
+						 0, scaleY, 0, 0,
+						 0, 0, scaleZ, 0,
+						 0, 0, 0, 1);
 	}
 
 	// Rotate matrix relative to the OZ axis
@@ -29,9 +29,9 @@ namespace Transform3D
 	{
 		// TODO implement rotate matrix
 		return glm::mat4(cos(radians), sin(radians), 0, 0,
-			-sin(radians), cos(radians), 0, 0,
-			0, 0, 1, 0,
-			0, 0, 0, 1);
+						 -sin(radians), cos(radians), 0, 0,
+						 0, 0, 1, 0,
+						 0, 0, 0, 1);
 	}
 
 	// Rotate matrix relative to the OY axis
@@ -39,9 +39,9 @@ namespace Transform3D
 	{
 		// TODO implement rotate matrix
 		return glm::mat4(cos(radians), 0, -sin(radians), 0,
-			0, 1, 0, 0,
-			sin(radians), 0, cos(radians), 0,
-			0, 0, 0, 1);
+						 0, 1, 0, 0,
+						 sin(radians), 0, cos(radians), 0,
+						 0, 0, 0, 1);
 	}
 
 	// Rotate matrix relative to the OX axis
@@ -49,8 +49,8 @@ namespace Transform3D
 	{
 		// TODO implement rotate matrix
 		return glm::mat4(1, 0, 0, 0,
-			0, cos(radians), sin(radians), 0,
-			0, -sin(radians), cos(radians), 0,
-			0, 0, 0, 1);
+						 0, cos(radians), sin(radians), 0,
+						 0, -sin(radians), cos(radians), 0,
+						 0, 0, 0, 1);
 	}
-}
+} // namespace Transform3D

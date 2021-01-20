@@ -43,6 +43,7 @@ public:
 	glm::vec3 GREY = glm::vec3(.5, .5, .5); //grey
 
 	glm::vec4 combustibilPos = glm::vec4(1.05, 3, 2.1, 15);
+	
 	///glm::vec4(1.05, 3, 2.1,15)
 	//glm::vec4(.01, .01, 2.1,15)
 	GLfloat xCameraCoord = 0, yCameraCoord = 0;

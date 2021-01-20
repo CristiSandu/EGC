@@ -70,6 +70,15 @@
     <Filter Include="Laboratoare\Tema2\Shaders">
       <UniqueIdentifier>{d1389463-bc5f-4a29-8a8e-6fa607ad9f86}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Laboratoare\Tema3">
+      <UniqueIdentifier>{36e63adb-2553-4b20-af61-82802731150c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Laboratoare\Tema3\Shaders">
+      <UniqueIdentifier>{b7592cc0-730c-4f58-acfa-d009c6636f7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Laboratoare\Tema3\Textures">
+      <UniqueIdentifier>{c416f895-f866-40a5-8375-0c1a9107ec2a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\Core\Engine.cpp">
@@ -180,6 +189,12 @@
     </ClCompile>
     <ClCompile Include="..\Source\Laboratoare\Tema2\CombustibilBar.cpp">
       <Filter>Laboratoare\Tema2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Laboratoare\Tema3\Tema3.cpp">
+      <Filter>Laboratoare\Tema3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Laboratoare\Tema3\Ornament.cpp">
+      <Filter>Laboratoare\Tema3</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -324,6 +339,12 @@
     <ClInclude Include="..\Source\Laboratoare\Tema2\CombustibilBar.h">
       <Filter>Laboratoare\Tema2</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\Laboratoare\Tema3\Tema3.h">
+      <Filter>Laboratoare\Tema3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Laboratoare\Tema3\Ornament.h">
+      <Filter>Laboratoare\Tema3</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Source\Laboratoare\Laborator6\Shaders\FragmentShader.glsl">
@@ -357,5 +378,19 @@
     <None Include="..\Source\Laboratoare\Tema2\Shaders\VertexShader.glsl">
       <Filter>Laboratoare\Tema2\Shaders</Filter>
     </None>
+    <None Include="..\Source\Laboratoare\Tema3\Shaders\FragmentShader.glsl">
+      <Filter>Laboratoare\Tema3\Shaders</Filter>
+    </None>
+    <None Include="..\Source\Laboratoare\Tema3\Shaders\VertexShader.glsl">
+      <Filter>Laboratoare\Tema3\Shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\bill-cipher-1.png">
+      <Filter>Laboratoare\Tema3\Textures</Filter>
+    </Image>
+    <Image Include="..\..\bill-cipher.png">
+      <Filter>Laboratoare\Tema3\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -21,10 +21,9 @@ void Laborator4::Init()
 {
 	polygonMode = GL_FILL;
 
-	Mesh* mesh = new Mesh("box");
+	Mesh *mesh = new Mesh("box");
 	mesh->LoadMesh(RESOURCE_PATH::MODELS + "Primitives", "box.obj");
 	meshes[mesh->GetMeshID()] = mesh;
-	
 
 	// initialize tx, ty and tz (the translation steps)
 	translateX = 0;
@@ -35,7 +34,7 @@ void Laborator4::Init()
 	scaleX = 1;
 	scaleY = 1;
 	scaleZ = 1;
-	
+
 	// initialize angularSteps
 	angularStepOX = 0;
 	angularStepOY = 0;
@@ -60,7 +59,7 @@ void Laborator4::Update(float deltaTimeSeconds)
 	glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
 
 	modelMatrix = glm::mat4(1);
-	modelMatrix *= Transform3D::Translate(-2.5f, 0.5f,-1.5f);
+	modelMatrix *= Transform3D::Translate(-2.5f, 0.5f, -1.5f);
 	modelMatrix *= Transform3D::Translate(translateX, translateY, translateZ);
 	RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
 
@@ -76,33 +75,31 @@ void Laborator4::Update(float deltaTimeSeconds)
 	modelMatrix *= Transform3D::RotateOZ(angularStepOZ);
 	RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
 
-	
-		// Sun
+	// Sun
 	modelMatrix = glm::mat4(1);
 	//posSunX += deltaTimeSeconds;
 	//posSunY += deltaTimeSeconds;
 
-		modelMatrix = Transform3D::Translate(posSunX, posSunY,0);
-		RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
+	modelMatrix = Transform3D::Translate(posSunX, posSunY, 0);
+	RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
 
-		// Earth (orbits the Sun)
-		modelMatrix = glm::mat4(1);
-		angularStepOY += deltaTimeSeconds;
-		modelMatrix *= Transform3D::Translate(SQUARE_SIDE  , SQUARE_SIDE ,0);
-		modelMatrix *= Transform3D::RotateOY(angularStepOY * 2.f);
-		modelMatrix *= Transform3D::Translate(cos(posSunX * 1.5f), sin (posSunX * 1.5f),0);
-		modelMatrix *= Transform3D::Translate(-SQUARE_SIDE , -SQUARE_SIDE ,0);
-		RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
+	// Earth (orbits the Sun)
+	modelMatrix = glm::mat4(1);
+	angularStepOY += deltaTimeSeconds;
+	modelMatrix *= Transform3D::Translate(SQUARE_SIDE, SQUARE_SIDE, 0);
+	modelMatrix *= Transform3D::RotateOY(angularStepOY * 2.f);
+	modelMatrix *= Transform3D::Translate(cos(posSunX * 1.5f), sin(posSunX * 1.5f), 0);
+	modelMatrix *= Transform3D::Translate(-SQUARE_SIDE, -SQUARE_SIDE, 0);
+	RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
 
-		// Moon (orbits the Earth)
-		modelMatrix = glm::mat4(1);
+	// Moon (orbits the Earth)
+	modelMatrix = glm::mat4(1);
 
-		modelMatrix *= Transform3D::Translate(SQUARE_SIDE / 2.f, SQUARE_SIDE / 2.f,0);
-		modelMatrix *= Transform3D::RotateOY(angularStepOY  * 2.f);
-		modelMatrix *= Transform3D::Translate(SQUARES_DISTANCE * 1.2f, SQUARES_DISTANCE * 1.2f,0);
-		modelMatrix *= Transform3D::Translate(-SQUARE_SIDE / 2.f, -SQUARE_SIDE / 2.f,0);
-		RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
-	
+	modelMatrix *= Transform3D::Translate(SQUARE_SIDE / 2.f, SQUARE_SIDE / 2.f, 0);
+	modelMatrix *= Transform3D::RotateOY(angularStepOY * 2.f);
+	modelMatrix *= Transform3D::Translate(SQUARES_DISTANCE * 1.2f, SQUARES_DISTANCE * 1.2f, 0);
+	modelMatrix *= Transform3D::Translate(-SQUARE_SIDE / 2.f, -SQUARE_SIDE / 2.f, 0);
+	RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
 }
 
 void Laborator4::FrameEnd()
@@ -140,7 +137,6 @@ void Laborator4::OnInputUpdate(float deltaTime, int mods)
 		{
 			translateY -= deltaTime;
 		}
-
 	}
 
 	if (window->KeyHold(GLFW_KEY_1))
@@ -163,33 +159,25 @@ void Laborator4::OnInputUpdate(float deltaTime, int mods)
 	if (window->KeyHold(GLFW_KEY_4))
 	{
 		angularStepOX -= deltaTime;
-
 	}
 
 	if (window->KeyHold(GLFW_KEY_5))
 	{
 		angularStepOY += deltaTime;
-
 	}
 	if (window->KeyHold(GLFW_KEY_6))
 	{
 		angularStepOY -= deltaTime;
-
 	}
 
 	if (window->KeyHold(GLFW_KEY_7))
 	{
 		angularStepOZ += deltaTime;
-
 	}
 	if (window->KeyHold(GLFW_KEY_8))
 	{
 		angularStepOZ -= deltaTime;
-
 	}
-
-
-
 }
 
 void Laborator4::OnKeyPress(int key, int mods)

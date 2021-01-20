@@ -353,7 +353,7 @@ void Tema2::RenderMesh(Mesh* mesh, int name_mesh, Shader* shader, const glm::mat
 		mesh->Render();
 	}
 	else {
-
+		//modelMatrix *= Transform3D::Translate(playerCoord.x, playerCoord.y, playerCoord.z);
 		glUseProgram(shader->program);
 		if (name_mesh == 3) {
 			if (controlDeformationVar == 1) {
@@ -613,53 +613,3 @@ void Tema2::OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY)
 void Tema2::OnWindowResize(int width, int height)
 {
 }
-
-
-/*{
-		glm::mat4 modelMatrix = glm::mat4(1);
-		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 1, 0));
-		modelMatrix = glm::rotate(modelMatrix, RADIANS(45.0f), glm::vec3(0, 1, 0));
-
-		// Attention! The RenderMesh function overrides the usual RenderMesh that we used until now
-		// It uses the viewMatrix from Laborator::Camera instance and the local projectionMatrix
-		RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
-	}
-
-	{
-		glm::mat4 modelMatrix = glm::mat4(1);
-		modelMatrix = glm::translate(modelMatrix, glm::vec3(2, 0.5f, 0));
-		modelMatrix = glm::rotate(modelMatrix, RADIANS(60.0f), glm::vec3(1, 0, 0));
-		RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
-	}
-
-	{
-		glm::mat4 modelMatrix = glm::mat4(1);
-		modelMatrix = glm::translate(modelMatrix, glm::vec3(-2, 0.5f, 0));
-		RenderMesh(meshes["box"], shaders["Simple"], modelMatrix);
-	}
-
-
-	{
-		glm::mat4 modelMatrix = glm::mat4(1);
-		modelMatrix = glm::translate(modelMatrix, glm::vec3(2.f, 2.5f, 0));
-		modelMatrix = glm::rotate(modelMatrix, RADIANS(90.f), glm::vec3(1.f, 1.f, 0));
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(1.f, .5f, .3f));
-		RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
-	}
-
-	{
-		glm::mat4 modelMatrix = glm::mat4(1);
-		modelMatrix = glm::translate(modelMatrix, glm::vec3(2.f, 2.5f, 3.f));
-		modelMatrix = glm::rotate(modelMatrix, RADIANS(180.f), glm::vec3(0.8f, 0, 0.5f));
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(.8f, 1.f, .9f));
-		RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
-	}
-
-	// Render the camera target. Useful for understanding where is the rotation point in Third-person camera movement
-	if (renderCameraTarget)
-	{
-		glm::mat4 modelMatrix = glm::mat4(1);
-		modelMatrix = glm::translate(modelMatrix, camera->GetTargetPosition());
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.1f));
-		RenderMesh(meshes["sphere"], shaders["VertexNormal"], modelMatrix);
-	}*/

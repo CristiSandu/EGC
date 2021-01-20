@@ -55,6 +55,8 @@
     <ClCompile Include="..\Source\Laboratoare\Tema2\Platform.cpp" />
     <ClCompile Include="..\Source\Laboratoare\Tema2\Player.cpp" />
     <ClCompile Include="..\Source\Laboratoare\Tema2\Tema2.cpp" />
+    <ClCompile Include="..\Source\Laboratoare\Tema3\Ornament.cpp" />
+    <ClCompile Include="..\Source\Laboratoare\Tema3\Tema3.cpp" />
     <ClCompile Include="..\Source\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +107,8 @@
     <ClInclude Include="..\Source\Laboratoare\Tema2\Player.h" />
     <ClInclude Include="..\Source\Laboratoare\Tema2\Tema2.h" />
     <ClInclude Include="..\Source\Laboratoare\Tema2\Transform3D.h" />
+    <ClInclude Include="..\Source\Laboratoare\Tema3\Ornament.h" />
+    <ClInclude Include="..\Source\Laboratoare\Tema3\Tema3.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Source\Laboratoare\Laborator6\Shaders\FragmentShader.glsl" />
@@ -117,7 +121,13 @@
     <None Include="..\Source\Laboratoare\Laborator9\Shaders\VertexShader.glsl" />
     <None Include="..\Source\Laboratoare\Tema2\Shaders\FragmentShader.glsl" />
     <None Include="..\Source\Laboratoare\Tema2\Shaders\VertexShader.glsl" />
+    <None Include="..\Source\Laboratoare\Tema3\Shaders\FragmentShader.glsl" />
+    <None Include="..\Source\Laboratoare\Tema3\Shaders\VertexShader.glsl" />
     <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\bill-cipher-1.png" />
+    <Image Include="..\..\bill-cipher.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FB43B467-42CC-458C-9556-597B025830F7}</ProjectGuid>
