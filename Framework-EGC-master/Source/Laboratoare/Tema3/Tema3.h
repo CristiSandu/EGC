@@ -30,6 +30,12 @@ public:
 	std::vector<glm::vec4> ornamentCoord;
 	std::vector<glm::vec3> platformColors;
 	std::vector<glm::vec3> platformsColors;
+	std::vector<glm::vec4> powerUps;
+	std::vector<int> indexPowerUp;
+	std::vector<float> rotationPowerUp;
+
+
+	
 
 	glm::vec3 RED = glm::vec3(0.9, .04, .29); //red
 	glm::vec3 YELLOW = glm::vec3(.9, .9, .5); //yellow
@@ -38,7 +44,7 @@ public:
 	glm::vec3 BLUE = glm::vec3(0, 0, .9); //blue
 	glm::vec3 VIOLET = glm::vec3(.25, .01, .5); //violet 
 	glm::vec3 GREY = glm::vec3(.5, .5, .5); //grey
-
+	
 	glm::vec4 combustibilPos = glm::vec4(1.05, 3, 2.1, 15);
 
 	///glm::vec4(1.05, 3, 2.1,15)
@@ -50,14 +56,14 @@ public:
 	int firstLook = 1;
 	int start;
 	int isBack = 1;
-	int isColide = 0;
+	int isColide = 0, isColidePowerUp = 0;
 	int ENDGAME = 0;
 	int colorposition = -5, onRedPort = 0;
 	GLfloat gasVall = 37.5;
 	float rotateAngle = .00f;
 	double duration = 0, score = 0;
-	std::clock_t startL, startM, startR;
-
+	std::clock_t startL, startM, startR, startPowerUp;
+	float spinVar = 1;
 
 
 	int controlDeformationVar = 0;
@@ -86,7 +92,7 @@ private:
 	void OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY);
 	void OnWindowResize(int width, int height);
 	std::unordered_map<std::string, Texture2D*> mapTextures;
-
+	void RanderPowerUp(float deltaTimeSeconds);
 protected:
 	CameraTema::Camera* camera;
 	bool renderCameraTarget;

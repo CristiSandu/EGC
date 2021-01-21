@@ -12,7 +12,12 @@ public:
 
 	Mesh* GetPiramide();
 
+	Mesh* GetPiramideStyle();
+
 	Mesh* piramida;
+	Mesh* stylishPiramide;
+	Mesh* skull;
+
 private:
 protected:
 };

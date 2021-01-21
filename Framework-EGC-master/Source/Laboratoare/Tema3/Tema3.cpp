@@ -27,12 +27,19 @@ void Tema3::Init()
 	startL = std::clock();
 	startM = std::clock();
 	startR = std::clock();
+	startPowerUp = std::clock();
+
 
 	platformColors.push_back(RED); //rosu
 	platformColors.push_back(YELLOW); //galben 
 	platformColors.push_back(ORANGE); //portocaliu
 	platformColors.push_back(GREEN); //verde 
 	platformColors.push_back(BLUE); //blue 
+
+	indexPowerUp.push_back(0);
+	indexPowerUp.push_back(2);
+	indexPowerUp.push_back(4);
+
 
 
 	platformCoord.push_back(glm::vec4(0, 2, 1, 7));
@@ -46,6 +53,8 @@ void Tema3::Init()
 
 	ornamentCoord.push_back(glm::vec4(-4, 2, 1, 1));
 	ornamentCoord.push_back(glm::vec4(6, 2, 1, 1));
+	powerUps.push_back(glm::vec4(4, 2.1, 1, 1));
+	rotationPowerUp.push_back(1);
 
 	{
 		Texture2D* texture = new Texture2D();
@@ -100,6 +109,13 @@ void Tema3::Update(float deltaTimeSeconds)
 		colorIndex = rand() % 5;
 		platformCoord.push_back(glm::vec4(4, 2, platformCoord[platformCoord.size() - 3].z - (0.5 * platformCoord[platformCoord.size() - 3].w) - (colorIndex + 4), w));
 		platformsColors.push_back(platformColors[colorIndex]);
+		
+		duration = (std::clock() - startPowerUp) / (double)CLOCKS_PER_SEC;
+		if (duration > 10) {
+			powerUps.push_back(glm::vec4(indexPowerUp[rand() % 3], 2.1, platformCoord[platformCoord.size() - 3].z - (0.5 * platformCoord[platformCoord.size() - 3].w) - (colorIndex + 4),1));
+			rotationPowerUp.push_back(1);
+			startPowerUp = std::clock();
+		}
 
 		ornamentCoord.push_back(glm::vec4(-4, 2, ornamentCoord[ornamentCoord.size() - 2].z - 10, 1));
 		ornamentCoord.push_back(glm::vec4(6, 2, ornamentCoord[ornamentCoord.size() - 2].z - 10, 1));
@@ -120,6 +136,7 @@ void Tema3::Update(float deltaTimeSeconds)
 
 	RanderScene(deltaTimeSeconds);
 	RanderOrnament(deltaTimeSeconds);
+	RanderPowerUp(deltaTimeSeconds);
 	if (IntersectionCheck() == true || isBack == 0)
 		RanderPlayer(deltaTimeSeconds);
 	else
@@ -143,6 +160,25 @@ bool Tema3::IntersectionCheck() {
 			isColide = 1;
 			colorposition = i;
 		}
+	}
+	isColidePowerUp = 0;
+	for (int i = 0; i < powerUps.size(); i++)
+	{
+		float dist_squared = 0.5 * 0.5;
+
+		if (((playerCoord.x - 0.5) <= powerUps[i].x + 0.5 && (playerCoord.x + 0.5) >= powerUps[i].x - 0.5) &&
+			((playerCoord.y - 0.5) <= powerUps[i].y + (0.5 ) && (playerCoord.y + 0.5) >= powerUps[i].y - (0.5 )) &&
+			((playerCoord.z - 0.5) <= powerUps[i].z + (0.5 ) && (playerCoord.z + 0.5) >= powerUps[i].z - (0.5)))
+		{
+			isColidePowerUp = 1;
+			colorposition = i;
+		}
+	}
+
+	if (isColidePowerUp == 1)
+	{
+		score += 100;
+		powerUps[colorposition].w = 0;
 	}
 
 	if (isColide == 1) {
@@ -199,21 +235,20 @@ void Tema3::RanderOrnament(float deltaTimeSeconds) {
 		ornamentCoord[i].z += deltaTimeSeconds * speed;
 		ornamentCoord[i].w += deltaTimeSeconds * 1;
 		modelMatrix = glm::mat4(1);
-		//
+
 		modelMatrix *= Transform3D::Translate(ornamentCoord[i].x, ornamentCoord[i].y, ornamentCoord[i].z);
 		modelMatrix *= Transform3D::Scale(.31f, .31f, .31f);
 		modelMatrix *= Transform3D::Translate(4 / 2, 0, 4 / 2);
 		modelMatrix *= Transform3D::RotateOY(ornamentCoord[i].w);
 		modelMatrix *= Transform3D::Translate(-4 / 2, 0, -4 / 2);
-		//
 
 
 		///modelMatrix *= Transform3D::RotateOY(ornamentCoord[i].w);
 
 		if (ornamentCoord[i].z < 25)
 		{
-			//RenderMesh(ornament->GetPiramide(), 0, shaders["ShaderTema3"], modelMatrix, GREY);
-			RenderSimpleMesh(ornament->GetPiramide(),shaders["ShaderTema3"], modelMatrix, mapTextures["bill"],nullptr);
+			RenderMesh(ornament->GetPiramide(), 0, shaders["ShaderTema3"], modelMatrix, GREY);
+			//RenderSimpleMesh(ornament->GetPiramide(),shaders["ShaderTema3"], modelMatrix, mapTextures["bill"],nullptr);
 		}
 		else
 		{
@@ -223,11 +258,41 @@ void Tema3::RanderOrnament(float deltaTimeSeconds) {
 }
 
 
+void Tema3::RanderPowerUp(float deltaTimeSeconds) {
+	for (int i = 0; i < powerUps.size(); i++)
+	{
+		powerUps[i].z += deltaTimeSeconds * speed;
+		rotationPowerUp[i] += deltaTimeSeconds * 3;
+		modelMatrix = glm::mat4(1);
+
+		modelMatrix *= Transform3D::Translate(powerUps[i].x, powerUps[i].y, powerUps[i].z);
+		modelMatrix *= Transform3D::Scale(.11f, .11f, .11f);
+		modelMatrix *= Transform3D::Translate(4 / 2, 0, 4 / 2);
+		modelMatrix *= Transform3D::RotateOY(rotationPowerUp[i]);
+		modelMatrix *= Transform3D::Translate(-4 / 2, 0, -4 / 2);
+
+		if (powerUps[i].w == 0) {
+			modelMatrix *= Transform3D::Scale(.001f, .001f, .001f);
+		}
+
+		///modelMatrix *= Transform3D::RotateOY(ornamentCoord[i].w);
+
+		if (powerUps[i].z < 25)
+		{
+			RenderMesh(ornament->GetPiramideStyle(), 0, shaders["ShaderTema3"], modelMatrix, GREEN);
+			//RenderSimpleMesh(ornament->GetPiramide(),shaders["ShaderTema3"], modelMatrix, mapTextures["bill"],nullptr);
+		}
+		else
+		{
+			start = i - 1;
+		}
+	}
+}
+
 void Tema3::RanderScene(float deltaTimeSeconds) {
 
 	for (int i = 0; i < platformCoord.size(); i++)
 	{
-
 		platformCoord[i].z += deltaTimeSeconds * speed;
 		modelMatrix = glm::mat4(1);
 		modelMatrix *= Transform3D::Translate(platformCoord[i].x, platformCoord[i].y, platformCoord[i].z);
@@ -240,9 +305,7 @@ void Tema3::RanderScene(float deltaTimeSeconds) {
 		{
 			start = i - 1;
 		}
-
 	}
-
 
 
 	modelMatrix = glm::mat4(1);
@@ -309,7 +372,7 @@ void Tema3::RanderPlayer(float deltaTimeSeconds) {
 		rotateAngle -= deltaTimeSeconds * speed;
 		modelMatrix *= Transform3D::Translate(playerCoord.x, playerCoord.y, playerCoord.z);
 		modelMatrix *= Transform3D::RotateOX(rotateAngle);
-
+		//
 		RenderMesh(player->GetPlayer(), 3, shaders["ShaderTema3"], modelMatrix, glm::vec3(1, 1, 0));
 	}
 	else {

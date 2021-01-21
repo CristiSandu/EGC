@@ -17,7 +17,6 @@ uniform int combustibilBool;
 uniform int deformation;
 
 
-
 layout(location = 0) in vec3 v_position;
 layout(location = 1) in vec3 v_color;
 layout(location = 2) in vec2 v_texture;
@@ -37,17 +36,7 @@ float noise(float delta){
 void main() {
 	vec3 posistion = v_position ;
 	frag_color = object_color;
-	float size = 1;
-	vec2 texturecoord = v_texture;
-	//frag_texture = v_texture;
-	if(deformation == 2){
-		if (Time >= 0)
-		{
-			frag_texture = vec2(texturecoord.x - Time / 10.f, texturecoord.y);
-		}
-		frag_ball = 2;
-		
-	}
+	
 	
    if (deformation == 1){
 	 frag_ball = 1;
@@ -65,21 +54,21 @@ void main() {
 	
 	 posistion = v_position * sum;
 	 frag_color =  mix(vec3(.23,.72,.21), vec3(.53,.12,.01), sum ) * 162.1;
-	 //size = 100;
    } else {
-	 frag_color = object_color ;
+	// frag_color =mix(object_color, v_position, 0.2 );
+	// frag_color = mix (frag_color , v_normal,0.3);
+	frag_color = object_color;
 	 frag_position = v_position;
 	 frag_ball = 0;
-	 frag_texture = v_texture;
    }
    
    frag_normal = v_normal;
-   //frag_texture = v_texture;
-  gl_Position = Projection * View * Model* vec4(posistion , 1.0);
-   /*if (combustibilBool == 0)
-		
+   frag_texture = v_texture;
+ 
+   if (combustibilBool == 0)
+		 gl_Position = Projection * View * Model* vec4(posistion , 1.0);
 	else if (combustibilBool == 1){
 		gl_Position = Model* vec4(v_position, 1.0);
-		
-	}*/
+	}	
+	
 }
