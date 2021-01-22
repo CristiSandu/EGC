@@ -73,14 +73,33 @@ void Tema3::Init()
 
 	{
 		Texture2D* texture = new Texture2D();
-		texture->Load2D((textureLoc + "rockWall.jpg").c_str(), GL_REPEAT);
+		texture->Load2D((textureLoc + "stone.jpg").c_str(), GL_REPEAT);
 		mapTextures["rockWall"] = texture;
+	}
+
+	{
+		Texture2D* texture = new Texture2D();
+		texture->Load2D((textureLoc + "galaxy.jpg").c_str(), GL_REPEAT);
+		mapTextures["galaxy"] = texture;
 	}
 
 	{
 		Texture2D* texture = new Texture2D();
 		texture->Load2D((textureLoc + "metal.jpg").c_str(), GL_REPEAT);
 		mapTextures["metal"] = texture;
+	}
+
+
+	{
+		lightPosition = glm::vec3(2, 7, -30);
+		lightDirection = glm::vec3(-1, -1, -1);
+
+		lightPosition_spot = glm::vec3(6, 2, -7);
+		lightDirection_spot = glm::vec3(-1, 0, 0);
+
+		materialShininess = 30;
+		materialKd = 0.5;
+		materialKs = 0.5;
 	}
 
 
@@ -132,7 +151,7 @@ void Tema3::Update(float deltaTimeSeconds)
 		platformsColors.push_back(platformColors[colorIndex]);
 
 		duration = (std::clock() - startPowerUp) / (double)CLOCKS_PER_SEC;
-		if (duration > 0) {
+		if (duration > 1.5) {
 			powerUps.push_back(glm::vec4(indexPowerUp[rand() % 3], 2.1, platformCoord[platformCoord.size() - 3].z - (0.5 * platformCoord[platformCoord.size() - 3].w) - (colorIndex + 4), 1));
 			rotationPowerUp.push_back(1);
 			obsacolsVect.push_back(glm::vec4(indexPowerUp[rand() % 3], 2.5, platformCoord[platformCoord.size() - 3].z - (0.5 * platformCoord[platformCoord.size() - 3].w) - (colorIndex + 4), 1));
@@ -159,6 +178,7 @@ void Tema3::Update(float deltaTimeSeconds)
 	RanderScene(deltaTimeSeconds);
 	RanderOrnament(deltaTimeSeconds);
 	RanderPowerUp(deltaTimeSeconds);
+	RanderBackground(deltaTimeSeconds);
 
 	if (IntersectionCheck() == true || isBack == 0)
 		RanderPlayer(deltaTimeSeconds);
@@ -166,6 +186,22 @@ void Tema3::Update(float deltaTimeSeconds)
 	{
 		playerCoord.y -= deltaTimeSeconds * 3;
 		RanderPlayer(deltaTimeSeconds);
+	}
+
+	{
+		glm::mat4 modelMatrix = glm::mat4(1);
+		modelMatrix = glm::translate(modelMatrix, lightPosition);
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(1.f));
+		//RenderMesh(, shaders[""], modelMatrix);
+		RenderMesh(ornament->GetPiramideStyle(), shaders["ShaderTema3"], modelMatrix, RED, nullptr, nullptr);
+	}
+
+	{
+		glm::mat4 modelMatrix = glm::mat4(1);
+		modelMatrix = glm::translate(modelMatrix, lightPosition_spot);
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(.1f));
+		//RenderMesh(, shaders[""], modelMatrix);
+		RenderMesh(ornament->GetPiramideStyle(), shaders["ShaderTema3"], modelMatrix, RED, nullptr, nullptr);
 	}
 
 }
@@ -295,7 +331,7 @@ void Tema3::RanderOrnament(float deltaTimeSeconds) {
 		{
 			//RenderMesh(ornament->GetPiramide(), 0, shaders["ShaderTema3"], modelMatrix, GREY);
 			//RenderSimpleMesh(ornament->GetPiramide(),shaders["ShaderTema3"], modelMatrix, mapTextures["bill"],nullptr);
-			RenderMesh(ornament->GetPiramide(), shaders["ShaderTema3"], modelMatrix,GREY ,mapTextures["bill"], mapTextures["vortex"]);
+			RenderMesh(ornament->GetPiramide(), shaders["ShaderTema3"], modelMatrix, GREY, mapTextures["bill"], mapTextures["vortex"]);
 		}
 		else
 		{
@@ -303,7 +339,13 @@ void Tema3::RanderOrnament(float deltaTimeSeconds) {
 		}
 	}
 }
-
+void Tema3::RanderBackground(float deltaTimeSeconds) {
+	modelMatrix = glm::mat4(1);
+	modelMatrix *= Transform3D::Translate(0, 0, 0);
+	modelMatrix *= Transform3D::Scale(200, 200, 200);
+	modelMatrix *= Transform3D::RotateOX(-20);
+	RenderMesh(platform->GetPlatform(), shaders["ShaderTema3"], modelMatrix, glm::vec3(0, 0, 0), mapTextures["galaxy"], nullptr);
+}
 
 void Tema3::RanderPowerUp(float deltaTimeSeconds) {
 	for (int i = 0; i < powerUps.size(); i++)
@@ -341,8 +383,8 @@ void Tema3::RanderPowerUp(float deltaTimeSeconds) {
 
 		if (powerUps[i].z < 25)
 		{
-			RenderMesh(ornament->GetPiramideStyle(), shaders["ShaderTema3"], modelMatrix, GREEN, mapTextures["vortex"],nullptr);
-			RenderMesh(platform->GetPlatform(), shaders["ShaderTema3"], modelMatrixObs, GREY, mapTextures["rockWall"], nullptr);
+			RenderMesh(ornament->GetPiramideStyle(), shaders["ShaderTema3"], modelMatrix, GREEN, mapTextures["vortex"], nullptr);
+			RenderMesh(platform->GetPlatform(), shaders["ShaderTema3"], modelMatrixObs, glm::vec3(0, 0, 0), mapTextures["rockWall"], nullptr);
 		}
 		else
 		{
@@ -436,7 +478,7 @@ void Tema3::RanderPlayer(float deltaTimeSeconds) {
 		modelMatrix *= Transform3D::Translate(playerCoord.x, playerCoord.y, playerCoord.z);
 		modelMatrix *= Transform3D::RotateOX(rotateAngle);
 		//
-		RenderMesh(player->GetPlayer(), shaders["ShaderTema3"], modelMatrix, glm::vec3(1, 1, 0), mapTextures["metal"],nullptr);
+		RenderMesh(player->GetPlayer(), shaders["ShaderTema3"], modelMatrix, glm::vec3(1, 1, 0), mapTextures["metal"], nullptr);
 	}
 	else {
 		modelMatrix = glm::mat4(1);
@@ -445,8 +487,10 @@ void Tema3::RanderPlayer(float deltaTimeSeconds) {
 		modelMatrix *= Transform3D::Scale(.1, .1, .1);
 		modelMatrix *= Transform3D::RotateOX(rotateAngle);
 
-		RenderMesh(player->GetPlayer(), shaders["ShaderTema3"], modelMatrix, glm::vec3(1, 1, 0), mapTextures["metal"],nullptr);
+		RenderMesh(player->GetPlayer(), shaders["ShaderTema3"], modelMatrix, glm::vec3(1, 1, 0), mapTextures["metal"], nullptr);
 		ENDGAME = 1;
+
+		endSocre = score * 10;
 	}
 
 }
@@ -535,7 +579,9 @@ void Tema3::RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix,
 	else {
 		GLint deformation = glGetUniformLocation(shader->GetProgramID(), "deformation");
 		glUniform1i(deformation, 0);
-		glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(color));
+		int object_color = glGetUniformLocation(shader->program, "object_color");
+		glUniform3f(object_color, color.r, color.g, color.b);
+		//glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(color));
 	}
 	GLint modelLocation = glGetUniformLocation(shader->GetProgramID(), "Model");
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
@@ -548,6 +594,35 @@ void Tema3::RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix,
 	glm::mat4 projectionMatrix = GetSceneCamera()->GetProjectionMatrix();
 	glUniformMatrix4fv(projLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
+	//Set material property uniforms (shininess, kd, ks, object color) 
+	int material_shininess = glGetUniformLocation(shader->program, "material_shininess");
+	glUniform1i(material_shininess, materialShininess);
+
+	int material_kd = glGetUniformLocation(shader->program, "material_kd");
+	glUniform1f(material_kd, materialKd);
+
+	int material_ks = glGetUniformLocation(shader->program, "material_ks");
+	glUniform1f(material_ks, materialKs);
+
+	int light_position = glGetUniformLocation(shader->program, "light_position");
+	glUniform3f(light_position, lightPosition.x, lightPosition.y, lightPosition.z);
+
+	int light_direction = glGetUniformLocation(shader->program, "light_direction");
+	glUniform3f(light_direction, lightDirection.x, lightDirection.y, lightDirection.z);
+
+	int light_position_spot = glGetUniformLocation(shader->program, "light_position_spot");
+	glUniform3f(light_position_spot, lightPosition_spot.x, lightPosition_spot.y, lightPosition_spot.z);
+
+	/*int light_direction_spot = glGetUniformLocation(shader->program, "light_direction_spot");
+	glUniform3f(light_direction_spot, lightDirection_spot.x, lightDirection_spot.y, lightDirection_spot.z);*/
+
+	glm::vec3 eyePosition = GetSceneCamera()->transform->GetWorldPosition();
+	int eye_position = glGetUniformLocation(shader->program, "eye_position");
+	glUniform3f(eye_position, eyePosition.x, eyePosition.y, eyePosition.z);
+
+	GLint cut_off_angle = glGetUniformLocation(shader->program, "cut_off_angle");
+	glUniform1f(cut_off_angle, cutoffAngle);
+
 	if (mesh == ornament->GetPiramide())
 		glUniform1i(glGetUniformLocation(shader->program, "mix_textures"), true);
 	else
@@ -555,7 +630,7 @@ void Tema3::RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix,
 
 	if (mesh == ornament->GetPiramideStyle())
 		glUniform1i(glGetUniformLocation(shader->program, "isSkull"), true);
-	else 
+	else
 		glUniform1i(glGetUniformLocation(shader->program, "isSkull"), false);
 
 	if (texture1)
@@ -703,6 +778,24 @@ void Tema3::OnInputUpdate(float deltaTime, int mods)
 			// TODO : translate the camera up
 			camera->TranslateUpword(deltaTime * cameraSpeed);
 		}
+
+		if (window->KeyHold(GLFW_KEY_R))
+		{
+			cutoffAngle += deltaTime * ANGLE_SPEEDUP;
+			cutoffAngle = cutoffAngle > 360.f ? 360.f : cutoffAngle;
+		}
+		if (window->KeyHold(GLFW_KEY_T))
+		{
+			cutoffAngle -= deltaTime * ANGLE_SPEEDUP;
+			cutoffAngle = cutoffAngle < 0.f ? 0.f : cutoffAngle;
+		}
+
+		/*glm::mat4 turn = glm::mat4(1);
+		turn = glm::rotate(turn, 1, glm::vec3(0, 1, 0));
+		turn = glm::rotate(turn, 1, glm::vec3(1, 0, 0));
+
+		lightDirection = glm::vec3(0, -1, 0);
+		lightDirection = glm::vec3(turn * glm::vec4(lightDirection, 0));*/
 	}
 
 

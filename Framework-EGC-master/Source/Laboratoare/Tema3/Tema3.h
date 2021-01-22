@@ -19,6 +19,8 @@
 
 #define Z_FAR		(200.f)
 #define Z_NEAR		(.01f)
+#define ANGLE_SPEEDUP		(30.f)
+
 
 class Tema3 : public SimpleScene
 {
@@ -96,6 +98,14 @@ private:
 	std::unordered_map<std::string, Texture2D*> mapTextures;
 	void RanderPowerUp(float deltaTimeSeconds);
 	void RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix, const glm::vec3& color, Texture2D* texture1, Texture2D* texture2);
+	void RanderBackground(float deltaTimeSeconds);
+
+	glm::vec3 lightPosition, lightPosition_spot;
+	glm::vec3 lightDirection, lightDirection_spot;
+	unsigned int materialShininess;
+	float materialKd;
+	float materialKs;
+	GLfloat cutoffAngle;
 protected:
 	CameraTema::Camera* camera;
 	bool renderCameraTarget;

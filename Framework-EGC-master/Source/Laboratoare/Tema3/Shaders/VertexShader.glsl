@@ -27,6 +27,10 @@ out vec3 frag_position;
 out vec3 frag_normal;
 out vec2 frag_texture;
 out vec3 frag_color;
+
+out vec3 world_position;
+out vec3 world_normal;
+
 flat out int frag_ball;
  
 float noise(float delta){
@@ -38,6 +42,9 @@ void main() {
 	vec3 posistion = v_position ;
 	frag_color = object_color;
 	
+	world_position = (Model * vec4(v_position, 1)).xyz;
+	world_normal = normalize( mat3(Model) * normalize(v_normal) );
+
 	/*if (Time >= 0)
 	{
 		frag_texture= vec2(v_texture.x - Time / 10.f, v_texture.y);
@@ -47,6 +54,8 @@ void main() {
 	 float sum = 0.0;
 	 float size = 1.0;
 	 vec3 stp = v_position;
+
+	 
 	 /*sum = pow((2*pow(stp.x,2) + 2* pow(stp.y,2) + pow(stp.z,2) - 1),3) - 1/10 *pow(stp.x,2) *pow(stp.z,3) -pow(stp.y,2) *pow(stp.z,3);
 	 posistion = 5* vec3(stp.x,stp.z,stp.y)*sum ;
 	 frag_color =  mix(vec3(.23,.72,.21), vec3(.53,.12,.01), sum ) * 162.1;*/
