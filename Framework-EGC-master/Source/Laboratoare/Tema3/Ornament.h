@@ -17,6 +17,7 @@ public:
 	Mesh* piramida;
 	Mesh* stylishPiramide;
 	Mesh* skull;
+	glm::vec3 GREY = glm::vec3(.5, .5, .5); //grey
 
 private:
 protected:

@@ -53,13 +53,34 @@ void Tema3::Init()
 
 	ornamentCoord.push_back(glm::vec4(-4, 2, 1, 1));
 	ornamentCoord.push_back(glm::vec4(6, 2, 1, 1));
-	powerUps.push_back(glm::vec4(4, 2.1, 1, 1));
+	powerUps.push_back(glm::vec4(4, 2.1, -1, 1));
+
+	obsacolsVect.push_back(glm::vec4(0, 2.5, 1, 1));
+
 	rotationPowerUp.push_back(1);
 
 	{
 		Texture2D* texture = new Texture2D();
-		texture->Load2D((textureLoc + "bill-cipher-1.png").c_str(), GL_REPEAT);
+		texture->Load2D((textureLoc + "bill-cipher-1.png").c_str(), GL_CLAMP_TO_BORDER);
 		mapTextures["bill"] = texture;
+	}
+
+	{
+		Texture2D* texture = new Texture2D();
+		texture->Load2D((textureLoc + "vortex.jpg").c_str(), GL_REPEAT);
+		mapTextures["vortex"] = texture;
+	}
+
+	{
+		Texture2D* texture = new Texture2D();
+		texture->Load2D((textureLoc + "rockWall.jpg").c_str(), GL_REPEAT);
+		mapTextures["rockWall"] = texture;
+	}
+
+	{
+		Texture2D* texture = new Texture2D();
+		texture->Load2D((textureLoc + "metal.jpg").c_str(), GL_REPEAT);
+		mapTextures["metal"] = texture;
 	}
 
 
@@ -109,11 +130,12 @@ void Tema3::Update(float deltaTimeSeconds)
 		colorIndex = rand() % 5;
 		platformCoord.push_back(glm::vec4(4, 2, platformCoord[platformCoord.size() - 3].z - (0.5 * platformCoord[platformCoord.size() - 3].w) - (colorIndex + 4), w));
 		platformsColors.push_back(platformColors[colorIndex]);
-		
+
 		duration = (std::clock() - startPowerUp) / (double)CLOCKS_PER_SEC;
-		if (duration > 10) {
-			powerUps.push_back(glm::vec4(indexPowerUp[rand() % 3], 2.1, platformCoord[platformCoord.size() - 3].z - (0.5 * platformCoord[platformCoord.size() - 3].w) - (colorIndex + 4),1));
+		if (duration > 0) {
+			powerUps.push_back(glm::vec4(indexPowerUp[rand() % 3], 2.1, platformCoord[platformCoord.size() - 3].z - (0.5 * platformCoord[platformCoord.size() - 3].w) - (colorIndex + 4), 1));
 			rotationPowerUp.push_back(1);
+			obsacolsVect.push_back(glm::vec4(indexPowerUp[rand() % 3], 2.5, platformCoord[platformCoord.size() - 3].z - (0.5 * platformCoord[platformCoord.size() - 3].w) - (colorIndex + 4), 1));
 			startPowerUp = std::clock();
 		}
 
@@ -131,12 +153,13 @@ void Tema3::Update(float deltaTimeSeconds)
 	if (ENDGAME == 1)
 	{
 		score = (std::clock() - startR) / (double)CLOCKS_PER_SEC;
-		std::cout << "END GAME ! Score is :" << score * 10 << std::endl;
+		std::cout << "END GAME ! Score is :" << endSocre << std::endl;
 	}
 
 	RanderScene(deltaTimeSeconds);
 	RanderOrnament(deltaTimeSeconds);
 	RanderPowerUp(deltaTimeSeconds);
+
 	if (IntersectionCheck() == true || isBack == 0)
 		RanderPlayer(deltaTimeSeconds);
 	else
@@ -162,24 +185,44 @@ bool Tema3::IntersectionCheck() {
 		}
 	}
 	isColidePowerUp = 0;
+	isColideObstacle = 0;
 	for (int i = 0; i < powerUps.size(); i++)
 	{
 		float dist_squared = 0.5 * 0.5;
 
 		if (((playerCoord.x - 0.5) <= powerUps[i].x + 0.5 && (playerCoord.x + 0.5) >= powerUps[i].x - 0.5) &&
-			((playerCoord.y - 0.5) <= powerUps[i].y + (0.5 ) && (playerCoord.y + 0.5) >= powerUps[i].y - (0.5 )) &&
-			((playerCoord.z - 0.5) <= powerUps[i].z + (0.5 ) && (playerCoord.z + 0.5) >= powerUps[i].z - (0.5)))
+			((playerCoord.y - 0.5) <= powerUps[i].y + (0.5) && (playerCoord.y + 0.5) >= powerUps[i].y - (0.5)) &&
+			((playerCoord.z - 0.5) <= powerUps[i].z + (0.5) && (playerCoord.z + 0.5) >= powerUps[i].z - (0.5)))
 		{
 			isColidePowerUp = 1;
-			colorposition = i;
+			idexPowerUp = i;
+		}
+
+
+		if (((playerCoord.x - 0.5) <= obsacolsVect[i].x + 0.5 && (playerCoord.x + 0.5) >= obsacolsVect[i].x - 0.5) &&
+			((playerCoord.y - 0.5) <= obsacolsVect[i].y + (0.5 * 0.9) && (playerCoord.y + 0.5) >= obsacolsVect[i].y - (0.5 * 0.9)) &&
+			((playerCoord.z - 0.5) <= obsacolsVect[i].z + (0.5) && (playerCoord.z + 0.5) >= obsacolsVect[i].z - (0.5)))
+		{
+			isColideObstacle = 1;
+			indexObsatcoles = i;
 		}
 	}
 
 	if (isColidePowerUp == 1)
 	{
 		score += 100;
-		powerUps[colorposition].w = 0;
+		powerUps[idexPowerUp].w = 0;
 	}
+
+	if (isColideObstacle == 1)
+	{
+		ENDGAME = 1;
+		endSocre = score * 10;
+	}
+
+	/*if (isColideObstacle == 1 && blockOrange == 1) {
+		obsacolsVect[indexObsatcoles].z = 0;
+	}*/
 
 	if (isColide == 1) {
 		if (platformsColors[colorposition] == RED) // red
@@ -187,6 +230,8 @@ bool Tema3::IntersectionCheck() {
 			platformsColors[colorposition] = VIOLET;
 			speed = 0;
 			ENDGAME = 1;
+			endSocre = score * 10;
+
 			controlDeformationVar = 1;
 			onRedPort = 1;
 		}
@@ -232,7 +277,8 @@ bool Tema3::IntersectionCheck() {
 void Tema3::RanderOrnament(float deltaTimeSeconds) {
 	for (int i = 0; i < ornamentCoord.size(); i++)
 	{
-		ornamentCoord[i].z += deltaTimeSeconds * speed;
+		if (ENDGAME == 0)
+			ornamentCoord[i].z += deltaTimeSeconds * speed;
 		ornamentCoord[i].w += deltaTimeSeconds * 1;
 		modelMatrix = glm::mat4(1);
 
@@ -247,8 +293,9 @@ void Tema3::RanderOrnament(float deltaTimeSeconds) {
 
 		if (ornamentCoord[i].z < 25)
 		{
-			RenderMesh(ornament->GetPiramide(), 0, shaders["ShaderTema3"], modelMatrix, GREY);
+			//RenderMesh(ornament->GetPiramide(), 0, shaders["ShaderTema3"], modelMatrix, GREY);
 			//RenderSimpleMesh(ornament->GetPiramide(),shaders["ShaderTema3"], modelMatrix, mapTextures["bill"],nullptr);
+			RenderMesh(ornament->GetPiramide(), shaders["ShaderTema3"], modelMatrix,GREY ,mapTextures["bill"], mapTextures["vortex"]);
 		}
 		else
 		{
@@ -261,26 +308,41 @@ void Tema3::RanderOrnament(float deltaTimeSeconds) {
 void Tema3::RanderPowerUp(float deltaTimeSeconds) {
 	for (int i = 0; i < powerUps.size(); i++)
 	{
-		powerUps[i].z += deltaTimeSeconds * speed;
+		if (ENDGAME == 0) {
+			powerUps[i].z += deltaTimeSeconds * speed;
+			obsacolsVect[i].z += deltaTimeSeconds * speed;
+		}
 		rotationPowerUp[i] += deltaTimeSeconds * 3;
 		modelMatrix = glm::mat4(1);
 
 		modelMatrix *= Transform3D::Translate(powerUps[i].x, powerUps[i].y, powerUps[i].z);
+
 		modelMatrix *= Transform3D::Scale(.11f, .11f, .11f);
-		modelMatrix *= Transform3D::Translate(4 / 2, 0, 4 / 2);
+		modelMatrix *= Transform3D::Translate(2 / 2, 0, 2 / 2);
 		modelMatrix *= Transform3D::RotateOY(rotationPowerUp[i]);
-		modelMatrix *= Transform3D::Translate(-4 / 2, 0, -4 / 2);
+		modelMatrix *= Transform3D::Translate(-2 / 2, 0, -2 / 2);
+
+		modelMatrixObs = glm::mat4(1);
+		modelMatrixObs *= Transform3D::Translate(obsacolsVect[i].x, obsacolsVect[i].y, obsacolsVect[i].z);
+		if (obsacolsVect[i].w == 0) {
+			modelMatrixObs *= Transform3D::Scale(.001f, .001f, .001f);
+		}
+		else
+			modelMatrixObs *= Transform3D::Scale(1, .9f, 1);
+
+
 
 		if (powerUps[i].w == 0) {
 			modelMatrix *= Transform3D::Scale(.001f, .001f, .001f);
+
 		}
 
 		///modelMatrix *= Transform3D::RotateOY(ornamentCoord[i].w);
 
 		if (powerUps[i].z < 25)
 		{
-			RenderMesh(ornament->GetPiramideStyle(), 0, shaders["ShaderTema3"], modelMatrix, GREEN);
-			//RenderSimpleMesh(ornament->GetPiramide(),shaders["ShaderTema3"], modelMatrix, mapTextures["bill"],nullptr);
+			RenderMesh(ornament->GetPiramideStyle(), shaders["ShaderTema3"], modelMatrix, GREEN, mapTextures["vortex"],nullptr);
+			RenderMesh(platform->GetPlatform(), shaders["ShaderTema3"], modelMatrixObs, GREY, mapTextures["rockWall"], nullptr);
 		}
 		else
 		{
@@ -293,13 +355,14 @@ void Tema3::RanderScene(float deltaTimeSeconds) {
 
 	for (int i = 0; i < platformCoord.size(); i++)
 	{
-		platformCoord[i].z += deltaTimeSeconds * speed;
+		if (ENDGAME == 0)
+			platformCoord[i].z += deltaTimeSeconds * speed;
 		modelMatrix = glm::mat4(1);
 		modelMatrix *= Transform3D::Translate(platformCoord[i].x, platformCoord[i].y, platformCoord[i].z);
 		modelMatrix *= Transform3D::Scale(1, .1f, platformCoord[i].w);
 		if (platformCoord[i].z < 25)
 		{
-			RenderMesh(platform->GetPlatform(), 0, shaders["ShaderTema3"], modelMatrix, platformsColors[i]);
+			RenderMesh(platform->GetPlatform(), shaders["ShaderTema3"], modelMatrix, platformsColors[i], mapTextures["vortex"], nullptr);
 		}
 		else
 		{
@@ -324,9 +387,9 @@ void Tema3::RanderScene(float deltaTimeSeconds) {
 		modelMatrix *= Transform3D::RotateOX(combustibilPos.w);
 		modelMatrix *= Transform3D::Scale(.01, .01, .01);
 
-		RenderMesh(combustibilBar->GetCombustibilBar(), 1, shaders["ShaderTema3"], modelMatrix, GREEN);
+		RenderMesh(combustibilBar->GetCombustibilBar(), shaders["ShaderTema3"], modelMatrix, GREEN, mapTextures["rockWall"], nullptr);
 		modelMatrix *= Transform3D::Scale(gasVall, 1, 1);
-		RenderMesh(combustibilBar->GetPowerLine(), 1, shaders["ShaderTema3"], modelMatrix, GREY);
+		RenderMesh(combustibilBar->GetPowerLine(), shaders["ShaderTema3"], modelMatrix, GREY, mapTextures["rockWall"], nullptr);
 	}
 	else {
 		modelMatrix *= Transform3D::Translate(4, 3.32, 3.12);
@@ -335,10 +398,10 @@ void Tema3::RanderScene(float deltaTimeSeconds) {
 		modelMatrix *= Transform3D::RotateOX(3);
 		modelMatrix *= Transform3D::Scale(.01, .01, .01);
 
-		RenderMesh(combustibilBar->GetCombustibilBar(), 1, shaders["ShaderTema3"], modelMatrix, GREEN);
+		RenderMesh(combustibilBar->GetCombustibilBar(), shaders["ShaderTema3"], modelMatrix, GREEN, mapTextures["rockWall"], nullptr);
 		modelMatrix *= Transform3D::Scale(gasVall, 1, 1);
 
-		RenderMesh(combustibilBar->GetPowerLine(), 1, shaders["ShaderTema3"], modelMatrix, GREY);
+		RenderMesh(combustibilBar->GetPowerLine(), shaders["ShaderTema3"], modelMatrix, GREY, mapTextures["rockWall"], nullptr);
 	}
 }
 
@@ -373,7 +436,7 @@ void Tema3::RanderPlayer(float deltaTimeSeconds) {
 		modelMatrix *= Transform3D::Translate(playerCoord.x, playerCoord.y, playerCoord.z);
 		modelMatrix *= Transform3D::RotateOX(rotateAngle);
 		//
-		RenderMesh(player->GetPlayer(), 3, shaders["ShaderTema3"], modelMatrix, glm::vec3(1, 1, 0));
+		RenderMesh(player->GetPlayer(), shaders["ShaderTema3"], modelMatrix, glm::vec3(1, 1, 0), mapTextures["metal"],nullptr);
 	}
 	else {
 		modelMatrix = glm::mat4(1);
@@ -382,7 +445,7 @@ void Tema3::RanderPlayer(float deltaTimeSeconds) {
 		modelMatrix *= Transform3D::Scale(.1, .1, .1);
 		modelMatrix *= Transform3D::RotateOX(rotateAngle);
 
-		RenderMesh(player->GetPlayer(), 3, shaders["ShaderTema3"], modelMatrix, glm::vec3(1, 1, 0));
+		RenderMesh(player->GetPlayer(), shaders["ShaderTema3"], modelMatrix, glm::vec3(1, 1, 0), mapTextures["metal"],nullptr);
 		ENDGAME = 1;
 	}
 
@@ -449,74 +512,92 @@ Mesh* Tema3::CreateMesh(const char* name, const std::vector<VertexFormat>& verti
 	meshes[name]->indices = indices;
 	return meshes[name];
 }
-
-void Tema3::RenderMesh(Mesh* mesh, int name_mesh, Shader* shader, const glm::mat4& modelMatrix, const glm::vec3& color)
+//Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix, Texture2D* texture1, Texture2D* texture2
+void Tema3::RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix, const glm::vec3& color, Texture2D* texture1, Texture2D* texture2)
 {
 	if (!mesh || !shader || !shader->GetProgramID())
 		return;
 
+	//modelMatrix *= Transform3D::Translate(playerCoord.x, playerCoord.y, playerCoord.z);
+	glUseProgram(shader->program);
+	if (mesh == player->GetPlayer()) {
+		if (controlDeformationVar == 1) {
+			GLint deformation = glGetUniformLocation(shader->GetProgramID(), "deformation");
+			glUniform1i(deformation, 1);
 
-	if (name_mesh == 2) {
-		shader->Use();
-		glUniformMatrix4fv(shader->loc_view_matrix, 1, GL_FALSE, glm::value_ptr(camera->GetViewMatrix()));
-		glUniformMatrix4fv(shader->loc_projection_matrix, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-		glUniformMatrix4fv(shader->loc_model_matrix, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+		}
+		else if (blockOrange == 1) {
+			GLint deformation = glGetUniformLocation(shader->GetProgramID(), "deformation");
+			glUniform1i(deformation, 1);
+		}
 
-		mesh->Render();
 	}
 	else {
-		//modelMatrix *= Transform3D::Translate(playerCoord.x, playerCoord.y, playerCoord.z);
-		glUseProgram(shader->program);
-		if (name_mesh == 3) {
-			if (controlDeformationVar == 1) {
-				GLint deformation = glGetUniformLocation(shader->GetProgramID(), "deformation");
-				glUniform1i(deformation, 1);
+		GLint deformation = glGetUniformLocation(shader->GetProgramID(), "deformation");
+		glUniform1i(deformation, 0);
+		glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(color));
+	}
+	GLint modelLocation = glGetUniformLocation(shader->GetProgramID(), "Model");
+	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 
-			}
-			else if (blockOrange == 1) {
-				GLint deformation = glGetUniformLocation(shader->GetProgramID(), "deformation");
-				glUniform1i(deformation, 1);
-			}
+	GLint viewLocation = glGetUniformLocation(shader->GetProgramID(), "View");
+	glm::mat4 viewMatrix = camera->GetViewMatrix();
+	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
-		}
-		else {
-			GLint deformation = glGetUniformLocation(shader->GetProgramID(), "deformation");
-			glUniform1i(deformation, 0);
-			glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(color));
-		}
-		GLint modelLocation = glGetUniformLocation(shader->GetProgramID(), "Model");
-		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+	GLint projLocation = glGetUniformLocation(shader->GetProgramID(), "Projection");
+	glm::mat4 projectionMatrix = GetSceneCamera()->GetProjectionMatrix();
+	glUniformMatrix4fv(projLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
-		GLint viewLocation = glGetUniformLocation(shader->GetProgramID(), "View");
-		glm::mat4 viewMatrix = camera->GetViewMatrix();
-		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-
-		GLint projLocation = glGetUniformLocation(shader->GetProgramID(), "Projection");
-		glm::mat4 projectionMatrix = GetSceneCamera()->GetProjectionMatrix();
-		glUniformMatrix4fv(projLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-		
+	if (mesh == ornament->GetPiramide())
+		glUniform1i(glGetUniformLocation(shader->program, "mix_textures"), true);
+	else
 		glUniform1i(glGetUniformLocation(shader->program, "mix_textures"), false);
 
+	if (mesh == ornament->GetPiramideStyle())
+		glUniform1i(glGetUniformLocation(shader->program, "isSkull"), true);
+	else 
+		glUniform1i(glGetUniformLocation(shader->program, "isSkull"), false);
 
-
-		GLint timeLocation = glGetUniformLocation(shader->GetProgramID(), "Time");
-		glUniform1f(timeLocation, (GLfloat)Engine::GetElapsedTime());
-
-		if (name_mesh == 1)
-		{
-			GLint combustibilBool = glGetUniformLocation(shader->GetProgramID(), "combustibilBool");
-			glUniform1f(combustibilBool, 1);
-		}
-		else {
-			GLint combustibilBool = glGetUniformLocation(shader->GetProgramID(), "combustibilBool");
-			glUniform1f(combustibilBool, 0);
-		}
-
-
-
-		glBindVertexArray(mesh->GetBuffers()->VAO);
-		glDrawElements(mesh->GetDrawMode(), static_cast<int>(mesh->indices.size()), GL_UNSIGNED_SHORT, 0);
+	if (texture1)
+	{
+		//TODO : activate texture location 0
+		glActiveTexture(GL_TEXTURE0);
+		//TODO : Bind the texture1 ID
+		glBindTexture(GL_TEXTURE_2D, texture1->GetTextureID());
+		//TODO : Send texture uniform value
+		glUniform1i(glGetUniformLocation(shader->program, "texture_1"), 0);
 	}
+
+	if (texture2)
+	{
+		//TODO : activate texture location 1
+		glActiveTexture(GL_TEXTURE1);
+		//TODO : Bind the texture2 ID
+		glBindTexture(GL_TEXTURE_2D, texture2->GetTextureID());
+		//TODO : Send texture uniform value
+		glUniform1i(glGetUniformLocation(shader->program, "texture_2"), 1);
+	}
+
+
+	GLint timeLocation = glGetUniformLocation(shader->GetProgramID(), "Time");
+	glUniform1f(timeLocation, (GLfloat)Engine::GetElapsedTime());
+
+	if (mesh == combustibilBar->GetCombustibilBar() ||
+		mesh == combustibilBar->GetPowerLine())
+	{
+		GLint combustibilBool = glGetUniformLocation(shader->GetProgramID(), "combustibilBool");
+		glUniform1f(combustibilBool, 1);
+	}
+	else {
+		GLint combustibilBool = glGetUniformLocation(shader->GetProgramID(), "combustibilBool");
+		glUniform1f(combustibilBool, 0);
+	}
+
+
+
+	glBindVertexArray(mesh->GetBuffers()->VAO);
+	glDrawElements(mesh->GetDrawMode(), static_cast<int>(mesh->indices.size()), GL_UNSIGNED_SHORT, 0);
+
 }
 
 

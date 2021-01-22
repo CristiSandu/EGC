@@ -31,6 +31,8 @@ public:
 	std::vector<glm::vec3> platformColors;
 	std::vector<glm::vec3> platformsColors;
 	std::vector<glm::vec4> powerUps;
+	std::vector<glm::vec4> obsacolsVect;
+
 	std::vector<int> indexPowerUp;
 	std::vector<float> rotationPowerUp;
 
@@ -56,7 +58,7 @@ public:
 	int firstLook = 1;
 	int start;
 	int isBack = 1;
-	int isColide = 0, isColidePowerUp = 0;
+	int isColide = 0, isColidePowerUp = 0, isColideObstacle = 0;
 	int ENDGAME = 0;
 	int colorposition = -5, onRedPort = 0;
 	GLfloat gasVall = 37.5;
@@ -64,8 +66,8 @@ public:
 	double duration = 0, score = 0;
 	std::clock_t startL, startM, startR, startPowerUp;
 	float spinVar = 1;
-
-
+	int idexPowerUp = 0,indexObsatcoles = 0;
+	float endSocre = 0;
 	int controlDeformationVar = 0;
 
 
@@ -93,11 +95,14 @@ private:
 	void OnWindowResize(int width, int height);
 	std::unordered_map<std::string, Texture2D*> mapTextures;
 	void RanderPowerUp(float deltaTimeSeconds);
+	void RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix, const glm::vec3& color, Texture2D* texture1, Texture2D* texture2);
 protected:
 	CameraTema::Camera* camera;
 	bool renderCameraTarget;
 	glm::mat4 projectionMatrix;
 	glm::mat4 modelMatrix;
+	glm::mat4 modelMatrixObs;
+
 	bool projectionType;
 	GLfloat right;
 	GLfloat left;

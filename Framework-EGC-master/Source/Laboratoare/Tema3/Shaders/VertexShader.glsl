@@ -15,6 +15,7 @@ uniform float Time;
 uniform vec3 object_color;
 uniform int combustibilBool;
 uniform int deformation;
+uniform bool isSkull;
 
 
 layout(location = 0) in vec3 v_position;
@@ -37,7 +38,10 @@ void main() {
 	vec3 posistion = v_position ;
 	frag_color = object_color;
 	
-	
+	/*if (Time >= 0)
+	{
+		frag_texture= vec2(v_texture.x - Time / 10.f, v_texture.y);
+	}*/
    if (deformation == 1){
 	 frag_ball = 1;
 	 float sum = 0.0;
@@ -55,9 +59,13 @@ void main() {
 	 posistion = v_position * sum;
 	 frag_color =  mix(vec3(.23,.72,.21), vec3(.53,.12,.01), sum ) * 162.1;
    } else {
-	// frag_color =mix(object_color, v_position, 0.2 );
-	// frag_color = mix (frag_color , v_normal,0.3);
-	frag_color = object_color;
+     if (isSkull == true ){
+		frag_color = mix(object_color, v_position, 0.2 );
+		frag_color = mix (frag_color , v_normal,0.3);
+	 }else {
+		frag_color = object_color;
+	 }
+	 
 	 frag_position = v_position;
 	 frag_ball = 0;
    }
@@ -65,10 +73,12 @@ void main() {
    frag_normal = v_normal;
    frag_texture = v_texture;
  
-   if (combustibilBool == 0)
+ gl_Position = Projection * View * Model* vec4(posistion , 1.0);
+
+  /* if (combustibilBool == 0)
 		 gl_Position = Projection * View * Model* vec4(posistion , 1.0);
 	else if (combustibilBool == 1){
 		gl_Position = Model* vec4(v_position, 1.0);
 	}	
-	
+	*/
 }
