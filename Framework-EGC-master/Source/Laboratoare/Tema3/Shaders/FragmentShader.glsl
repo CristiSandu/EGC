@@ -26,7 +26,7 @@ uniform bool mix_textures;
 uniform vec3 light_direction;
 uniform vec3 light_position;
 
-//uniform vec3 light_direction_spot;
+uniform vec3 light_direction_spot;
 uniform vec3 light_position_spot;
 uniform vec3 eye_position;
 
@@ -58,7 +58,6 @@ void main() {
 	vec3 N = normalize(world_normal);
 	vec3 L = normalize(light_position - world_position);
 	vec3 L_spot = normalize(light_position_spot - world_position);
-
 	vec3 V = normalize(eye_position - world_position);
 
 	vec3 H = normalize(L + V);
@@ -72,7 +71,7 @@ void main() {
 	float diffuse_light = 0;
 	float diffuse_light_spot = 0;
 
-	diffuse_light = material_kd * max(dot(normalize(N), L), 1.f);
+	diffuse_light = material_kd * max(dot(normalize(N), L), 10.f);
 	diffuse_light_spot = material_kd * max(dot(normalize(N), L_spot), 1.f);
 
 	// TODO: compute specular light component
@@ -94,7 +93,7 @@ void main() {
 
 
 	float cut_off_rad		= radians(cut_off_angle);
-	float spot_light		= dot(-L_spot, light_direction);
+	float spot_light		= dot(-L_spot, light_direction_spot);
 	float spot_light_limit	= cos(cut_off_rad);
 		
 	if (spot_light > spot_light_limit)
@@ -102,7 +101,7 @@ void main() {
 		// Quadratic attenuation
 		float linear_att		= (spot_light - spot_light_limit) / (1.f - spot_light_limit);
 		float light_att_factor	= linear_att * linear_att;
-		light_spot					= ambient_light + light_att_factor * (diffuse_light_spot + specular_light_spot);
+		light_spot				= ambient_light + light_att_factor * (diffuse_light_spot + specular_light_spot);
 	} else
 	{
 		light_spot = ambient_light;  // There is no spot light, but there is light from other objects
@@ -111,7 +110,7 @@ void main() {
 
 
 	float d						= distance(light_position, world_position);
-	float attenuation_factor	= 1.f / max(d * d, 1.f);
+	float attenuation_factor	= 30.f / max(d * d, 32.f);
 	light						= ambient_light + attenuation_factor * (diffuse_light + specular_light);
 	
 	out_color = vec4(1);
@@ -126,7 +125,7 @@ void main() {
 
 	}
 
-	out_color = out_color * (light + light_spot); 
+	out_color =( out_color  ) * (light * vec4(0,1,0,1) + light_spot *( vec4(1,0,0,1) *vec4(1,1,1,1))); 
 	//out_texture = vec3(frag_texture, 1.f);
 	//out_normal = vec4(frag_normal, 1.f);
 

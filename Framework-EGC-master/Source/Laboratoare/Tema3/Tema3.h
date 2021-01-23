@@ -19,7 +19,7 @@
 
 #define Z_FAR		(200.f)
 #define Z_NEAR		(.01f)
-#define ANGLE_SPEEDUP		(30.f)
+#define ANGLE_SPEEDUP		(100.f)
 
 
 class Tema3 : public SimpleScene
@@ -106,6 +106,8 @@ private:
 	float materialKd;
 	float materialKs;
 	GLfloat cutoffAngle;
+
+	GLfloat angleOX, angleOY;
 protected:
 	CameraTema::Camera* camera;
 	bool renderCameraTarget;

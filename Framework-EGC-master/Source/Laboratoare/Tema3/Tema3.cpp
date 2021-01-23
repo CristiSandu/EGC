@@ -91,11 +91,11 @@ void Tema3::Init()
 
 
 	{
-		lightPosition = glm::vec3(2, 7, -30);
+		lightPosition = glm::vec3(0, 7, -30);
 		lightDirection = glm::vec3(-1, -1, -1);
 
-		lightPosition_spot = glm::vec3(6, 2, -7);
-		lightDirection_spot = glm::vec3(-1, 0, 0);
+		lightPosition_spot = glm::vec3(2, 8, 0);
+		lightDirection_spot = glm::vec3(0, -1, 0);
 
 		materialShininess = 30;
 		materialKd = 0.5;
@@ -188,21 +188,7 @@ void Tema3::Update(float deltaTimeSeconds)
 		RanderPlayer(deltaTimeSeconds);
 	}
 
-	{
-		glm::mat4 modelMatrix = glm::mat4(1);
-		modelMatrix = glm::translate(modelMatrix, lightPosition);
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(1.f));
-		//RenderMesh(, shaders[""], modelMatrix);
-		RenderMesh(ornament->GetPiramideStyle(), shaders["ShaderTema3"], modelMatrix, RED, nullptr, nullptr);
-	}
-
-	{
-		glm::mat4 modelMatrix = glm::mat4(1);
-		modelMatrix = glm::translate(modelMatrix, lightPosition_spot);
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(.1f));
-		//RenderMesh(, shaders[""], modelMatrix);
-		RenderMesh(ornament->GetPiramideStyle(), shaders["ShaderTema3"], modelMatrix, RED, nullptr, nullptr);
-	}
+	
 
 }
 
@@ -324,6 +310,34 @@ void Tema3::RanderOrnament(float deltaTimeSeconds) {
 		modelMatrix *= Transform3D::RotateOY(ornamentCoord[i].w);
 		modelMatrix *= Transform3D::Translate(-4 / 2, 0, -4 / 2);
 
+		{
+			glm::mat4 modelMatrix = glm::mat4(1);
+			modelMatrix = glm::translate(modelMatrix, lightPosition);
+			modelMatrix = glm::scale(modelMatrix, glm::vec3(1.f));
+			modelMatrix *= Transform3D::Translate(4 / 2, 0, 4 / 2);
+			modelMatrix *= Transform3D::RotateOY(ornamentCoord[i].w);
+			modelMatrix *= Transform3D::Translate(-4 / 2, 0, -4 / 2);
+			//lightDirection = glm::vec3(modelMatrix * glm::vec4(lightDirection, 0));
+			//RenderMesh(, shaders[""], modelMatrix);
+			RenderMesh(ornament->GetPiramide(), shaders["ShaderTema3"], modelMatrix, RED, nullptr, nullptr);
+		}
+
+		{
+			glm::mat4 modelMatrix = glm::mat4(1);
+			modelMatrix = glm::translate(modelMatrix, lightPosition_spot);
+			modelMatrix = glm::scale(modelMatrix, glm::vec3(.1f));
+			//modelMatrix = glm::rotate(modelMatrix, -20.f, glm::vec3(0, 1, 0));
+			modelMatrix *= Transform3D::Translate(4 / 2, 0, 4 / 2);
+			modelMatrix *= Transform3D::RotateOY(ornamentCoord[i].w);
+			//lightDirection_spot = glm::vec3(modelMatrix * glm::vec4(lightDirection_spot, 0));
+			modelMatrix *= Transform3D::Translate(-4 / 2, 0, -4 / 2);
+			
+			//lightDirection = glm::vec3(-1, 0, 0);
+			//lightDirection = glm::vec3(modelMatrix * glm::vec4(lightDirection, 0));
+
+			//RenderMesh(, shaders[""], modelMatrix);
+			RenderMesh(ornament->GetPiramide(), shaders["ShaderTema3"], modelMatrix, RED, nullptr, nullptr);
+		}
 
 		///modelMatrix *= Transform3D::RotateOY(ornamentCoord[i].w);
 
@@ -613,8 +627,8 @@ void Tema3::RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix,
 	int light_position_spot = glGetUniformLocation(shader->program, "light_position_spot");
 	glUniform3f(light_position_spot, lightPosition_spot.x, lightPosition_spot.y, lightPosition_spot.z);
 
-	/*int light_direction_spot = glGetUniformLocation(shader->program, "light_direction_spot");
-	glUniform3f(light_direction_spot, lightDirection_spot.x, lightDirection_spot.y, lightDirection_spot.z);*/
+	int light_direction_spot = glGetUniformLocation(shader->program, "light_direction_spot");
+	glUniform3f(light_direction_spot, lightDirection_spot.x, lightDirection_spot.y, lightDirection_spot.z);
 
 	glm::vec3 eyePosition = GetSceneCamera()->transform->GetWorldPosition();
 	int eye_position = glGetUniformLocation(shader->program, "eye_position");
@@ -779,6 +793,25 @@ void Tema3::OnInputUpdate(float deltaTime, int mods)
 			camera->TranslateUpword(deltaTime * cameraSpeed);
 		}
 
+
+		if (window->KeyHold(GLFW_KEY_UP))
+		{
+			angleOX += deltaTime * 20;
+		}
+		if (window->KeyHold(GLFW_KEY_DOWN))
+		{
+			angleOX -= deltaTime * 20;
+		}
+		if (window->KeyHold(GLFW_KEY_LEFT))
+		{
+			angleOY += deltaTime * 20;
+		}
+		if (window->KeyHold(GLFW_KEY_RIGHT))
+		{
+			angleOY -= deltaTime * 20;
+		}
+
+
 		if (window->KeyHold(GLFW_KEY_R))
 		{
 			cutoffAngle += deltaTime * ANGLE_SPEEDUP;
@@ -789,15 +822,18 @@ void Tema3::OnInputUpdate(float deltaTime, int mods)
 			cutoffAngle -= deltaTime * ANGLE_SPEEDUP;
 			cutoffAngle = cutoffAngle < 0.f ? 0.f : cutoffAngle;
 		}
-
-		/*glm::mat4 turn = glm::mat4(1);
-		turn = glm::rotate(turn, 1, glm::vec3(0, 1, 0));
-		turn = glm::rotate(turn, 1, glm::vec3(1, 0, 0));
-
-		lightDirection = glm::vec3(0, -1, 0);
-		lightDirection = glm::vec3(turn * glm::vec4(lightDirection, 0));*/
+		
 	}
 
+	angleOX += deltaTime * 10;
+	angleOY += deltaTime * 10;
+
+	glm::mat4 turn = glm::mat4(1);
+	turn = glm::rotate(turn, sin (angleOY), glm::vec3(0, 1, 0));
+	turn = glm::rotate(turn, cos (angleOX), glm::vec3(1, 0, 0));
+
+	lightDirection_spot = glm::vec3(0, -1, 0);
+	lightDirection_spot = glm::vec3(turn * glm::vec4(lightDirection_spot, 0));
 
 	if (window->KeyHold(GLFW_KEY_F))
 	{
