@@ -49,8 +49,10 @@ public:
 	glm::vec3 VIOLET = glm::vec3(.25, .01, .5); //violet 
 	glm::vec3 GREY = glm::vec3(.5, .5, .5); //grey
 	
-	glm::vec4 combustibilPos = glm::vec4(1.05, 3, 2.1, 15);
+	glm::vec4 combustibilPos = glm::vec4(1.15, 3.4, 2.1, 15);
 
+
+	int powerBarAngel = 15;
 	///glm::vec4(1.05, 3, 2.1,15)
 	//glm::vec4(.01, .01, 2.1,15)
 	GLfloat xCameraCoord = 0, yCameraCoord = 0;
@@ -58,7 +60,12 @@ public:
 	GLfloat speed = .01f;
 	int blockOrange = 0;
 	int firstLook = 1;
-	int start;
+	int start = 0;
+	int sendIndex = 1;
+	int nr = 0;
+	int onlySpot = 0;
+	int onlyPunct = 0;
+
 	int isBack = 1;
 	int isColide = 0, isColidePowerUp = 0, isColideObstacle = 0;
 	int ENDGAME = 0;
@@ -102,6 +109,11 @@ private:
 
 	glm::vec3 lightPosition, lightPosition_spot;
 	glm::vec3 lightDirection, lightDirection_spot;
+	glm::vec3 lightdirection_spot_1, lightposition_spot_1;
+	glm::vec3 lightdirection_spot_2, lightposition_spot_2;
+	glm::vec3 lightdirection_spot_3, lightposition_spot_3;
+	glm::vec3 lightdirection_spot_4, lightposition_spot_4;
+
 	unsigned int materialShininess;
 	float materialKd;
 	float materialKs;

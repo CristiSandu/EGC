@@ -31,7 +31,7 @@ out vec3 frag_color;
 out vec3 world_position;
 out vec3 world_normal;
 
-flat out int frag_ball;
+flat out float frag_ball;
  
 float noise(float delta){
 	return cos(delta + cos(delta*90) * 100) * 0.5 + 0.5;
@@ -50,7 +50,7 @@ void main() {
 		frag_texture= vec2(v_texture.x - Time / 10.f, v_texture.y);
 	}*/
    if (deformation == 1){
-	 frag_ball = 1;
+	 //frag_ball = 1;
 	 float sum = 0.0;
 	 float size = 1.0;
 	 vec3 stp = v_position;
@@ -66,7 +66,9 @@ void main() {
 	 }
 	
 	 posistion = v_position * sum;
-	 frag_color =  mix(vec3(.23,.72,.21), vec3(.53,.12,.01), sum ) * 162.1;
+	 frag_ball = sum;
+	 //frag_color =  mix(vec3(.23,.72,.21), vec3(.53,.12,.01), sum ) * 162.1;
+	frag_color = object_color;  
    } else {
      if (isSkull == true ){
 		frag_color = mix(object_color, v_position, 0.2 );

@@ -17,7 +17,7 @@ void Tema3::Init()
 	const string textureLoc = "Source/Laboratoare/Tema3/Textures/";
 
 	camera = new CameraTema::Camera();
-	camera->Set(glm::vec3(2, 4, 3), glm::vec3(2, 1, -2), glm::vec3(0, 1, 0));
+	camera->Set(glm::vec3(2, 4, 3), glm::vec3(2, 3.7, 2), glm::vec3(0, 1, 0));
 
 	player = new Player();
 	platform = new Platform();
@@ -91,11 +91,26 @@ void Tema3::Init()
 
 
 	{
-		lightPosition = glm::vec3(0, 7, -30);
-		lightDirection = glm::vec3(-1, -1, -1);
+		lightPosition = glm::vec3(6, 2, -30);
+		lightDirection = glm::vec3(-1, 0, 0);
+
+		lightposition_spot_1 = glm::vec3(-4, 2, -30);
+		lightdirection_spot_1 = glm::vec3(1, 0, 0);
 
 		lightPosition_spot = glm::vec3(2, 8, 0);
 		lightDirection_spot = glm::vec3(0, -1, 0);
+
+		//lightposition_spot_1 = glm::vec3(-4, 3, -3);
+		//lightdirection_spot_1 = glm::vec3(1, 0, -1);
+
+		lightposition_spot_2 = glm::vec3(-4, 2, -20);
+		lightdirection_spot_2 = glm::vec3(1, 0, 0);
+
+		lightposition_spot_3= glm::vec3(6, 2, -20);
+		lightdirection_spot_3 = glm::vec3(-1, 0, 0);
+		//lightPosition = glm::vec3(0, 7, -30);
+		lightposition_spot_4 = glm::vec3(0, 7, -30);
+		lightdirection_spot_4 = glm::vec3(-1, -1, -1);
 
 		materialShininess = 30;
 		materialKd = 0.5;
@@ -310,41 +325,40 @@ void Tema3::RanderOrnament(float deltaTimeSeconds) {
 		modelMatrix *= Transform3D::RotateOY(ornamentCoord[i].w);
 		modelMatrix *= Transform3D::Translate(-4 / 2, 0, -4 / 2);
 
+
+		if (lightPosition.z > 10)
+		{
+			if (ornamentCoord[i].z < -90) {
+				lightPosition.z = ornamentCoord[i].z;
+				lightposition_spot_1.z = ornamentCoord[i].z;
+			}
+			
+		}
+
+		if (lightposition_spot_3.z > 10)
+		{
+			if (ornamentCoord[i].z < -100) {
+				lightposition_spot_3.z = ornamentCoord[i].z;
+				lightposition_spot_2.z = ornamentCoord[i].z;
+			}
+		}
+
 		{
 			glm::mat4 modelMatrix = glm::mat4(1);
-			modelMatrix = glm::translate(modelMatrix, lightPosition);
+			modelMatrix = glm::translate(modelMatrix, lightposition_spot_4);
 			modelMatrix = glm::scale(modelMatrix, glm::vec3(1.f));
 			modelMatrix *= Transform3D::Translate(4 / 2, 0, 4 / 2);
 			modelMatrix *= Transform3D::RotateOY(ornamentCoord[i].w);
 			modelMatrix *= Transform3D::Translate(-4 / 2, 0, -4 / 2);
-			//lightDirection = glm::vec3(modelMatrix * glm::vec4(lightDirection, 0));
-			//RenderMesh(, shaders[""], modelMatrix);
-			RenderMesh(ornament->GetPiramide(), shaders["ShaderTema3"], modelMatrix, RED, nullptr, nullptr);
-		}
-
-		{
-			glm::mat4 modelMatrix = glm::mat4(1);
-			modelMatrix = glm::translate(modelMatrix, lightPosition_spot);
-			modelMatrix = glm::scale(modelMatrix, glm::vec3(.1f));
-			//modelMatrix = glm::rotate(modelMatrix, -20.f, glm::vec3(0, 1, 0));
-			modelMatrix *= Transform3D::Translate(4 / 2, 0, 4 / 2);
-			modelMatrix *= Transform3D::RotateOY(ornamentCoord[i].w);
-			//lightDirection_spot = glm::vec3(modelMatrix * glm::vec4(lightDirection_spot, 0));
-			modelMatrix *= Transform3D::Translate(-4 / 2, 0, -4 / 2);
 			
-			//lightDirection = glm::vec3(-1, 0, 0);
-			//lightDirection = glm::vec3(modelMatrix * glm::vec4(lightDirection, 0));
-
-			//RenderMesh(, shaders[""], modelMatrix);
 			RenderMesh(ornament->GetPiramide(), shaders["ShaderTema3"], modelMatrix, RED, nullptr, nullptr);
 		}
 
-		///modelMatrix *= Transform3D::RotateOY(ornamentCoord[i].w);
+		
 
 		if (ornamentCoord[i].z < 25)
 		{
-			//RenderMesh(ornament->GetPiramide(), 0, shaders["ShaderTema3"], modelMatrix, GREY);
-			//RenderSimpleMesh(ornament->GetPiramide(),shaders["ShaderTema3"], modelMatrix, mapTextures["bill"],nullptr);
+			
 			RenderMesh(ornament->GetPiramide(), shaders["ShaderTema3"], modelMatrix, GREY, mapTextures["bill"], mapTextures["vortex"]);
 		}
 		else
@@ -352,11 +366,25 @@ void Tema3::RanderOrnament(float deltaTimeSeconds) {
 			start = i - 1;
 		}
 	}
+
+	if (ENDGAME == 1) {
+		lightPosition.z += deltaTimeSeconds * 0;
+		lightposition_spot_1.z += deltaTimeSeconds * 0;
+		lightposition_spot_3.z += deltaTimeSeconds * speed;
+		lightposition_spot_2.z += deltaTimeSeconds * speed;
+	}
+	else {
+		lightPosition.z += deltaTimeSeconds * speed;
+		lightposition_spot_1.z += deltaTimeSeconds * speed;
+		lightposition_spot_3.z += deltaTimeSeconds * speed;
+		lightposition_spot_2.z += deltaTimeSeconds * speed;
+	}
+	
 }
 void Tema3::RanderBackground(float deltaTimeSeconds) {
 	modelMatrix = glm::mat4(1);
 	modelMatrix *= Transform3D::Translate(0, 0, 0);
-	modelMatrix *= Transform3D::Scale(200, 200, 200);
+	modelMatrix *= Transform3D::Scale(250, 250, 250);
 	modelMatrix *= Transform3D::RotateOX(-20);
 	RenderMesh(platform->GetPlatform(), shaders["ShaderTema3"], modelMatrix, glm::vec3(0, 0, 0), mapTextures["galaxy"], nullptr);
 }
@@ -448,9 +476,9 @@ void Tema3::RanderScene(float deltaTimeSeconds) {
 		RenderMesh(combustibilBar->GetPowerLine(), shaders["ShaderTema3"], modelMatrix, GREY, mapTextures["rockWall"], nullptr);
 	}
 	else {
-		modelMatrix *= Transform3D::Translate(4, 3.32, 3.12);
+		modelMatrix *= Transform3D::Translate(combustibilPos.x, combustibilPos.y, combustibilPos.z);
 		//modelMatrix *= Transform3D::RotateOX(15);
-		modelMatrix *= Transform3D::RotateOY(45);
+		modelMatrix *= Transform3D::RotateOY(combustibilPos.w);
 		modelMatrix *= Transform3D::RotateOX(3);
 		modelMatrix *= Transform3D::Scale(.01, .01, .01);
 
@@ -595,7 +623,6 @@ void Tema3::RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix,
 		glUniform1i(deformation, 0);
 		int object_color = glGetUniformLocation(shader->program, "object_color");
 		glUniform3f(object_color, color.r, color.g, color.b);
-		//glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(color));
 	}
 	GLint modelLocation = glGetUniformLocation(shader->GetProgramID(), "Model");
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
@@ -608,7 +635,6 @@ void Tema3::RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix,
 	glm::mat4 projectionMatrix = GetSceneCamera()->GetProjectionMatrix();
 	glUniformMatrix4fv(projLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
-	//Set material property uniforms (shininess, kd, ks, object color) 
 	int material_shininess = glGetUniformLocation(shader->program, "material_shininess");
 	glUniform1i(material_shininess, materialShininess);
 
@@ -630,6 +656,26 @@ void Tema3::RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix,
 	int light_direction_spot = glGetUniformLocation(shader->program, "light_direction_spot");
 	glUniform3f(light_direction_spot, lightDirection_spot.x, lightDirection_spot.y, lightDirection_spot.z);
 
+	int light_position_spot_1 = glGetUniformLocation(shader->program, "light_position_spot_1");
+	glUniform3f(light_position_spot_1, lightposition_spot_1.x, lightposition_spot_1.y, lightposition_spot_1.z);
+	int light_direction_spot_1 = glGetUniformLocation(shader->program, "light_direction_spot_1");
+
+	glUniform3f(light_direction_spot_1, lightdirection_spot_1.x, lightdirection_spot_1.y, lightdirection_spot_1.z);
+	int light_position_spot_2 = glGetUniformLocation(shader->program, "light_position_spot_2");
+	glUniform3f(light_position_spot_2, lightposition_spot_2.x, lightposition_spot_2.y, lightposition_spot_2.z);
+	int light_direction_spot_2 = glGetUniformLocation(shader->program, "light_direction_spot_2");
+
+	glUniform3f(light_direction_spot_2, lightdirection_spot_2.x, lightdirection_spot_2.y, lightdirection_spot_2.z);
+	int light_position_spot_3 = glGetUniformLocation(shader->program, "light_position_spot_3");
+	glUniform3f(light_position_spot_3, lightposition_spot_3.x, lightposition_spot_3.y, lightposition_spot_3.z);
+	int light_direction_spot_3 = glGetUniformLocation(shader->program, "light_direction_spot_3");
+
+	glUniform3f(light_direction_spot_3, lightdirection_spot_3.x, lightdirection_spot_3.y, lightdirection_spot_3.z);
+	int light_position_spot_4 = glGetUniformLocation(shader->program, "light_position_spot_4");
+	glUniform3f(light_position_spot_4, lightposition_spot_4.x, lightposition_spot_4.y, lightposition_spot_4.z);
+	int light_direction_spot_4 = glGetUniformLocation(shader->program, "light_direction_spot_4");
+	glUniform3f(light_direction_spot_4, lightdirection_spot_4.x, lightdirection_spot_4.y, lightdirection_spot_4.z);
+
 	glm::vec3 eyePosition = GetSceneCamera()->transform->GetWorldPosition();
 	int eye_position = glGetUniformLocation(shader->program, "eye_position");
 	glUniform3f(eye_position, eyePosition.x, eyePosition.y, eyePosition.z);
@@ -641,6 +687,17 @@ void Tema3::RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix,
 		glUniform1i(glGetUniformLocation(shader->program, "mix_textures"), true);
 	else
 		glUniform1i(glGetUniformLocation(shader->program, "mix_textures"), false);
+
+	if (onlySpot == 1)
+		glUniform1i(glGetUniformLocation(shader->program, "only_spot"), true);
+	else 
+		glUniform1i(glGetUniformLocation(shader->program, "only_spot"), false);
+
+	if (onlyPunct == 1)
+		glUniform1i(glGetUniformLocation(shader->program, "only_punct"), true);
+	else
+		glUniform1i(glGetUniformLocation(shader->program, "only_punct"), false);
+
 
 	if (mesh == ornament->GetPiramideStyle())
 		glUniform1i(glGetUniformLocation(shader->program, "isSkull"), true);
@@ -825,8 +882,8 @@ void Tema3::OnInputUpdate(float deltaTime, int mods)
 		
 	}
 
-	angleOX += deltaTime * 10;
-	angleOY += deltaTime * 10;
+	angleOX += deltaTime * .00001;
+	angleOY += deltaTime * .00001;
 
 	glm::mat4 turn = glm::mat4(1);
 	turn = glm::rotate(turn, sin (angleOY), glm::vec3(0, 1, 0));
@@ -834,6 +891,11 @@ void Tema3::OnInputUpdate(float deltaTime, int mods)
 
 	lightDirection_spot = glm::vec3(0, -1, 0);
 	lightDirection_spot = glm::vec3(turn * glm::vec4(lightDirection_spot, 0));
+	lightdirection_spot_1 = glm::vec3(turn * glm::vec4(lightdirection_spot_1, 0));
+	lightdirection_spot_2 = glm::vec3(turn * glm::vec4(lightdirection_spot_2, 0));
+	lightdirection_spot_3 = glm::vec3(turn * glm::vec4(lightdirection_spot_3, 0));
+	lightdirection_spot_4 = glm::vec3(turn * glm::vec4(lightdirection_spot_4, 0));
+
 
 	if (window->KeyHold(GLFW_KEY_F))
 	{
@@ -932,17 +994,44 @@ void Tema3::OnKeyPress(int key, int mods)
 	{
 		if (firstLook == 1)
 		{
-			camera->Set(glm::vec3(5, 4, 3), glm::vec3(0, 1, -2), glm::vec3(0, 1, 0));
+			camera->Set(glm::vec3(5, 4, 3), glm::vec3(2, 3, -2), glm::vec3(0, 1, 0));
 			firstLook = 0;
-			combustibilPos = glm::vec4(5, 3, 2.1, 20);
+			combustibilPos = glm::vec4(3.8, 3.5, 2.7, 44.7);
+			//4, 3.32, 3.12, 45
 
 		}
 		else
 		{
-			camera->Set(glm::vec3(2, 4, 3), glm::vec3(2, 1, -2), glm::vec3(0, 1, 0));
-			firstLook = 1;
-			combustibilPos = glm::vec4(1.05, 3, 2.1, 15);
 
+			camera->Set(glm::vec3(2, 4, 3), glm::vec3(2, 3.7, 2), glm::vec3(0, 1, 0));
+			firstLook = 1;
+			combustibilPos = glm::vec4(1.15, 3.4, 2.1, powerBarAngel);
+
+		}
+	}
+
+	if (key == GLFW_KEY_O)
+	{
+		if (onlySpot == 0)
+		{
+			onlySpot = 1;
+		}
+		else
+		{
+			onlySpot = 0;
+		}
+	}
+
+
+	if (key == GLFW_KEY_P)
+	{
+		if (onlyPunct == 0)
+		{
+			onlyPunct = 1;
+		}
+		else
+		{
+			onlyPunct = 0;
 		}
 	}
 
