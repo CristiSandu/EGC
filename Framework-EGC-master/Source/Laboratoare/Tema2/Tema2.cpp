@@ -254,6 +254,8 @@ void Tema2::RanderPlayer(float deltaTimeSeconds) {
 				isBack = 1;
 			}
 		}
+
+
 		if (playerCoord.y >= 2) {
 
 			modelMatrix = glm::mat4(1);
@@ -278,7 +280,7 @@ void Tema2::RanderPlayer(float deltaTimeSeconds) {
 
 void Tema2::FrameEnd()
 {
-	//DrawCoordinatSystem(camera->GetViewMatrix(), projectionMatrix);
+	DrawCoordinatSystem(camera->GetViewMatrix(), projectionMatrix);
 }
 
 Mesh* Tema2::CreateMesh(const char* name, const std::vector<VertexFormat>& vertices, const std::vector<unsigned short>& indices)

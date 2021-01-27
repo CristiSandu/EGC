@@ -30,7 +30,7 @@ out vec3 frag_color;
 flat out int frag_ball;
  
 float noise(float delta){
-	return cos(delta + cos(delta*90) * 100) * 0.5 + 0.5;
+	return sin(delta + cos(delta*90) * 100) * 0.5 + 0.5;
 }
 
 
@@ -45,12 +45,20 @@ void main() {
 	 vec3 stp = v_position;
 	 for( int i = 0; i < 100; i++ )
 	 {
-		sum += noise( size*length(stp.xx)  ) / size;
+		sum += noise( size*length(stp.yyx)  ) / size;
 		size *= 2.3;
 	 }
 	
 	 posistion = v_position * sum;
 	 frag_color =  mix(vec3(.23,.72,.21), vec3(.53,.12,.01), sum ) * 162.1;
+	 /*float sum = 1;
+	 float size = 0.1;
+	 for (int i = 0; i < 19; i++){
+		sum += noise(size*length(v_normal.x)) / 10;
+		size *= .2;
+	 }
+	 posistion = v_position * sum;*/
+
    } else {
 	 frag_color = object_color ;
 	 frag_position = v_position;

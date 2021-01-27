@@ -143,9 +143,9 @@ void Tema3::FrameStart()
 
 void Tema3::Update(float deltaTimeSeconds)
 {
-	glLineWidth(3);
+	/*glLineWidth(3);
 	glPointSize(5);
-	glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
+	glPolygonMode(GL_FRONT_AND_BACK, polygonMode);*/
 
 	int colorIndex = rand() % 5;
 	int w = (rand() % 5 + 2) / 1;
@@ -186,8 +186,11 @@ void Tema3::Update(float deltaTimeSeconds)
 	}
 	if (ENDGAME == 1)
 	{
-		score = (std::clock() - startR) / (double)CLOCKS_PER_SEC;
-		std::cout << "END GAME ! Score is :" << endSocre << std::endl;
+		
+		if (prinScore == 0) {
+			std::cout << "END GAME ! Score is :" << endSocre << std::endl;
+			prinScore = 1;
+		}
 	}
 
 	RanderScene(deltaTimeSeconds);
@@ -253,6 +256,7 @@ bool Tema3::IntersectionCheck() {
 
 	if (isColideObstacle == 1)
 	{
+		score = (std::clock() - startR) / (double)CLOCKS_PER_SEC;
 		ENDGAME = 1;
 		endSocre = score * 10;
 	}
@@ -267,6 +271,7 @@ bool Tema3::IntersectionCheck() {
 			platformsColors[colorposition] = VIOLET;
 			speed = 0;
 			ENDGAME = 1;
+			score = (std::clock() - startR) / (double)CLOCKS_PER_SEC;
 			endSocre = score * 10;
 
 			controlDeformationVar = 1;
@@ -531,7 +536,7 @@ void Tema3::RanderPlayer(float deltaTimeSeconds) {
 
 		RenderMesh(player->GetPlayer(), shaders["ShaderTema3"], modelMatrix, glm::vec3(1, 1, 0), mapTextures["metal"], nullptr);
 		ENDGAME = 1;
-
+		score = (std::clock() - startR) / (double)CLOCKS_PER_SEC;
 		endSocre = score * 10;
 	}
 

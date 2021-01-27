@@ -46,7 +46,7 @@ void Laborator9::Init()
 	}
 
 	{
-		mapTextures["random"] = CreateRandomTexture(32, 32);
+		mapTextures["random"] = CreateRandomTexture(50, 50);
 	}
 
 	// Load meshes
@@ -238,6 +238,8 @@ void Laborator9::RenderSimpleMesh(Mesh *mesh, Shader *shader, const glm::mat4 & 
 		//TODO : Send texture uniform value
 		glUniform1i(glGetUniformLocation(shader->program, "texture_2"), 1);
 	}
+
+	
 
 	// Draw the object
 	glBindVertexArray(mesh->GetBuffers()->VAO);

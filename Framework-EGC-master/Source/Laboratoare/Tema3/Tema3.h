@@ -78,6 +78,7 @@ public:
 	int idexPowerUp = 0,indexObsatcoles = 0;
 	float endSocre = 0;
 	int controlDeformationVar = 0;
+	int prinScore = 0;
 
 
 private:
