@@ -15,6 +15,7 @@ public:
 	Mesh* GetPiramideStyle();
 
 	Mesh* piramida;
+	Mesh* tetraedru;
 	Mesh* stylishPiramide;
 	Mesh* skull;
 	glm::vec3 GREY = glm::vec3(.5, .5, .5); //grey

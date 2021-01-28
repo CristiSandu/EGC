@@ -25,8 +25,7 @@ void main()
 		texcoord = vec2(texcoord.x - time / 10.f, texcoord.y);
 	}
 
-	mat4 ModelView = View * Model;
-
+	mat4 modelview = View * Model;
 
 	gl_Position = Projection * View * Model * vec4(v_position, 1.0);
 }

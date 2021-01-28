@@ -7,23 +7,23 @@ Ornament::Ornament() {
 		piramida = new Mesh("piramida");
 		vector<VertexFormat> vertices
 		{
-			VertexFormat(glm::vec3(0, 0, 0), 
+			VertexFormat(glm::vec3(0, 0, 0),
 						 glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
 						 GREY,
 						 glm::vec2(0,0)),//0
-			VertexFormat(glm::vec3(4, 0, 0), 
+			VertexFormat(glm::vec3(4, 0, 0),
 						glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
 						GREY,
 						glm::vec2(1,0)),//1
-			VertexFormat(glm::vec3(4, 0, 4), 
+			VertexFormat(glm::vec3(4, 0, 4),
 						glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
 						 GREY,
 						 glm::vec2(0,0)),//2
-			VertexFormat(glm::vec3(0, 0, 4), 
+			VertexFormat(glm::vec3(0, 0, 4),
 						glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
 						 GREY,
 						 glm::vec2(0,0)),//3
-			VertexFormat(glm::vec3(2, 4, 2), 
+			VertexFormat(glm::vec3(2, 4, 2),
 						 glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
 						 GREY,
 						 glm::vec2(0.5,1)),//4
@@ -59,8 +59,8 @@ Ornament::Ornament() {
 						 glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
 						 GREY,
 						 glm::vec2(0.5,1)),//11
-			
-			
+
+
 			// TODO: Complete the information for the cube
 		};
 
@@ -69,26 +69,110 @@ Ornament::Ornament() {
 		{
 			//2, 1, 0,	// indices for second triangle
 			//0, 3, 2,
-			
+
 
 			4, 3, 0,	// indices for first triangle
-			
+
 			5, 9, 1,
-			
+
 			6,11, 7,
 			2, 10,8
-			
-			 
-			
+
+
+
 			//4, 1, 2,
 
 			// TODO: Complete indices data
 		};
-		
 
-		piramida->InitFromData(vertices,indices);
+
+		piramida->InitFromData(vertices, indices);
 		/*Mesh* piramida = CreateMesh("piramida", vertices, indices);
 		meshes[piramida->GetMeshID()] = piramida;*/
+	}
+
+	{
+		tetraedru = new Mesh("tetraedru");
+		vector<VertexFormat> vertices
+		{
+			VertexFormat(glm::vec3(0, 0, 0),
+						 GREY,
+						 glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
+						 glm::vec2(0,0)),//0
+
+			VertexFormat(glm::vec3(1, 0, 0),
+						 GREY,
+						 glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
+						 glm::vec2(1,0)),//1
+
+			VertexFormat(glm::vec3(0, 0, 1),
+						 GREY,
+						 glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
+						 glm::vec2(0,1)),//2
+
+			VertexFormat(glm::vec3(0, 1, 0),
+						 GREY,
+						 glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
+						 glm::vec2(0,1)),//3
+
+			VertexFormat(glm::vec3(0, 0, 0),
+						 GREY,
+						 glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
+						 glm::vec2(0,0)),//4
+
+			VertexFormat(glm::vec3(1, 0, 0),
+						 GREY,
+						 glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
+						 glm::vec2(1,0)),//5
+
+			VertexFormat(glm::vec3(0, 0, 1),
+						 GREY,
+						 glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
+						 glm::vec2(1,0)),//6
+
+			VertexFormat(glm::vec3(0, 1, 0),
+						 GREY,
+						 glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
+						 glm::vec2(0,1)),//7
+
+			VertexFormat(glm::vec3(0, 0, 0),
+						 GREY,
+						 glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
+						 glm::vec2(0,0)),//8
+
+
+			VertexFormat(glm::vec3(1, 0, 0),
+						 GREY,
+						 glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
+						 glm::vec2(1,1)),//9
+
+			VertexFormat(glm::vec3(0, 0, 1),
+						 GREY,
+						 glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
+						 glm::vec2(0,0)),//10
+
+			VertexFormat(glm::vec3(0, 1, 0),
+						 GREY,
+						 glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
+						 glm::vec2(0.5,1)),//11
+
+
+			// TODO: Complete the information for the cube
+		};
+
+
+		vector<unsigned short> indices =
+		{
+			0,1,2,
+			3,4,5,
+			7,8,6,
+			11,9,10
+			
+		};
+
+
+		tetraedru->InitFromData(vertices, indices);
+
 	}
 
 	{
@@ -103,7 +187,7 @@ Ornament::Ornament() {
 			VertexFormat(glm::vec3(4, 0, 0)),//5
 			VertexFormat(glm::vec3(0, 4, 0)),//6
 			VertexFormat(glm::vec3(4, 4, 0)),//7
-			
+
 			VertexFormat(glm::vec3(2, -2, 2)),//8
 			VertexFormat(glm::vec3(6, 2, 2)),//9
 			VertexFormat(glm::vec3(2, 2, 6)),//10
@@ -157,13 +241,13 @@ Ornament::Ornament() {
 			7,13,3,
 			3,13,2
 
-		/*	2, 1, 0,	// indices for second triangle
-			0, 3, 2,
-			4, 3, 0,	// indices for first triangle
-			4, 0, 1,
-			2, 3, 4,
-			4, 1, 2,*/
-			// TODO: Complete indices data
+			/*	2, 1, 0,	// indices for second triangle
+				0, 3, 2,
+				4, 3, 0,	// indices for first triangle
+				4, 0, 1,
+				2, 3, 4,
+				4, 1, 2,*/
+				// TODO: Complete indices data
 		};
 
 
