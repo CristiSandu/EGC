@@ -190,12 +190,12 @@ void main() {
 		out_color = vec4( mix(vec3(.23,.72,.21), vec3(.53,.12,.01), frag_ball ) * 162.1,1);
 	}
 
-	out_color = out_color * ( light * vec4(1,1,1,1)
-	+ light_0 * vec4(1,0,0,1) 
-	+ light_1 * vec4(1,1,1,1)
-	+ light_2 * vec4(1,0,1,1)
-	+ light_3 * vec4(1,0,1,1)
-	+ light_4 * vec4(0,1.4,0,1)
+	out_color = out_color * ( light * vec4(0.2)
+	+ light_0 * vec4(0.2,0,0,1) 
+	+ light_1 * vec4(0.2)
+	+ light_2 * vec4(0.2,0,0.2,1)
+	+ light_3 * vec4(0.2,0,0.2,1)
+	+ light_4 * vec4(0,0.2,0,1)
 	); 
 	//out_texture = vec3(frag_texture, 1.f);
 	//out_normal = vec4(frag_normal, 1.f);

@@ -22,7 +22,7 @@ void main()
 
 	if (time >= 0)
 	{
-		texcoord = vec2(texcoord.x - time / 10.f, texcoord.y);
+		texcoord = vec2(texcoord.x + time / 10.f, texcoord.y);
 	}
 
 	mat4 modelview = View * Model;
