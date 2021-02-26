@@ -11,8 +11,7 @@ Bow::Bow() {
 		std::vector<VertexFormat> vertices =
 		{
 			VertexFormat(corner, color),//0
-		//	VertexFormat(corner + glm::vec3(0, 60, 0), color),//1
-		//	VertexFormat(corner + glm::vec3(0, -60, 0), color),//2
+		
 
 		};
 
@@ -29,9 +28,6 @@ Bow::Bow() {
 		}
 		indices.push_back(spaceBow);
 
-			// draw 2 triangles. Add the remaining 2 indices
-			//indices.push_back(0);
-			//indices.push_back(2);
 
 		bow->SetDrawMode(GL_LINE_LOOP);
 		bow->InitFromData(vertices, indices);

@@ -113,7 +113,6 @@ Balloon::Balloon() {
 		};
 		
 
-		//rope->SetDrawMode(GL_LINE_LOOP);
 		rope->InitFromData(vertices, indices);
 	}
 }

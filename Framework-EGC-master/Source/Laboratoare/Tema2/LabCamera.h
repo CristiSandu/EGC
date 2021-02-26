@@ -44,19 +44,19 @@ namespace CameraTema
 
 		void TranslateForward(float distance)
 		{
-			// TODO : Translate the camera using the "forward" vector
+			//  : Translate the camera using the "forward" vector
 			position += glm::normalize(forward) * distance;
 		}
 
 		void TranslateUpword(float distance)
 		{
-			// TODO : Translate the camera using the up vector
+			//  : Translate the camera using the up vector
 			position += glm::normalize(up) * distance;
 		}
 
 		void TranslateRight(float distance)
 		{
-			// TODO
+			// 
 			// Translate the camera using the "right" vector
 			// Usually translation using camera "right' is not very useful because if the camera is rotated around the "forward" vector 
 			// translation over the right direction will have an undesired effect; the camera will get closer or farther from the ground
@@ -66,7 +66,7 @@ namespace CameraTema
 
 		void RotateFirstPerson_OX(float angle)
 		{
-			// TODO
+			// 
 			// Compute the new "forward" and "up" vectors
 			// Attention! Don't forget to normalize the vectors
 			// Use glm::rotate()
@@ -76,7 +76,7 @@ namespace CameraTema
 
 		void RotateFirstPerson_OY(float angle)
 		{
-			// TODO
+			// 
 			// Compute the new "forward", "up" and "right" vectors
 			// Don't forget to normalize the vectors
 			// Use glm::rotate()
@@ -92,7 +92,7 @@ namespace CameraTema
 
 		void RotateFirstPerson_OZ(float angle)
 		{
-			// TODO
+			// 
 			// Compute the new Right and Up, Forward stays the same
 			// Don't forget to normalize the vectors
 
@@ -107,7 +107,7 @@ namespace CameraTema
 
 		void RotateThirdPerson_OX(float angle)
 		{
-			// TODO
+			// 
 			// Rotate the camera in Third Person mode - OX axis
 			// Use distanceToTarget as translation distance
 			TranslateForward(distanceToTarget);
@@ -117,7 +117,7 @@ namespace CameraTema
 
 		void RotateThirdPerson_OY(float angle)
 		{
-			// TODO
+			// 
 			// Rotate the camera in Third Person mode - OY axis
 			TranslateForward(distanceToTarget);
 			RotateFirstPerson_OY(angle);
@@ -126,7 +126,7 @@ namespace CameraTema
 
 		void RotateThirdPerson_OZ(float angle)
 		{
-			// TODO
+			// 
 			// Rotate the camera in Third Person mode - OZ axis
 			TranslateForward(distanceToTarget);
 			RotateFirstPerson_OZ(angle);

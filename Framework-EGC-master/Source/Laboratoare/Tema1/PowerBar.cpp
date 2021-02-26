@@ -34,7 +34,6 @@ PowerBar::PowerBar() {
 
 		std::vector<unsigned short> indices = { 1,0,3,
 			3,2,1 };
-		//powerLine->SetDrawMode(GL_LINE_LOOP);
 		powerLine->InitFromData(vertices, indices);
 	}
 
@@ -60,7 +59,7 @@ PowerBar::PowerBar() {
 			2,7,3,
 			4,3,5,
 			5,7,6,7,8,1 };
-		//powerLine->SetDrawMode(GL_LINE_LOOP);
+
 		heart->InitFromData(vertices, indices);
 	}
 
@@ -85,7 +84,7 @@ PowerBar::PowerBar() {
 			5,4,7,
 			7,6,5,
 		};
-		//powerLine->SetDrawMode(GL_LINE_LOOP);
+
 		skull->InitFromData(vertices, indices);
 	}
 
@@ -105,7 +104,7 @@ PowerBar::PowerBar() {
 		std::vector<unsigned short> indices = { 2,1,0,
 			0,3,2,
 		};
-		//powerLine->SetDrawMode(GL_LINE_LOOP);
+
 		eye->InitFromData(vertices, indices);
 	}
 

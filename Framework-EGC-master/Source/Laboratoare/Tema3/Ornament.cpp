@@ -59,38 +59,24 @@ Ornament::Ornament() {
 						 glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
 						 GREY,
 						 glm::vec2(0.5,1)),//11
-
-
-			// TODO: Complete the information for the cube
 		};
 
 
 		vector<unsigned short> indices =
 		{
-			//2, 1, 0,	// indices for second triangle
-			//0, 3, 2,
-
-
 			4, 3, 0,	// indices for first triangle
 
 			5, 9, 1,
 
 			6,11, 7,
 			2, 10,8
-
-
-
-			//4, 1, 2,
-
-			// TODO: Complete indices data
 		};
 
 
 		piramida->InitFromData(vertices, indices);
-		/*Mesh* piramida = CreateMesh("piramida", vertices, indices);
-		meshes[piramida->GetMeshID()] = piramida;*/
 	}
 
+	//some trys of objects 
 	{
 		tetraedru = new Mesh("tetraedru");
 		vector<VertexFormat> vertices
@@ -155,9 +141,6 @@ Ornament::Ornament() {
 						 GREY,
 						 glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0),
 						 glm::vec2(0.5,1)),//11
-
-
-			// TODO: Complete the information for the cube
 		};
 
 
@@ -167,12 +150,10 @@ Ornament::Ornament() {
 			3,4,5,
 			7,8,6,
 			11,9,10
-			
 		};
 
 
 		tetraedru->InitFromData(vertices, indices);
-
 	}
 
 	{
@@ -194,9 +175,6 @@ Ornament::Ornament() {
 			VertexFormat(glm::vec3(-2, 2, 2)),//11
 			VertexFormat(glm::vec3(2, 2, -2)),//12
 			VertexFormat(glm::vec3(2, 6, 2)),//13
-
-
-			// TODO: Complete the information for the cube
 		};
 
 		vector<unsigned short> indices =
@@ -240,21 +218,12 @@ Ornament::Ornament() {
 			6,13,7,
 			7,13,3,
 			3,13,2
-
-			/*	2, 1, 0,	// indices for second triangle
-				0, 3, 2,
-				4, 3, 0,	// indices for first triangle
-				4, 0, 1,
-				2, 3, 4,
-				4, 1, 2,*/
-				// TODO: Complete indices data
 		};
-
+		
 
 		stylishPiramide->InitFromData(vertices, indices);
-		/*Mesh* piramida = CreateMesh("piramida", vertices, indices);
-		meshes[piramida->GetMeshID()] = piramida;*/
 	}
+	// --
 
 	{
 		skull = new Mesh("skull");

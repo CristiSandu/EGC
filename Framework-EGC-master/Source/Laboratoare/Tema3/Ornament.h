@@ -11,7 +11,6 @@ public:
 	~Ornament();
 
 	Mesh* GetPiramide();
-
 	Mesh* GetPiramideStyle();
 
 	Mesh* piramida;

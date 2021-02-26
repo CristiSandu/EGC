@@ -1,20 +1,5 @@
-/*precision highp float;
-precision highp int;
+#version 330
 
-uniform float distortion;
-uniform float time;
-uniform float speed;
-uniform float swirl;
-uniform vec3 baseColor;
-uniform float red;
-uniform float green;
-uniform float blue;
-
-const int iterations = 50;
-const int swirlIterations = 6;
-
-
-*/
 uniform sampler2D texture_1;
 uniform sampler2D texture_2;
 uniform bool mix_textures;
@@ -58,10 +43,6 @@ in vec3 world_position;
 in vec3 world_normal;
 
 flat in float frag_ball;
-
-/*uniform sampler2D texture_1;
-uniform sampler2D texture_2;
-uniform bool mix_textures;*/
 
 layout(location = 0) out vec4 out_color;
 layout(location = 1) out vec4 out_normal;
@@ -125,16 +106,12 @@ float computPunctLight(vec3 world_normal,vec3 light_position,vec3 world_position
 	{
 		float dl = dot(N, H);
 		float de = dot(normalize(N), L);
-
-		//specular_light = material_ks * pow(dl*de + sqrt(1.- dl*dl) * sqrt(1.-de*de),material_shininess);
-
 		specular_light = material_ks * pow(max(dot(N, H), 0), material_shininess);
 	}
 
 	float d						= distance(light_position, world_position);
 	float attenuation_factor	= clamp(1 / (1 + 0.14 * d + 0.07 * d * d), 0,1);
 	light						= ambient_light + attenuation_factor * (diffuse_light + specular_light);
-	//1.f / max(d * d, 1.f);
 	return light;
 }
 
@@ -152,8 +129,6 @@ void main() {
 	vec3 H = normalize(L + V);
 	vec3 R = normalize(reflect(L, world_normal));
 	
-	
-
 
 	if (only_punct == true){
 		light = computPunctLight(world_normal, light_position, world_position, eye_position, 4.);
@@ -170,18 +145,15 @@ void main() {
 		light_4 =  computPunctLight(world_normal, light_position_spot_4, world_position, eye_position,10.);
 	}
 	
-	
 
 	out_color = vec4(1);
 	vec4 colour1 = texture2D(texture_1, frag_texture);
 	vec4 colour2 = texture2D(texture_2, frag_texture);
+
 	if (mix_textures == true){
 		out_color = mix(colour1,colour2,.2f);
-		//out_color = mix(vec4(frag_color,1), out_color,.2f);
 	}else{ 
-		//out_color = vec4(frag_color,1);
 		out_color = mix (colour1,vec4(frag_color,1),.5f);
-
 	}
 
 	if (frag_ball == .0){
@@ -190,14 +162,10 @@ void main() {
 		out_color = vec4( mix(vec3(.23,.72,.21), vec3(.53,.12,.01), frag_ball ) * 162.1,1);
 	}
 
-	out_color = out_color * ( light * vec4(0.2)
-	+ light_0 * vec4(0.2,0,0,1) 
-	+ light_1 * vec4(0.2)
-	+ light_2 * vec4(0.2,0,0.2,1)
-	+ light_3 * vec4(0.2,0,0.2,1)
-	+ light_4 * vec4(0,0.2,0,1)
-	); 
-	//out_texture = vec3(frag_texture, 1.f);
-	//out_normal = vec4(frag_normal, 1.f);
-
+	out_color = out_color * ( light   * vec4(0.4)
+							+ light_0 * vec4(0.4,0,0,1) 
+							+ light_1 * vec4(0.4)
+							+ light_2 * vec4(0.4,0,0.4,1)
+							+ light_3 * vec4(0.4,0,0.4,1)
+							+ light_4 * vec4(0,0.4,0,1)); 
 }

@@ -42,7 +42,6 @@ Mesh* RanderItems::CreateArrow(std::string name, glm::vec3 leftBottomCorner, flo
 
 	}
 	else {
-		// draw 2 triangles. Add the remaining 2 indices
 		indices.push_back(0);
 		indices.push_back(2);
 	}
@@ -58,9 +57,6 @@ Mesh* RanderItems::CreateBow(std::string name, glm::vec3 leftBottomCorner, float
 	std::vector<VertexFormat> vertices =
 	{
 		VertexFormat(corner, color),//0
-	//	VertexFormat(corner + glm::vec3(0, 60, 0), color),//1
-	//	VertexFormat(corner + glm::vec3(0, -60, 0), color),//2
-		
 	};
 
 	std::vector<unsigned short> indices;
@@ -85,7 +81,6 @@ Mesh* RanderItems::CreateBow(std::string name, glm::vec3 leftBottomCorner, float
 
 	}
 	else {
-		// draw 2 triangles. Add the remaining 2 indices
 		indices.push_back(0);
 		indices.push_back(2);
 	}
@@ -124,10 +119,8 @@ Mesh* RanderItems::CreateShuriken(std::string name, glm::vec3 leftBottomCorner, 
 	Mesh* Shuriken = new Mesh(name);
 
 	if (!fill) {
-	//	Shuriken->SetDrawMode(GL_LINE_LOOP);
 	}
 	else {
-		// draw 2 triangles. Add the remaining 2 indices
 		indices.push_back(0);
 		indices.push_back(2);
 	}
@@ -181,15 +174,6 @@ Mesh* RanderItems::CreateBalloon(std::string name, glm::vec3 leftBottomCorner, f
 	indices.push_back(1);
 
 
-	//indices.push_back(1
-	
-	
-
-
-	//, 8, 5, 4, 3, 2, 1
-
-	
-
 	Mesh* balloon = new Mesh(name);
 
 	if (!fill) {
@@ -202,6 +186,5 @@ Mesh* RanderItems::CreateBalloon(std::string name, glm::vec3 leftBottomCorner, f
 	}
 
 	balloon->InitFromData(vertices, indices);
-	//balloon->SetDrawMode();
 	return balloon;
 }

@@ -40,7 +40,7 @@ void Tema1::Init()
 	start = std::clock();
 	startArrow = std::clock();
 	startShuriken = std::clock();
-	
+
 
 
 	// compute coordinates of square center
@@ -57,19 +57,6 @@ void Tema1::Init()
 
 	// initialize angularStep
 	angularStep = 0;
-
-	//Mesh* arrow = RanderItems::CreateArrow("arrow", corner, squareSide, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), true);
-	//AddMeshToList(arrow);
-
-	//Mesh* bow = RanderItems::CreateBow("bow", corner, squareSide, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), false, spaceBow, scale);
-	//AddMeshToList(bow);
-
-	///Mesh* Shuriken = RanderItems::CreateShuriken("Shuriken", corner, squareSide / 2, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), false, spaceBow, scale);
-	//AddMeshToList(Shuriken);
-
-	//Mesh* Balloon = RanderItems::CreateBalloon("Balloon", corner, squareSide / 2, squareSide / 4, glm::vec3((rand() % 100) / 100.0, (rand() % 100) / 100.0, (rand() % 100) / 100.0), false, 360, scale);
-	//AddMeshToList(Balloon);
-
 }
 
 void Tema1::FrameStart()
@@ -84,7 +71,6 @@ void Tema1::FrameStart()
 void Tema1::Update(float deltaTimeSeconds)
 {
 
-	glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
 	glClearColor(0, 128, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -95,7 +81,6 @@ void Tema1::Update(float deltaTimeSeconds)
 	if (lives == 0) {
 		std::cout << "GAME OVER! ============================= Score: " << score << " \n\n";
 		RanderFinalSceen();
-
 	}
 	else {
 
@@ -135,7 +120,6 @@ void Tema1::FrameEnd()
 
 void Tema1::RanderScene(float deltaTimeSeconds) {
 	//arrow Transaltion / Render
-	//RanderArrow(deltaTimeSeconds);
 	RanderArrow(deltaTimeSeconds);
 
 	//Bow Transaltion / Render
@@ -147,11 +131,14 @@ void Tema1::RanderScene(float deltaTimeSeconds) {
 	//balloon Transaltion / Render
 	RanderBalloon(deltaTimeSeconds);
 
+	//rander powerindicator
 	RanderPowerBar(deltaTimeSeconds);
-
 	RanderPowerLine(deltaTimeSeconds);
+
+	//rander lives
 	RanderPowerHeart(deltaTimeSeconds);
 
+	//check colision 
 	CheckColision();
 }
 
@@ -162,43 +149,35 @@ void Tema1::RanderFinalSceen() {
 
 	modelMatrix = glm::mat3(1);
 	modelMatrix *= Transform2D::Translate(skullCenterX + 10, skullCenterY + 70);
-	//modelMatrix *= Transform2D::Scale(1, 1);
 	modelMatrix *= Transform2D::Scale(3, 3);
-	//modelMatrix *= Transform2D::Rotate(-1.5708);
 	RenderMesh2D(powerBar->GetEye(), shaders["VertexColor"], modelMatrix);
 
 	modelMatrix = glm::mat3(1);
 	modelMatrix *= Transform2D::Translate(skullCenterX + 64, skullCenterY + 70);
-	//modelMatrix *= Transform2D::Scale(1, 1);
 	modelMatrix *= Transform2D::Scale(3, 3);
-	//modelMatrix *= Transform2D::Rotate(-1.5708);
 	RenderMesh2D(powerBar->GetEye(), shaders["VertexColor"], modelMatrix);
 
 	modelMatrix = glm::mat3(1);
 	modelMatrix *= Transform2D::Translate(skullCenterX, skullCenterY);
-	//modelMatrix *= Transform2D::Scale(1, 1);
 	modelMatrix *= Transform2D::Scale(3, 3);
-	//modelMatrix *= Transform2D::Rotate(-1.5708);
 	RenderMesh2D(powerBar->GetSkull(), shaders["VertexColor"], modelMatrix);
 }
 
 void Tema1::RanderPowerBar(float detlaTimeSeconds) {
+
 	modelMatrix = glm::mat3(1);
 	modelMatrix *= Transform2D::Translate(30, 50);
-	//modelMatrix *= Transform2D::Scale(1, 1);
 	modelMatrix *= Transform2D::Scale(2, 2);
-	//modelMatrix *= Transform2D::Rotate(-1.5708);
 	RenderMesh2D(powerBar->GetPowerBar(), shaders["VertexColor"], modelMatrix);
 
 }
 
 
 void Tema1::RanderPowerLine(float detlaTimeSeconds) {
+
 	modelMatrix = glm::mat3(1);
 	modelMatrix *= Transform2D::Translate(30, powerBarStartY);
-	//modelMatrix *= Transform2D::Scale(1, 1);
-	modelMatrix *= Transform2D::Scale(powerBarStartX2/2, 2);
-	//modelMatrix *= Transform2D::Rotate(-1.5708);
+	modelMatrix *= Transform2D::Scale(powerBarStartX2 / 2, 2);
 	RenderMesh2D(powerBar->GetPowerLine(), shaders["VertexColor"], modelMatrix);
 
 }
@@ -206,44 +185,40 @@ void Tema1::RanderPowerLine(float detlaTimeSeconds) {
 void Tema1::RanderPowerHeart(float deltaTImeSeconds) {
 
 	if (lives == 3) {
+		//if i have 3 lives rander 3 hearts
 		modelMatrix = glm::mat3(1);
 		modelMatrix *= Transform2D::Translate(heartX, heartY);
-		//modelMatrix *= Transform2D::Scale(1, 1);
 		modelMatrix *= Transform2D::Scale(2, 2);
-		//modelMatrix *= Transform2D::Rotate(-1.5708);
 		RenderMesh2D(powerBar->GetPowerHeart(), shaders["VertexColor"], modelMatrix);
-		modelMatrix = glm::mat3(1);
 
+
+		modelMatrix = glm::mat3(1);
 		modelMatrix *= Transform2D::Translate(heartX + defaze, heartY);
-		//modelMatrix *= Transform2D::Scale(1, 1);
 		modelMatrix *= Transform2D::Scale(2, 2);
-		//modelMatrix *= Transform2D::Rotate(-1.5708);
 		RenderMesh2D(powerBar->GetPowerHeart(), shaders["VertexColor"], modelMatrix);
 		modelMatrix = glm::mat3(1);
 
 		modelMatrix *= Transform2D::Translate(heartX + defaze * 2, heartY);
-		//modelMatrix *= Transform2D::Scale(1, 1);
 		modelMatrix *= Transform2D::Scale(2, 2);
-		//modelMatrix *= Transform2D::Rotate(-1.5708);
 		RenderMesh2D(powerBar->GetPowerHeart(), shaders["VertexColor"], modelMatrix);
-		startLife = std::clock();
 
+		startLife = std::clock();
 	}
 	else if (lives == 2)
 	{
+		//if i have 3 lives rander 2 hearts and 
 		modelMatrix = glm::mat3(1);
 		modelMatrix *= Transform2D::Translate(heartX, heartY);
-		//modelMatrix *= Transform2D::Scale(1, 1);
 		modelMatrix *= Transform2D::Scale(2, 2);
-		//modelMatrix *= Transform2D::Rotate(-1.5708);
 		RenderMesh2D(powerBar->GetPowerHeart(), shaders["VertexColor"], modelMatrix);
-		modelMatrix = glm::mat3(1);
 
+		modelMatrix = glm::mat3(1);
 		modelMatrix *= Transform2D::Translate(heartX + defaze, heartY);
-		//modelMatrix *= Transform2D::Scale(1, 1);
 		modelMatrix *= Transform2D::Scale(2, 2);
-		//modelMatrix *= Transform2D::Rotate(-1.5708);
 		RenderMesh2D(powerBar->GetPowerHeart(), shaders["VertexColor"], modelMatrix);
+
+
+		//push extra lives to come to player direction  
 		float duration = (std::clock() - startLife) / (double)CLOCKS_PER_SEC;
 		if (duration >= 10) {
 			lifeCoord.push_back(glm::vec4(1280, (rand() % 780), 1, 1));
@@ -252,25 +227,29 @@ void Tema1::RanderPowerHeart(float deltaTImeSeconds) {
 		RanderLife(deltaTImeSeconds);
 	}
 	else {
+		//if i have 1 lives rander skull
 		RanderFinalSceen();
+
+		// rander last heart and 
 		modelMatrix = glm::mat3(1);
 		modelMatrix *= Transform2D::Translate(heartX, heartY);
-		//modelMatrix *= Transform2D::Scale(1, 1);
 		modelMatrix *= Transform2D::Scale(2, 2);
-		//modelMatrix *= Transform2D::Rotate(-1.5708);
 		RenderMesh2D(powerBar->GetPowerHeart(), shaders["VertexColor"], modelMatrix);
+
+		//push extra lives to come to player direction  
 		float duration = (std::clock() - startLife) / (double)CLOCKS_PER_SEC;
 		if (duration >= 10) {
 			lifeCoord.push_back(glm::vec4(1280, (rand() % 780), 1, 1));
 			startLife = std::clock();
 		}
+
 		RanderLife(deltaTImeSeconds);
 	}
 }
 
 
 void Tema1::CheckColision() {
-
+	//check colision with baloons
 	for (int i = 0; i < arrowsCoord.size(); i++)
 	{
 		for (int j = 0; j < baloonsCoord.size(); j++)
@@ -295,7 +274,7 @@ void Tema1::CheckColision() {
 		}
 	}
 
-
+	//check colision with shuriken
 	for (int i = 0; i < arrowsCoord.size(); i++)
 	{
 		for (int j = 0; j < shurikenCoord.size(); j++)
@@ -315,6 +294,7 @@ void Tema1::CheckColision() {
 	}
 
 
+	//check colision shuriken with player
 	for (int i = 0; i < shurikenCoord.size(); i++)
 	{
 		GLfloat firstS = translationx - shurikenCoord[i].x;
@@ -326,6 +306,7 @@ void Tema1::CheckColision() {
 		}
 	}
 
+	//check colision extre life with player
 	for (int i = 0; i < lifeCoord.size(); i++)
 	{
 		GLfloat firstS = translationx - lifeCoord[i].x;
@@ -345,13 +326,10 @@ void Tema1::RanderArrow(float deltaTimeSeconds) {
 	for (int i = 0; i < arrowsCoord.size(); i++)
 	{
 		modelMatrix = glm::mat3(1);
-		//modelMatrix *= Transform2D::Translate(arrowsCoord[i].x, arrowsCoord[i].y);
-
 		arrowsCoord[i].x += cos(arrowsCoord[i].z) * deltaTimeSeconds * arrowsCoord[i].w * (450 / 100);
 		arrowsCoord[i].y += sin(arrowsCoord[i].z) * deltaTimeSeconds * arrowsCoord[i].w * (450 / 100);
 		modelMatrix *= Transform2D::Translate(arrowsCoord[i].x, arrowsCoord[i].y);
 		modelMatrix *= Transform2D::Rotate(arrowsCoord[i].z);
-
 		modelMatrix *= Transform2D::Scale(1, 1);
 		Mesh* mes = arrow->GetArrow();
 		RenderMesh2D(mes, shaders["VertexColor"], modelMatrix);
@@ -359,10 +337,10 @@ void Tema1::RanderArrow(float deltaTimeSeconds) {
 }
 
 void Tema1::RanderBow(float deltaTimeSeconds) {
+
 	modelMatrix = glm::mat3(1);
 	modelMatrix *= Transform2D::Translate(translationx, translationy);
 	modelMatrix *= Transform2D::Scale(1, 1);
-	//modelMatrix *= Transform2D::Scale(2, 2);
 	modelMatrix *= Transform2D::Rotate(-1.5708);
 	modelMatrix *= Transform2D::Rotate(degre2);
 	RenderMesh2D(bow->GetBow(), shaders["VertexColor"], modelMatrix);
@@ -381,11 +359,7 @@ void Tema1::RanderShuricken(float deltaTimeSeconds) {
 			modelMatrix = glm::mat3(1);
 			modelMatrix *= Transform2D::Translate(shurikenCoord[i].x, shurikenCoord[i].y);
 			modelMatrix *= Transform2D::Scale(1, 1);
-			//modelMatrix *= Transform2D::Scale(2, 2);
 			degre += deltaTimeSeconds;
-			//modelMatrix *= Transform2D::Translate(squer_l / 4.f, squer_l / 4.f);
-			//modelMatrix *= Transform2D::Rotate(degre);
-			//modelMatrix *= Transform2D::Translate(-squer_l / 4.f, -squer_l / 4.f);
 			RenderMesh2D(shuriken->GetShuriken(), shaders["VertexColor"], modelMatrix);
 
 		}
@@ -394,7 +368,6 @@ void Tema1::RanderShuricken(float deltaTimeSeconds) {
 			modelMatrix = glm::mat3(1);
 			modelMatrix *= Transform2D::Translate(shurikenCoord[i].x, shurikenCoord[i].y);
 			modelMatrix *= Transform2D::Scale(1, 1);
-			//modelMatrix *= Transform2D::Scale(2, 2);
 			degre += deltaTimeSeconds;
 			modelMatrix *= Transform2D::Translate(squer_l / 4.f, squer_l / 4.f);
 			modelMatrix *= Transform2D::Rotate(degre);
@@ -411,9 +384,7 @@ void Tema1::RanderLife(float deltaTImeSeconds) {
 		lifeCoord[i].x -= deltaTImeSeconds * 500;
 		modelMatrix = glm::mat3(1);
 		modelMatrix *= Transform2D::Translate(lifeCoord[i].x, lifeCoord[i].y);
-		//modelMatrix *= Transform2D::Scale(1, 1);
 		modelMatrix *= Transform2D::Scale(2, 2);
-		//modelMatrix *= Transform2D::Rotate(-1.5708);
 		RenderMesh2D(powerBar->GetPowerHeart(), shaders["VertexColor"], modelMatrix);
 	}
 }
@@ -481,7 +452,6 @@ void Tema1::RanderBalloon(float deltaTimeSeconds) {
 
 void Tema1::OnInputUpdate(float deltaTime, int mods)
 {
-
 	if (window->KeyHold(GLFW_KEY_W))
 	{
 		if (verify == 0) {
@@ -522,16 +492,10 @@ void Tema1::OnInputUpdate(float deltaTime, int mods)
 		if (powerBarStartX <= powerBarENDX) {
 			powerBarStartX += 150 * deltaTime;
 			powerBarStartX2 += 150 * deltaTime;
-		
+
 		}
 
 	}
-
-	/*
-	if (window->MouseHold(GLFW_MOUSE_BUTTON_LEFT))
-	{
-		arrowX -= 150 * deltaTime;
-	}*/
 }
 
 
@@ -542,7 +506,6 @@ void Tema1::ArrowRelese(GLfloat relese)
 
 void Tema1::OnKeyPress(int key, int mods)
 {
-
 	if (key == GLFW_KEY_SPACE)
 	{
 		switch (polygonMode)
@@ -558,8 +521,6 @@ void Tema1::OnKeyPress(int key, int mods)
 			break;
 		}
 	}
-
-
 }
 
 void Tema1::OnKeyRelease(int key, int mods)
@@ -574,25 +535,16 @@ void Tema1::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY)
 
 void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
 {
-	//if (GLFW_MOUSE_BUTTON_LEFT == key)
-	//{
-
-
-
 
 }
 
 void Tema1::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)
 {
-	/*if (button == GLFW_MOUSE_BUTTON_RIGHT) {
-		ArrowRelese(arrowSpeed);
-		arrowSpeed = 0;
-	}*/
 	double duration = (std::clock() - startArrow) / (double)CLOCKS_PER_SEC;
 	if (duration >= 1) {
 		startArrow = std::clock();
 		if (!window->MouseHold(GLFW_MOUSE_BUTTON_LEFT)) {
-			
+
 			arrowsCoord.push_back(glm::vec4(translationx, translationy, degre2, powerBarStartX));
 		}
 		powerBarStartX = 30;
@@ -604,10 +556,12 @@ void Tema1::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)
 
 void Tema1::OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY)
 {
+
 }
 
 void Tema1::OnWindowResize(int width, int height)
 {
+
 }
 
 

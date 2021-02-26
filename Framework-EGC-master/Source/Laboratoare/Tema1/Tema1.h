@@ -37,12 +37,9 @@ class Tema1 : public SimpleScene
 	int score = 0;
 	float powerBarStartX = 30, powerBarStartY = 50;
 	float powerBarStartX2 = 2;
-	//float arrowSeed = 0;
 	float powerBarENDX =175, powerBarENDY = 50;
 	float heartY = 650 , heartX = 20, defaze = 40;
 	
-
-
 
 	GLfloat baloonX = 0, balloonY = 0;
 
@@ -52,27 +49,17 @@ private:
 	void FrameStart() override;
 	void Update(float deltaTimeSeconds) override;
 	void FrameEnd() override;
-	void RanderScene();
 	void RanderScene(float deltaTimeSeconds);
 	void RanderFinalSceen();
 	void RanderPowerBar(float detlaTimeSeconds);
 	void RanderPowerLine(float detlaTimeSeconds);
 	void RanderPowerHeart(float deltaTImeSeconds);
-	void RanderPowerHeart();
 	void RanderLife(float deltaTImeSeconds);
-	void RanderLife();
 	void CheckColision();
 	void RanderArrow(float deltaTimeSeconds);
-	//void RanderBow(float deltaTimeSeconds);
-	void RanderArrow(glm::vec2 positionCursor, float deltaTimeSeconds);
-	void RanderArrow(glm::vec2 positionCursor);
-	void RanderArrow();
 	void RanderBow(float deltaTimeSeconds);
 	void RanderShuricken(float deltaTimeSeconds);
 	void RanderBalloon(float deltaTimeSeconds);
-	void RanderBalloon();
-	void RanderShuricken();
-	void RanderElements();
 	void OnInputUpdate(float deltaTime, int mods) override;
 	void OnKeyPress(int key, int mods) override;
 	void OnKeyRelease(int key, int mods) override;

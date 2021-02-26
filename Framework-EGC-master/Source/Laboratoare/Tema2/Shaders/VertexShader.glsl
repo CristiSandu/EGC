@@ -1,13 +1,5 @@
-/*precision highp float;
-precision highp int;
-uniform mat4 modelMatrix;
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrix;
+#version 330
 
-attribute vec3 position;
-attribute vec2 uv;
-
-varying vec2 vUv;*/
 uniform mat4 Model;
 uniform mat4 View;
 uniform mat4 Projection;
@@ -15,7 +7,6 @@ uniform float Time;
 uniform vec3 object_color;
 uniform int combustibilBool;
 uniform int deformation;
-
 
 
 layout(location = 0) in vec3 v_position;
@@ -43,26 +34,21 @@ void main() {
 	 float sum = 0.0;
 	 float size = 1.0;
 	 vec3 stp = v_position;
+
 	 for( int i = 0; i < 100; i++ )
 	 {
-		sum += noise( size*length(stp.yyx)  ) / size;
+		sum += noise( size*length(stp.yx)  ) / size;
 		size *= 2.3;
 	 }
 	
 	 posistion = v_position * sum;
 	 frag_color =  mix(vec3(.23,.72,.21), vec3(.53,.12,.01), sum ) * 162.1;
-	 /*float sum = 1;
-	 float size = 0.1;
-	 for (int i = 0; i < 19; i++){
-		sum += noise(size*length(v_normal.x)) / 10;
-		size *= .2;
-	 }
-	 posistion = v_position * sum;*/
-
    } else {
+	
 	 frag_color = object_color ;
 	 frag_position = v_position;
 	 frag_ball = 0;
+  
    }
    
    frag_normal = v_normal;

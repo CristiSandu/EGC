@@ -29,19 +29,20 @@ void Tema3::Init()
 	startR = std::clock();
 	startPowerUp = std::clock();
 
-
+	// define color vector 
 	platformColors.push_back(RED); //rosu
 	platformColors.push_back(YELLOW); //galben 
 	platformColors.push_back(ORANGE); //portocaliu
 	platformColors.push_back(GREEN); //verde 
 	platformColors.push_back(BLUE); //blue 
 
+	// define posibile position of powerUps
 	indexPowerUp.push_back(0);
 	indexPowerUp.push_back(2);
 	indexPowerUp.push_back(4);
 
 
-
+	// put start eements in scheen
 	platformCoord.push_back(glm::vec4(0, 2, 1, 7));
 	platformsColors.push_back(platformColors[4]);
 
@@ -59,6 +60,7 @@ void Tema3::Init()
 
 	rotationPowerUp.push_back(1);
 
+	// load textures for objects 
 	{
 		Texture2D* texture = new Texture2D();
 		texture->Load2D((textureLoc + "bill-cipher-1.png").c_str(), GL_CLAMP_TO_BORDER);
@@ -89,7 +91,7 @@ void Tema3::Init()
 		mapTextures["metal"] = texture;
 	}
 
-
+	// define light pozition and material constants 
 	{
 		lightPosition = glm::vec3(6, 2, -30);
 		lightDirection = glm::vec3(-1, 0, 0);
@@ -100,15 +102,13 @@ void Tema3::Init()
 		lightPosition_spot = glm::vec3(2, 8, 0);
 		lightDirection_spot = glm::vec3(0, -1, 0);
 
-		//lightposition_spot_1 = glm::vec3(-4, 3, -3);
-		//lightdirection_spot_1 = glm::vec3(1, 0, -1);
 
 		lightposition_spot_2 = glm::vec3(-4, 2, -20);
 		lightdirection_spot_2 = glm::vec3(1, 0, 0);
 
-		lightposition_spot_3= glm::vec3(6, 2, -20);
+		lightposition_spot_3 = glm::vec3(6, 2, -20);
 		lightdirection_spot_3 = glm::vec3(-1, 0, 0);
-		//lightPosition = glm::vec3(0, 7, -30);
+
 		lightposition_spot_4 = glm::vec3(0, 7, -30);
 		lightdirection_spot_4 = glm::vec3(-1, -1, -1);
 
@@ -119,6 +119,8 @@ void Tema3::Init()
 
 
 	projectionMatrix = glm::perspective(RADIANS(60), window->props.aspectRatio, 0.01f, 200.0f);
+
+	// load shader
 	{
 		Shader* shader = new Shader("ShaderTema3");
 		shader->AddShader("Source/Laboratoare/Tema3/Shaders/VertexShader.glsl", GL_VERTEX_SHADER);
@@ -143,13 +145,11 @@ void Tema3::FrameStart()
 
 void Tema3::Update(float deltaTimeSeconds)
 {
-	/*glLineWidth(3);
-	glPointSize(5);
-	glPolygonMode(GL_FRONT_AND_BACK, polygonMode);*/
-
 	int colorIndex = rand() % 5;
 	int w = (rand() % 5 + 2) / 1;
 
+
+	// rander new platforms, ornaments and powerUps
 	if (platformCoord[platformCoord.size() - 3].z >= -200) {
 
 		platformCoord.push_back(glm::vec4(0, 2, platformCoord[platformCoord.size() - 3].z - (0.5 * platformCoord[platformCoord.size() - 3].w) - (colorIndex + 3), w));
@@ -178,26 +178,31 @@ void Tema3::Update(float deltaTimeSeconds)
 
 	}
 
+	// orange powerUp duration 
 	duration = (std::clock() - startL) / (double)CLOCKS_PER_SEC;
 	if (duration >= 3 && blockOrange == 1)
 	{
 		speed = 7;
 		blockOrange = 0;
 	}
+
+	// check end of game
 	if (ENDGAME == 1)
 	{
-		
+		// and print the score
 		if (prinScore == 0) {
 			std::cout << "END GAME ! Score is :" << endSocre << std::endl;
 			prinScore = 1;
 		}
 	}
 
+
 	RanderScene(deltaTimeSeconds);
 	RanderOrnament(deltaTimeSeconds);
 	RanderPowerUp(deltaTimeSeconds);
 	RanderBackground(deltaTimeSeconds);
 
+	// verify colision 
 	if (IntersectionCheck() == true || isBack == 0)
 		RanderPlayer(deltaTimeSeconds);
 	else
@@ -205,13 +210,12 @@ void Tema3::Update(float deltaTimeSeconds)
 		playerCoord.y -= deltaTimeSeconds * 3;
 		RanderPlayer(deltaTimeSeconds);
 	}
-
-	
-
 }
 
 bool Tema3::IntersectionCheck() {
 	isColide = 0;
+
+	// check intersecrtion of player with platforms 
 	for (int i = 0; i < platformCoord.size(); i++)
 	{
 		float dist_squared = 0.5 * 0.5;
@@ -224,8 +228,10 @@ bool Tema3::IntersectionCheck() {
 			colorposition = i;
 		}
 	}
+
 	isColidePowerUp = 0;
 	isColideObstacle = 0;
+	// check intersection of player with powerUps and obstacles (number of obstacles = number of powerUps)
 	for (int i = 0; i < powerUps.size(); i++)
 	{
 		float dist_squared = 0.5 * 0.5;
@@ -248,12 +254,14 @@ bool Tema3::IntersectionCheck() {
 		}
 	}
 
+	// if colide with powerUp add to score and check colision with it 
 	if (isColidePowerUp == 1)
 	{
 		score += 100;
 		powerUps[idexPowerUp].w = 0;
 	}
 
+	// if colide with obstacle game stor 
 	if (isColideObstacle == 1)
 	{
 		score = (std::clock() - startR) / (double)CLOCKS_PER_SEC;
@@ -261,11 +269,11 @@ bool Tema3::IntersectionCheck() {
 		endSocre = score * 10;
 	}
 
-	/*if (isColideObstacle == 1 && blockOrange == 1) {
-		obsacolsVect[indexObsatcoles].z = 0;
-	}*/
 
+	// if colide with a platform  
 	if (isColide == 1) {
+		// check color 
+		// if red end game 
 		if (platformsColors[colorposition] == RED) // red
 		{
 			platformsColors[colorposition] = VIOLET;
@@ -276,13 +284,13 @@ bool Tema3::IntersectionCheck() {
 
 			controlDeformationVar = 1;
 			onRedPort = 1;
-		}
+		}// if yellow lose gas 
 		else if (platformsColors[colorposition] == YELLOW)// yellow
 		{
 			platformsColors[colorposition] = VIOLET;
 			gasVall -= (25.0 / 100.0) * gasVall;
 			controlDeformationVar = 1;
-		}
+		}// if orange lock speed at 10 for a period of time 
 		else if (platformsColors[colorposition] == ORANGE)// orange
 		{
 			platformsColors[colorposition] = VIOLET;
@@ -290,7 +298,7 @@ bool Tema3::IntersectionCheck() {
 			speed = 10;
 			startL = std::clock();
 			controlDeformationVar = 1;
-		}
+		}// if green add gas 
 		else if (platformsColors[colorposition] == GREEN)// green 
 		{
 			platformsColors[colorposition] = VIOLET;
@@ -300,12 +308,14 @@ bool Tema3::IntersectionCheck() {
 				gasVall = 37.5;
 			}
 			controlDeformationVar = 1;
-		}
+		}// if blue stai the same
 		else if (platformsColors[colorposition] == BLUE)// blue 
 		{
 			platformsColors[colorposition] = VIOLET;
 			controlDeformationVar = 0;
 		}
+
+		// in every check of color if is a sepcial platform make a deformation in VertexShader
 
 		return true;
 	}
@@ -317,6 +327,7 @@ bool Tema3::IntersectionCheck() {
 }
 
 void Tema3::RanderOrnament(float deltaTimeSeconds) {
+
 	for (int i = 0; i < ornamentCoord.size(); i++)
 	{
 		if (ENDGAME == 0)
@@ -337,7 +348,7 @@ void Tema3::RanderOrnament(float deltaTimeSeconds) {
 				lightPosition.z = ornamentCoord[i].z;
 				lightposition_spot_1.z = ornamentCoord[i].z;
 			}
-			
+
 		}
 
 		if (lightposition_spot_3.z > 10)
@@ -355,15 +366,15 @@ void Tema3::RanderOrnament(float deltaTimeSeconds) {
 			modelMatrix *= Transform3D::Translate(4 / 2, 0, 4 / 2);
 			modelMatrix *= Transform3D::RotateOY(ornamentCoord[i].w);
 			modelMatrix *= Transform3D::Translate(-4 / 2, 0, -4 / 2);
-			
+
 			RenderMesh(ornament->GetPiramide(), shaders["ShaderTema3"], modelMatrix, RED, nullptr, nullptr);
 		}
 
-		
+
 
 		if (ornamentCoord[i].z < 25)
 		{
-			
+
 			RenderMesh(ornament->GetPiramide(), shaders["ShaderTema3"], modelMatrix, GREY, mapTextures["bill"], mapTextures["vortex"]);
 		}
 		else
@@ -384,7 +395,7 @@ void Tema3::RanderOrnament(float deltaTimeSeconds) {
 		lightposition_spot_3.z += deltaTimeSeconds * speed;
 		lightposition_spot_2.z += deltaTimeSeconds * speed;
 	}
-	
+
 }
 void Tema3::RanderBackground(float deltaTimeSeconds) {
 	modelMatrix = glm::mat4(1);
@@ -425,8 +436,6 @@ void Tema3::RanderPowerUp(float deltaTimeSeconds) {
 			modelMatrix *= Transform3D::Scale(.001f, .001f, .001f);
 
 		}
-
-		///modelMatrix *= Transform3D::RotateOY(ornamentCoord[i].w);
 
 		if (powerUps[i].z < 25)
 		{
@@ -482,7 +491,6 @@ void Tema3::RanderScene(float deltaTimeSeconds) {
 	}
 	else {
 		modelMatrix *= Transform3D::Translate(combustibilPos.x, combustibilPos.y, combustibilPos.z);
-		//modelMatrix *= Transform3D::RotateOX(15);
 		modelMatrix *= Transform3D::RotateOY(combustibilPos.w);
 		modelMatrix *= Transform3D::RotateOX(3);
 		modelMatrix *= Transform3D::Scale(.01, .01, .01);
@@ -547,69 +555,11 @@ void Tema3::FrameEnd()
 	//DrawCoordinatSystem(camera->GetViewMatrix(), projectionMatrix);
 }
 
-Mesh* Tema3::CreateMesh(const char* name, const std::vector<VertexFormat>& vertices, const std::vector<unsigned short>& indices)
-{
-	unsigned int VAO = 0;
-	// TODO: Create the VAO and bind it
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
-
-	// TODO: Create the VBO and bind it
-	unsigned int VBO;
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-	// TODO: Send vertices data into the VBO buffer
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
-
-	// TODO: Crete the IBO and bind it
-	unsigned int IBO;
-	glGenBuffers(1, &IBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-
-	// TODO: Send indices data into the IBO buffer
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices[0]) * indices.size(), &indices[0], GL_STATIC_DRAW);
-
-	// ========================================================================
-	// This section describes how the GPU Shader Vertex Shader program receives data
-
-	// set vertex position attribute
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), 0);
-
-	// set vertex normal attribute
-	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), (void*)(sizeof(glm::vec3)));
-
-	// set texture coordinate attribute
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), (void*)(2 * sizeof(glm::vec3)));
-
-	// set vertex color attribute
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), (void*)(2 * sizeof(glm::vec3) + sizeof(glm::vec2)));
-	// ========================================================================
-
-	// Unbind the VAO
-	glBindVertexArray(0);
-
-	// Check for OpenGL errors
-	CheckOpenGLError();
-
-	// Mesh information is saved into a Mesh object
-	meshes[name] = new Mesh(name);
-	meshes[name]->InitFromBuffer(VAO, static_cast<unsigned short>(indices.size()));
-	meshes[name]->vertices = vertices;
-	meshes[name]->indices = indices;
-	return meshes[name];
-}
-//Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix, Texture2D* texture1, Texture2D* texture2
 void Tema3::RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix, const glm::vec3& color, Texture2D* texture1, Texture2D* texture2)
 {
 	if (!mesh || !shader || !shader->GetProgramID())
 		return;
 
-	//modelMatrix *= Transform3D::Translate(playerCoord.x, playerCoord.y, playerCoord.z);
 	glUseProgram(shader->program);
 	if (mesh == player->GetPlayer()) {
 		if (controlDeformationVar == 1) {
@@ -649,6 +599,8 @@ void Tema3::RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix,
 	int material_ks = glGetUniformLocation(shader->program, "material_ks");
 	glUniform1f(material_ks, materialKs);
 
+
+	// send lights pozitions 
 	int light_position = glGetUniformLocation(shader->program, "light_position");
 	glUniform3f(light_position, lightPosition.x, lightPosition.y, lightPosition.z);
 
@@ -680,6 +632,8 @@ void Tema3::RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix,
 	glUniform3f(light_position_spot_4, lightposition_spot_4.x, lightposition_spot_4.y, lightposition_spot_4.z);
 	int light_direction_spot_4 = glGetUniformLocation(shader->program, "light_direction_spot_4");
 	glUniform3f(light_direction_spot_4, lightdirection_spot_4.x, lightdirection_spot_4.y, lightdirection_spot_4.z);
+	// -- 
+
 
 	glm::vec3 eyePosition = GetSceneCamera()->transform->GetWorldPosition();
 	int eye_position = glGetUniformLocation(shader->program, "eye_position");
@@ -695,7 +649,7 @@ void Tema3::RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix,
 
 	if (onlySpot == 1)
 		glUniform1i(glGetUniformLocation(shader->program, "only_spot"), true);
-	else 
+	else
 		glUniform1i(glGetUniformLocation(shader->program, "only_spot"), false);
 
 	if (onlyPunct == 1)
@@ -711,21 +665,21 @@ void Tema3::RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix,
 
 	if (texture1)
 	{
-		//TODO : activate texture location 0
+		//activate texture location 0
 		glActiveTexture(GL_TEXTURE0);
-		//TODO : Bind the texture1 ID
+		// Bind the texture1 ID
 		glBindTexture(GL_TEXTURE_2D, texture1->GetTextureID());
-		//TODO : Send texture uniform value
+		//Send texture uniform value
 		glUniform1i(glGetUniformLocation(shader->program, "texture_1"), 0);
 	}
 
 	if (texture2)
 	{
-		//TODO : activate texture location 1
+		//activate texture location 1
 		glActiveTexture(GL_TEXTURE1);
-		//TODO : Bind the texture2 ID
+		//Bind the texture2 ID
 		glBindTexture(GL_TEXTURE_2D, texture2->GetTextureID());
-		//TODO : Send texture uniform value
+		//Send texture uniform value
 		glUniform1i(glGetUniformLocation(shader->program, "texture_2"), 1);
 	}
 
@@ -744,72 +698,6 @@ void Tema3::RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix,
 		glUniform1f(combustibilBool, 0);
 	}
 
-
-
-	glBindVertexArray(mesh->GetBuffers()->VAO);
-	glDrawElements(mesh->GetDrawMode(), static_cast<int>(mesh->indices.size()), GL_UNSIGNED_SHORT, 0);
-
-}
-
-
-
-void Tema3::RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix, Texture2D* texture1, Texture2D* texture2)
-{
-	if (!mesh || !shader || !shader->GetProgramID())
-		return;
-
-
-
-	glUseProgram(shader->program);
-
-	// Bind model matrix
-	GLint loc_model_matrix = glGetUniformLocation(shader->program, "Model");
-	glUniformMatrix4fv(loc_model_matrix, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-
-	// Bind view matrix
-	glm::mat4 viewMatrix = GetSceneCamera()->GetViewMatrix();
-	int loc_view_matrix = glGetUniformLocation(shader->program, "View");
-	glUniformMatrix4fv(loc_view_matrix, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-
-	// Bind projection matrix
-	glm::mat4 projectionMatrix = GetSceneCamera()->GetProjectionMatrix();
-	int loc_projection_matrix = glGetUniformLocation(shader->program, "Projection");
-	glUniformMatrix4fv(loc_projection_matrix, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-
-	GLint deformation = glGetUniformLocation(shader->GetProgramID(), "deformation");
-	glUniform1i(deformation, 2);
-
-	GLint combustibilBool = glGetUniformLocation(shader->GetProgramID(), "combustibilBool");
-	glUniform1f(combustibilBool, 0);
-
-	glUniform1i(glGetUniformLocation(shader->program, "mix_textures"), true);
-
-	glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(GREY));
-
-	GLint timeLocation = glGetUniformLocation(shader->GetProgramID(), "Time");
-	glUniform1f(timeLocation, (GLfloat)Engine::GetElapsedTime());
-
-	if (texture1)
-	{
-		//TODO : activate texture location 0
-		glActiveTexture(GL_TEXTURE0);
-		//TODO : Bind the texture1 ID
-		glBindTexture(GL_TEXTURE_2D, texture1->GetTextureID());
-		//TODO : Send texture uniform value
-		glUniform1i(glGetUniformLocation(shader->program, "texture_1"), 0);
-	}
-
-	if (texture2)
-	{
-		//TODO : activate texture location 1
-		glActiveTexture(GL_TEXTURE1);
-		//TODO : Bind the texture2 ID
-		glBindTexture(GL_TEXTURE_2D, texture2->GetTextureID());
-		//TODO : Send texture uniform value
-		glUniform1i(glGetUniformLocation(shader->program, "texture_2"), 1);
-	}
-
-
 	glBindVertexArray(mesh->GetBuffers()->VAO);
 	glDrawElements(mesh->GetDrawMode(), static_cast<int>(mesh->indices.size()), GL_UNSIGNED_SHORT, 0);
 
@@ -826,32 +714,32 @@ void Tema3::OnInputUpdate(float deltaTime, int mods)
 	if (window->MouseHold(GLFW_MOUSE_BUTTON_RIGHT))
 	{
 		if (window->KeyHold(GLFW_KEY_W)) {
-			// TODO : translate the camera forward
+			// translate the camera forward
 			camera->TranslateForward(deltaTime * cameraSpeed);
 		}
 
 		if (window->KeyHold(GLFW_KEY_A)) {
-			// TODO : translate the camera to the left
+			// translate the camera to the left
 			camera->TranslateRight(-deltaTime * cameraSpeed);
 		}
 
 		if (window->KeyHold(GLFW_KEY_S)) {
-			// TODO : translate the camera backwards
+			//translate the camera backwards
 			camera->TranslateForward(-deltaTime * cameraSpeed);
 		}
 
 		if (window->KeyHold(GLFW_KEY_D)) {
-			// TODO : translate the camera to the right
+			//  translate the camera to the right
 			camera->TranslateRight(deltaTime * cameraSpeed);
 		}
 
 		if (window->KeyHold(GLFW_KEY_Q)) {
-			// TODO : translate the camera down
+			// translate the camera down
 			camera->TranslateUpword(-deltaTime * cameraSpeed);
 		}
 
 		if (window->KeyHold(GLFW_KEY_E)) {
-			// TODO : translate the camera up
+			//translate the camera up
 			camera->TranslateUpword(deltaTime * cameraSpeed);
 		}
 
@@ -884,15 +772,15 @@ void Tema3::OnInputUpdate(float deltaTime, int mods)
 			cutoffAngle -= deltaTime * ANGLE_SPEEDUP;
 			cutoffAngle = cutoffAngle < 0.f ? 0.f : cutoffAngle;
 		}
-		
+
 	}
 
 	angleOX += deltaTime * .00001;
 	angleOY += deltaTime * .00001;
 
 	glm::mat4 turn = glm::mat4(1);
-	turn = glm::rotate(turn, sin (angleOY), glm::vec3(0, 1, 0));
-	turn = glm::rotate(turn, cos (angleOX), glm::vec3(1, 0, 0));
+	turn = glm::rotate(turn, sin(angleOY), glm::vec3(0, 1, 0));
+	turn = glm::rotate(turn, cos(angleOX), glm::vec3(1, 0, 0));
 
 	lightDirection_spot = glm::vec3(0, -1, 0);
 	lightDirection_spot = glm::vec3(turn * glm::vec4(lightDirection_spot, 0));
@@ -1002,8 +890,6 @@ void Tema3::OnKeyPress(int key, int mods)
 			camera->Set(glm::vec3(5, 4, 3), glm::vec3(2, 3, -2), glm::vec3(0, 1, 0));
 			firstLook = 0;
 			combustibilPos = glm::vec4(3.8, 3.5, 2.7, 44.7);
-			//4, 3.32, 3.12, 45
-
 		}
 		else
 		{
@@ -1058,8 +944,8 @@ void Tema3::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY)
 
 		if (window->GetSpecialKeyState() == 0) {
 			renderCameraTarget = false;
-			// TODO : rotate the camera in First-person mode around OX and OY using deltaX and deltaY
-			// use the sensitivity variables for setting up the rotation speed
+			//rotate the camera in First-person mode around OX and OY using deltaX and deltaY
+			//use the sensitivity variables for setting up the rotation speed
 			xCameraCoord = sensivityOX * -deltaY;
 			yCameraCoord = sensivityOY * -deltaX;
 
@@ -1069,8 +955,8 @@ void Tema3::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY)
 
 		if (window->GetSpecialKeyState() && GLFW_MOD_CONTROL) {
 			renderCameraTarget = true;
-			// TODO : rotate the camera in Third-person mode around OX and OY using deltaX and deltaY
-			// use the sensitivity variables for setting up the rotation speed
+			//rotate the camera in Third-person mode around OX and OY using deltaX and deltaY
+			//use the sensitivity variables for setting up the rotation speed
 			camera->RotateThirdPerson_OX(sensivityOX * -deltaY);
 			camera->RotateThirdPerson_OY(sensivityOY * -deltaX);
 		}

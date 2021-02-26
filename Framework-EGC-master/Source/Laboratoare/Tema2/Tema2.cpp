@@ -67,9 +67,6 @@ void Tema2::FrameStart()
 
 void Tema2::Update(float deltaTimeSeconds)
 {
-	glLineWidth(3);
-	glPointSize(5);
-	glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
 
 	int colorIndex = rand() % 5;
 	int w = (rand() % 5 + 2) / 1;
@@ -218,7 +215,6 @@ void Tema2::RanderScene(float deltaTimeSeconds) {
 	}
 	else {
 		modelMatrix *= Transform3D::Translate(4, 3.32, 3.12);
-		//modelMatrix *= Transform3D::RotateOX(15);
 		modelMatrix *= Transform3D::RotateOY(45);
 		modelMatrix *= Transform3D::RotateOX(3);
 		modelMatrix *= Transform3D::Scale(.01, .01, .01);
@@ -280,65 +276,9 @@ void Tema2::RanderPlayer(float deltaTimeSeconds) {
 
 void Tema2::FrameEnd()
 {
-	DrawCoordinatSystem(camera->GetViewMatrix(), projectionMatrix);
+	//DrawCoordinatSystem(camera->GetViewMatrix(), projectionMatrix);
 }
 
-Mesh* Tema2::CreateMesh(const char* name, const std::vector<VertexFormat>& vertices, const std::vector<unsigned short>& indices)
-{
-	unsigned int VAO = 0;
-	// TODO: Create the VAO and bind it
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
-
-	// TODO: Create the VBO and bind it
-	unsigned int VBO;
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-	// TODO: Send vertices data into the VBO buffer
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
-
-	// TODO: Crete the IBO and bind it
-	unsigned int IBO;
-	glGenBuffers(1, &IBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-
-	// TODO: Send indices data into the IBO buffer
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices[0]) * indices.size(), &indices[0], GL_STATIC_DRAW);
-
-	// ========================================================================
-	// This section describes how the GPU Shader Vertex Shader program receives data
-
-	// set vertex position attribute
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), 0);
-
-	// set vertex normal attribute
-	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), (void*)(sizeof(glm::vec3)));
-
-	// set texture coordinate attribute
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), (void*)(2 * sizeof(glm::vec3)));
-
-	// set vertex color attribute
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), (void*)(2 * sizeof(glm::vec3) + sizeof(glm::vec2)));
-	// ========================================================================
-
-	// Unbind the VAO
-	glBindVertexArray(0);
-
-	// Check for OpenGL errors
-	CheckOpenGLError();
-
-	// Mesh information is saved into a Mesh object
-	meshes[name] = new Mesh(name);
-	meshes[name]->InitFromBuffer(VAO, static_cast<unsigned short>(indices.size()));
-	meshes[name]->vertices = vertices;
-	meshes[name]->indices = indices;
-	return meshes[name];
-}
 
 void Tema2::RenderMesh(Mesh* mesh, int name_mesh, Shader* shader, const glm::mat4& modelMatrix, const glm::vec3& color)
 {
@@ -355,7 +295,6 @@ void Tema2::RenderMesh(Mesh* mesh, int name_mesh, Shader* shader, const glm::mat
 		mesh->Render();
 	}
 	else {
-		//modelMatrix *= Transform3D::Translate(playerCoord.x, playerCoord.y, playerCoord.z);
 		glUseProgram(shader->program);
 		if (name_mesh == 3) {
 			if (controlDeformationVar == 1) {
@@ -418,32 +357,32 @@ void Tema2::OnInputUpdate(float deltaTime, int mods)
 	if (window->MouseHold(GLFW_MOUSE_BUTTON_RIGHT))
 	{
 		if (window->KeyHold(GLFW_KEY_W)) {
-			// TODO : translate the camera forward
+			// translate the camera forward
 			camera->TranslateForward(deltaTime * cameraSpeed);
 		}
 
 		if (window->KeyHold(GLFW_KEY_A)) {
-			// TODO : translate the camera to the left
+			// translate the camera to the left
 			camera->TranslateRight(-deltaTime * cameraSpeed);
 		}
 
 		if (window->KeyHold(GLFW_KEY_S)) {
-			// TODO : translate the camera backwards
+			// translate the camera backwards
 			camera->TranslateForward(-deltaTime * cameraSpeed);
 		}
 
 		if (window->KeyHold(GLFW_KEY_D)) {
-			// TODO : translate the camera to the right
+			// translate the camera to the right
 			camera->TranslateRight(deltaTime * cameraSpeed);
 		}
 
 		if (window->KeyHold(GLFW_KEY_Q)) {
-			// TODO : translate the camera down
+			// translate the camera down
 			camera->TranslateUpword(-deltaTime * cameraSpeed);
 		}
 
 		if (window->KeyHold(GLFW_KEY_E)) {
-			// TODO : translate the camera up
+			// translate the camera up
 			camera->TranslateUpword(deltaTime * cameraSpeed);
 		}
 	}
@@ -578,7 +517,7 @@ void Tema2::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY)
 
 		if (window->GetSpecialKeyState() == 0) {
 			renderCameraTarget = false;
-			// TODO : rotate the camera in First-person mode around OX and OY using deltaX and deltaY
+			//rotate the camera in First-person mode around OX and OY using deltaX and deltaY
 			// use the sensitivity variables for setting up the rotation speed
 			xCameraCoord = sensivityOX * -deltaY;
 			yCameraCoord = sensivityOY * -deltaX;
@@ -589,7 +528,6 @@ void Tema2::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY)
 
 		if (window->GetSpecialKeyState() && GLFW_MOD_CONTROL) {
 			renderCameraTarget = true;
-			// TODO : rotate the camera in Third-person mode around OX and OY using deltaX and deltaY
 			// use the sensitivity variables for setting up the rotation speed
 			camera->RotateThirdPerson_OX(sensivityOX * -deltaY);
 			camera->RotateThirdPerson_OY(sensivityOY * -deltaX);

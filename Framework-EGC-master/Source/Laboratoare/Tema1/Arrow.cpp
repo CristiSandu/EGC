@@ -33,11 +33,9 @@ Arrow::Arrow() {
 			4,7,3,
 			3,6,4
 		};
-		//indices.push_back(0);
-		//indices.push_back(2);
+		
 
 		arrowM->InitFromData(vertices, indices);
-		//arrowM->SetDrawMode(GL_TRIANGLE_FAN);
 
 	}
 }

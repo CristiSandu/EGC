@@ -44,8 +44,6 @@ public:
 
 	glm::vec4 combustibilPos = glm::vec4(1.05, 3, 2.1, 15);
 	
-	///glm::vec4(1.05, 3, 2.1,15)
-	//glm::vec4(.01, .01, 2.1,15)
 	GLfloat xCameraCoord = 0, yCameraCoord = 0;
 	glm::vec4 playerCoord = glm::vec4(2, 2.5, 0,0);
 	GLfloat speed = .01f;
@@ -61,23 +59,17 @@ public:
 	double duration = 0,score =0;
 	std::clock_t startL, startM, startR;
 	
-	
-
 	int controlDeformationVar = 0;
 
 
 private:
 	void FrameStart();
 	void Update(float deltaTimeSeconds);
-	GLfloat max_min(GLfloat a, GLfloat b, int c);
 	bool IntersectionCheck();
 	void RanderScene(float deltaTimeSeconds);
 	void RanderPlayer(float deltaTimeSeconds);
 	void FrameEnd();
-	Mesh* CreateMesh(const char* name, const std::vector<VertexFormat>& vertices, const std::vector<unsigned short>& indices);
 	void RenderMesh(Mesh* mesh, int name_mesh, Shader* shader, const glm::mat4& modelMatrix, const glm::vec3& color);
-	//void RenderMesh(Mesh* mesh, string name_mesh, Shader* shader, const glm::mat4& modelMatrix, const glm::vec3& color);
-	//void RenderMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix, const glm::vec3& color);
 	void OnInputUpdate(float deltaTime, int mods);
 	void OnKeyPress(int key, int mods);
 	void OnKeyRelease(int key, int mods);

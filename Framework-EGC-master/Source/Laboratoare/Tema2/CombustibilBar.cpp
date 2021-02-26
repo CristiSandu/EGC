@@ -37,7 +37,6 @@ CombustibilBar::CombustibilBar() {
 
 			std::vector<unsigned short> indices = { 1,0,3,
 				3,2,1 };
-			//powerLine->SetDrawMode(GL_LINE_LOOP);
 			powerLine->InitFromData(vertices, indices);
 		}
 
@@ -74,7 +73,6 @@ CombustibilBar::CombustibilBar() {
 
 			std::vector<unsigned short> indices = { 1,0,3,
 				3,2,1 };
-			//powerLine->SetDrawMode(GL_LINE_LOOP);
 			powerLine2->InitFromData(vertices, indices);
 		}
 
